@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <!-- Bootstrap meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BeCool</title>
+
+    <link rel="stylesheet" type="text/css" href="/index.css">
+    <link rel="stylesheet" type="text/css" href="/create_account.css">
+    <link rel="icon" type="image/x-icon" href="/becoolfavicon.ico">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <!-- Navbar before logging in -->
+    <div class="navbar-before-login">
+        <a href="/index.html">
+            <img src="/becoolgs.png" alt="BeCool Logo">
+        </a>
+        <a href="/login.html">Login</a>
+    </div>
+
+    <!-- Header -->
+    <div class="main-header">
+        <img src="/fridge1.jpg" alt="fridge">
+        <div class="create-acct-form">
+            <form class="form-container">
+                <h1>Create An Account!</h1>
+          
+                <label for="fname" id="first">First Name</label>
+                <input id='fname' type='text' required="required" placeholder="First Name" />
+
+                <label for="lname" id="last">Last Name</label>
+                <input id='lname' type='text' required="required" placeholder="Last Name" />
+
+                <label for="email" id="email">Email</label>
+                <input id='email' type='email' required="required" placeholder="Email" />
+          
+                <label for="password" id="password">Password</label>
+                <input id='password' type='password' required="required" placeholder="Password"/>
+                
+                <input type="button" value="Submit" id="submit" class="btn"/>
+
+                <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+              </form>
+        </div>
+    </div>
+
+    <!-- Javascript links -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.min.js"
+        integrity="sha384-VQqxDN0EQCkWoxt/0vsQvZswzTHUVOImccYmSyhJTp7kGtPed0Qcx8rK9h9YEgx+"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
