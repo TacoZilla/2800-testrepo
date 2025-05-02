@@ -1,0 +1,27 @@
+#tab-nav {
+    height: 30px;
+    background-color: var(--blue-light);
+    display: flex;
+    justify-content: space-around;
+}
+
+.tab {
+    height: 50px;
+    width: 60px;
+    border-radius: 0 0 10px 10px;
+    background-color: var(--blue-medium);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tab.selected {
+    height: 65px;
+}
+
+.tab span {
+    font-size: 40px;
+    font-weight:300;
+    color: var(--pink-light);
+}
