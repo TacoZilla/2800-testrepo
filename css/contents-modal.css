@@ -19,7 +19,7 @@
 }
 
 .form-group {
-    margin: 1em;
+    margin: 2em;
 }
 
 #itemName {
@@ -30,7 +30,14 @@
     display: flex;
     justify-content: space-between;
 }
+.item-name-input {
+    margin-top: 20px;
+}
 
+input {
+    border: 1px solid #CEDDF1;
+    border-radius: 4px;
+}
 .qty-input input {
     width: 60px;
 }
@@ -52,7 +59,7 @@
     align-items: center;
     position: relative;
     padding: 1rem;
-    border-bottom: 1px solid #ccc;
+    
 }
 
 #donateheader h3 {
@@ -69,4 +76,11 @@
 
 #itempreview {
     margin-top: 2em;
+}
+
+button {
+background-color: #F0F3FF;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
 }
