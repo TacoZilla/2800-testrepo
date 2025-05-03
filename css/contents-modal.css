@@ -1,0 +1,95 @@
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background: #fff;
+    padding: 1.5em;
+    border-radius: 8px;
+    width: 90%;
+    font-size: 20pt;
+}
+
+.form-group {
+    margin: 2em;
+}
+
+#itemName {
+    width: 100%;
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.item-name-input {
+    margin-top: 20px;
+}
+
+input {
+    border: 1px solid #CEDDF1;
+    border-radius: 4px;
+}
+
+.qty-input input {
+    width: 60px;
+}
+
+#bbd-gr {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1em;
+    gap: 90px;
+}
+
+.modal-actions button {
+    flex: 1;
+    margin: 0 0.25em;
+}
+
+#donateheader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 1rem;
+
+}
+
+#donateheader h3 {
+    margin: 0;
+    flex: 1;
+    text-align: center;
+    font-size: 32pt;
+}
+
+#donateheader .btn-close {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+}
+
+#itempreview {
+    margin-top: 2em;
+}
+
+button {
+    background-color: #F0F3FF;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
