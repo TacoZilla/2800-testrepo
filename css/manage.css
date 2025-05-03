@@ -1,11 +1,42 @@
+/* tab nav styling */
+#tab-nav {
+    height: 30px;
+    background-color: var(--blue-light);
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 45px;
+}
+.tab {
+    height: 50px;
+    width: 60px;
+    border-radius: 0 0 10px 10px;
+    background-color: var(--blue-medium);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
+.tab.selected {
+    height: 65px;
+}
+
+.tab span {
+    font-size: 40px;
+    font-weight:300;
+    font-size: 35px;
+    font-weight: 300;
+    color: var(--pink-light);
+}
 #body-container {
     height: 100vh;
     padding: 10% ;
     margin: auto;
+    font-size: 20pt;
     background-color: #fff;
 }
 
+/* fridge title styling */
 .fridge-title {
 display: flex;
 align-items: center;
@@ -18,11 +49,13 @@ margin: 0;
 }
 
 .fridge-title button.edit-btn {
-font-size: 16px;
+font-size: 18px;
 background: none;
 border: none;
 cursor: pointer;
 }
+
+/* Body styling */
 .section {
     margin-bottom: 30px;
 }
@@ -45,7 +78,7 @@ label {
 
 .field-group button.edit-btn {
     margin-left: 10px;
-    font-size: 16px;
+    font-size: 60px;
 }
 
 input[type="text"],
@@ -55,6 +88,7 @@ input[type="date"] {
     border: 1px solid #CEDDF1;
     border-radius: 4px;
     margin-right: 5px;
+    font-size: 16pt;
 }
 
 .edit-btn {
@@ -66,7 +100,7 @@ input[type="date"] {
 
 .photo-box {
     background: #CEDDF1;
-    height: 60px;
+    height: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -85,6 +119,8 @@ input[type="date"] {
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
+    font-size: 20pt;
+
 }
 
 .man-save-btn {
@@ -92,6 +128,8 @@ input[type="date"] {
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
+    font-size: 20pt;
+
 }
 
 .title-container {
@@ -103,9 +141,7 @@ input[type="date"] {
     margin: 0;
 }
 
-/* .title-container span {
-    color: gray;
-} */
+
 
 /* modal styling */
 .modal {
@@ -131,6 +167,7 @@ input[type="date"] {
     padding-top: 10px;
     margin-top: 30px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    font-size: 20pt;
   }
 
   .modal-buttons {
@@ -140,7 +177,7 @@ input[type="date"] {
 
   .modal-buttons button {
     padding: 8px 16px;
-    font-size: 16px;
+    font-size: 16pt;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -153,4 +190,5 @@ input[type="date"] {
 
   .cancel-btn {
     background-color: #F0F3FF;
+
   }
