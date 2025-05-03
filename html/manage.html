@@ -9,8 +9,8 @@
 
 
     <!-- Link to style sheet -->
-    <link rel="stylesheet" href="./css/app.css">
-    <link rel="stylesheet" href="./css/manage.css">
+    <link rel="stylesheet" href="/css/app.css">
+    <link rel="stylesheet" href="/css/manage.css">
 
     <!-- <link rel="stylesheet" href="./css/contents.css"> -->
 
@@ -94,7 +94,16 @@
     </div>
 
     <!-- Script for Modal -->
-    <script src="/manage.js"></script>
+    <script>
+        function openModal() {
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+    </script>
 
 
 
