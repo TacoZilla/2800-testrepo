@@ -32,7 +32,7 @@ body {
 }
 
 main {
-    flex-grow: 1;
+    height: calc(100vh - 175px);
     display: grid;
     grid-template-columns: 100vw;
     grid-template-rows: auto 1fr auto auto;
@@ -42,6 +42,7 @@ main {
         "buttons"
         "contact";
 }
+
 #title {
     grid-area: title;
     display: flex;
@@ -52,7 +53,7 @@ main {
 }
 
 #title > hr {
-    width: 80%;
+    width: 90%;
     border: 1px solid var(--pink-dark);
     margin: 0;
 }
@@ -62,12 +63,13 @@ main {
     color: var(--pink-accent);
 }
 
-#title-type{
-    color: var(--pink-dark)
+#title-type {
+    color: var(--pink-dark);
 }
 #contents {
     grid-area: contents;
     margin: 20px;
+    overflow: auto;
 }
 
 #contents > table {
@@ -75,20 +77,20 @@ main {
     border-collapse: collapse;
     margin: 0 auto;
     font-size: 1.1em;
-    color: var(--blue-dark)
+    color: var(--blue-dark);
 }
 
-#contents > table th,tr{
+#contents > table th,
+tr {
     text-align: left;
     height: 2em;
-    border-bottom: 1px solid var(--blue-medium); 
-
+    border-bottom: 1px solid var(--blue-medium);
 }
 #buttons {
     grid-area: buttons;
     display: flex;
     justify-content: space-around;
-    height: 80px;
+    margin: 5%;
 }
 
 #buttons > button {
@@ -108,5 +110,10 @@ main {
 
 #contact {
     grid-area: contact;
-    height: 100px;
+    width: 100%;
+    margin: 5%;
+    display: flex;
+    gap: 10px;
+    justify-content: left;
+    align-items: center;
 }
