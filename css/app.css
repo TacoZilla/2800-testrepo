@@ -38,6 +38,8 @@ html,
 body {
     margin: 0;
     padding: 0;
+    height: 100%;
+    width: 100%;
     box-sizing: border-box;
     font-family: "Sunflower", sans-serif;
     background-color: var(--blue-background);
@@ -49,7 +51,7 @@ body {
     box-sizing: inherit;
 }
 
-/*#region GLOBALS */
+/*#endregion GLOBALS */
 
 /*#region HEADER */
 
@@ -72,3 +74,5 @@ header {
     font-size: 60px;
     color: var(--pink-light);
 }
+
+/*#endregion HEADER */
