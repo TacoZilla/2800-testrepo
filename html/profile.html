@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Profile Page">
+    <title>Profile</title>
+    <link rel="stylesheet" href="/css/profile.css">
+</head>
+<body>
+    
+    <div id="emptynav"> </div>
+    
+    <div id="pfpflex">
+        <div id="image-placeholder"> </div>
+        <p> UserName </p>
+        <button> Edit </button>    
+    </div>
+
+    <div id="infosec">
+        <p> Profile </p>
+        <form id="infoform">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br><br>
+    
+            <label for="gmail">Gmail:</label>
+            <input type="email" id="gmail" name="gmail" required><br><br>
+    
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br><br>
+    
+            
+        </form>
+            <form id="notifs">
+
+                <input type="checkbox"></input> 
+                 <small> Enable notifications </small> 
+                <button> Save </button>
+
+            </form>
+
+    </div>
+
+    <div id="locationinform">
+        <p> Notice </p>
+        <div id="locdiv"> <small> To have the full extent of our locational services in this app 
+             please allow the app to use your location </small> </div>
+        
+    </div>
+
+    
+
+    <div id="addsec"> <p> My Fridges </p> </div>
+   <div id="myreviews"> <p> My Reviews </p>
+    
+        <ul>
+        </ul>
+
+        <button id="expandrev" onclick="expandReviews()"> Expand </button>
+    
+    </div>
+    <script src="/js/profile.js"></script>
+</body>
+</html>
