@@ -27,11 +27,13 @@
     --pink-medium: #f9dde4;
     --pink-accent: #d7828e;
     --pink-dark: #ac6872;
+    --pink-text: #6e313a;
     --blue-background: #f0f3ff;
     --blue-light: #ceddf1;
     --blue-medium: #96aac4;
     --blue-accent: #89c4da;
     --blue-dark: #142e4b;
+    --blue-text: #4279b8;
 }
 
 html,
