@@ -1,18 +1,19 @@
-document.addEventListener("click", (event) => {
-    const executeOnMatch = (selector, callback) => {
-        if (event.target.matches(selector)) {
-            if (typeof callback === "function") {
-                callback(event.target);
-            }
-        }
-    };
-    executeOnMatch(".read-more", expandReview);
-    executeOnMatch(".review-image", expandImage);
-});
+registerEventListeners();
 
-function toggleExpanded(element) {
-    console.log(element);
-    element.classList.toggle("expanded");
+function registerEventListeners() {
+    document.addEventListener("click", (event) => {
+        const executeOnMatch = (selector, callback) => {
+            if (event.target.matches(selector)) {
+                if (typeof callback === "function") {
+                    callback(event.target);
+                }
+            }
+        };
+        executeOnMatch(".read-more", expandReview);
+        executeOnMatch(".review-image", expandImage);
+    });
+    document.addEventListener("DOMContentLoaded", updateReadMoreButton);
+    window.addEventListener("resize", updateReadMoreButton);
 }
 
 function expandReview(element) {
@@ -23,7 +24,7 @@ function expandReview(element) {
         } else {
             element.innerHTML = "read less";
         }
-        toggleExpanded(body);
+        body.classList.toggle("expanded");
     }
 }
 
@@ -33,5 +34,17 @@ function expandImage(element) {
     } else {
         element.parentElement.parentElement.insertBefore(element, element.parentElement);
     }
-    toggleExpanded(element);
+    element.classList.toggle("expanded");
+}
+
+function updateReadMoreButton() {
+    document.querySelectorAll(".review-body").forEach((body) => {
+        const readMore = body.nextElementSibling;
+        // Check if the review body has overflow.
+        if (body.scrollHeight > body.clientHeight) {
+            readMore.style.display = "block";
+        } else {
+            readMore.style.display = "none";
+        }
+    });
 }
