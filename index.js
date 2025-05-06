@@ -22,7 +22,7 @@ const config = {
     }
 }
 
-const client = new pg.Client(config);
+const pgPool = new pg.Pool(config);
 
 app.set('view engine', 'ejs');
 
@@ -36,6 +36,7 @@ app.use("/img", express.static(__dirname + "./img"));
 app.use(session({
     secret: process.env.SESSION_SECRET,
     store: new pgSession ({
+        pool: pgPool,
         tableName: 'sessions'
     }),
     resave: false,
