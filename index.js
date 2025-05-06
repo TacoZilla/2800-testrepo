@@ -122,6 +122,8 @@ app.post("/logout", function (req, res) {
     }
 });
 
+require('./api')(app);
+
 // Page not found
 app.use(function (req, res, next) {
     let doc = fs.readFileSync("./html/404.html", "utf8");
