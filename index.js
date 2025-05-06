@@ -1,5 +1,6 @@
 const express = require("express");
 const session = require("express-session");
+const pgSession = require('connect-pg-simple')(session);
 const bcrypt = require("bcrypt");
 const fs = require("fs");
 const pg = require("pg");
@@ -23,6 +24,8 @@ const config = {
 
 const client = new pg.Client(config);
 
+app.set('view engine', 'ejs');
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -31,7 +34,10 @@ app.use("/css", express.static(__dirname + "./css"));
 app.use("/img", express.static(__dirname + "./img"));
 
 app.use(session({
-    secret: "ed14ad73-6cf4-433e-83bc-93411dfdc2c5",
+    secret: process.env.SESSION_SECRET,
+    store: new pgSession ({
+        tableName: 'sessions'
+    }),
     resave: false,
     saveUninitialized: true
 }))
