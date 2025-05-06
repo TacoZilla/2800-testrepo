@@ -7,7 +7,7 @@ const dotenv = require('dotenv').config();
 
 const saltRounds = 12;
 const app = express();
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 3000;
 
 const config = {
     user: process.env.USER,
