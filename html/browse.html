@@ -1,85 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BeCool</title>
-  <link rel="stylesheet" href="/browse.css" />
-</head>
-<body>
-  <header class="header">
-    <div class="logo">Be<span>Cool</span></div>
-    <div class="menu-icon">&#9776;</div>
-  </header>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>BeCool</title>
+        <link rel="stylesheet" href="/css/app.css" />
+        <link rel="stylesheet" href="/css/browse.css" />
+    </head>
+    <body>
+        <header>
+            <img id="header-logo" src="/img/becoolgs.png" />
+            <div id="header-menu" class="material-icons">menu</div>
+        </header>
 
-  <section class="location-bar">
-    <span class="label">Current Location:</span> Granville
-  </section>
+        <section id="location-bar">
+            <span class="material-icons">location_on</span>
+            <span>Current Location:&nbsp;</span>
+            <span id="location-bar-location"> Granville</span>
+        </section>
 
-  <section class="top-pick">
-    <h2>Top Pick Near You!</h2>
-    <div class="top-card">
-      <div class="restocked-tag">RESTOCKED</div>
-      <img src="https://via.placeholder.com/300x150?text=Fridge" alt="Kerrisdale Fridge" />
-      <div class="top-info">
-        <div>
-          <h3>Kerrisdale</h3>
-          <p>community fridge</p>
-        </div>
-        <span class="distance">3 km</span>
-      </div>
-      <div class="star">&#9734;</div>
-    </div>
-  </section>
+        <div class="top-pick-title">Top Pick Near You!</div>
 
-  <section class="filters">
-    <button class="active">All</button>
-    <button>Fridges</button>
-    <button>Pantries</button>
-    <label class="toggle">
-      <input type="checkbox" />
-      <span class="slider"></span>
-    </label>
-  </section>
+        <section class="card-container">
+            <div class="storage-card hero">
+                <img src="/img/kerrisdale.jpg" class="card-background" />
+                <div class="card-background-gradient"></div>
+                <div class="card-content">
+                    <div class="card-content-left">
+                        <div class="card-favourite active material-icons">favorite</div>
+                    </div>
+                    <div class="card-content-right">
+                        <div class="card-main">
+                            <div class="card-title">Kerrisdale</div>
+                            <div class="card-storage-type">community fridge</div>
+                            <span class="card-rating-container">
+                                <span class="card-rating">4.5/5</span>
+                                <span class="card-rating-icon material-icons">star</span>
+                            </span>
+                        </div>
+                        <span class="card-footer">
+                            <div class="card-footer-restocked"><span>RESTOCKED</span></div>
+                            <div class="card-distance">12 km</div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-  <section class="listings">
-    <div class="listing">
-      <img src="https://via.placeholder.com/100x100?text=Kitsilano" alt="Kitsilano" />
-      <div class="info">
-        <h4>Kitsilano</h4>
-        <p>community fridge</p>
-        <div class="details">
-          <span class="restocked-tag">RESTOCKED</span>
-          <span>4.5/5</span>
-          <span>10 km</span>
-        </div>
-      </div>
-      <div class="heart">&#10084;</div>
-    </div>
-
-    <div class="listing">
-      <img src="https://via.placeholder.com/100x100?text=Mount+Pleasant" alt="Mount Pleasant" />
-      <div class="info">
-        <h4>Mount Pleasant</h4>
-        <p>community fridge</p>
-        <div class="details">
-          <span>4.7/5</span>
-          <span>12 km</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="listing">
-      <img src="https://via.placeholder.com/100x100?text=Burnaby+Youth+Hub" alt="Burnaby Youth Hub" />
-      <div class="info">
-        <h4>Burnaby Youth Hub</h4>
-        <p>community fridge</p>
-        <div class="details">
-          <span>4.7/5</span>
-          <span>12 km</span>
-        </div>
-      </div>
-    </div>
-  </section>
-</body>
+        <section id="filters">
+            <div id="filter-buttons">
+                <button class="active">All</button>
+                <button>Fridges</button>
+                <button>Pantries</button>
+            </div>
+            <div id="map-toggle-container">
+                <div class="material-icons map-icon">map</div>
+                <label class="toggle">
+                    <input type="checkbox" />
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </section>
+        <section class="card-container">
+            <div class="storage-card">
+                <img src="/img/kitsilano.png" class="card-background" />
+                <div class="card-background-gradient"></div>
+                <div class="card-content">
+                    <div class="card-content-left">
+                        <div class="card-favourite active material-icons">favorite</div>
+                    </div>
+                    <div class="card-content-right">
+                        <div class="card-main">
+                            <div class="card-title">Kitsilano</div>
+                            <div class="card-storage-type">community fridge</div>
+                            <span class="card-rating-container">
+                                <span class="card-rating">4.5/5</span>
+                                <span class="card-rating-icon material-icons">star</span>
+                            </span>
+                        </div>
+                        <span class="card-footer">
+                            <div class="card-footer-restocked"><span>RESTOCKED</span></div>
+                            <div class="card-distance">12 km</div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="storage-card">
+                <img src="/img/kensington.jpg" class="card-background" />
+                <div class="card-background-gradient"></div>
+                <div class="card-content">
+                    <div class="card-content-left">
+                        <div class="card-favourite material-icons">favorite</div>
+                    </div>
+                    <div class="card-content-right">
+                        <div class="card-main">
+                            <div class="card-title">Kensington</div>
+                            <div class="card-storage-type">community fridge</div>
+                            <span class="card-rating-container">
+                                <span class="card-rating">4.5/5</span>
+                                <span class="card-rating-icon material-icons">star</span>
+                            </span>
+                        </div>
+                        <span class="card-footer">
+                            <div class="card-footer-restocked hidden"><span>RESTOCKED</span></div>
+                            <div class="card-distance">12 km</div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="storage-card">
+                <img src="/img/mount-pleasant.jpg" class="card-background" />
+                <div class="card-background-gradient"></div>
+                <div class="card-content">
+                    <div class="card-content-left">
+                        <div class="card-favourite material-icons">favorite</div>
+                    </div>
+                    <div class="card-content-right">
+                        <div class="card-main">
+                            <div class="card-title">Mount Pleasant</div>
+                            <div class="card-storage-type">community fridge</div>
+                            <span class="card-rating-container">
+                                <span class="card-rating">4.5/5</span>
+                                <span class="card-rating-icon material-icons">star</span>
+                            </span>
+                        </div>
+                        <span class="card-footer">
+                            <div class="card-footer-restocked hidden"><span>RESTOCKED</span></div>
+                            <div class="card-distance">12 km</div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="spacer"></div>
+    </body>
 </html>

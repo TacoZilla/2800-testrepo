@@ -27,6 +27,7 @@
     --pink-medium: #f9dde4;
     --pink-accent: #d7828e;
     --pink-dark: #ac6872;
+    --pink-dark-bold: #b55e6a;
     --pink-text: #6e313a;
     --blue-background: #f0f3ff;
     --blue-light: #ceddf1;
@@ -78,3 +79,11 @@ header {
 }
 
 /*#endregion HEADER */
+
+.hidden {
+    display: none;
+}
+
+.spacer {
+    height: 5px;
+}
