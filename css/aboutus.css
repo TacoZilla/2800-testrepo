@@ -1,0 +1,54 @@
+body {
+    font-size: 16pt;
+    color: var(--blue-dark);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.section {
+    background-color: var(--blue-medium);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.section-header {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: var(--blue-light);
+}
+
+.section-header:hover {
+    background-color: var(--blue-medium);
+}
+
+.section-content {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+    padding: 0 20px;
+    background-color: var(--blue-background);
+}
+
+.section.open .section-content {
+    padding: 15px 20px;
+    opacity: 1;
+    max-height: 1000px; /* adjust as needed */
+}
+
+.material-icons {
+    display: inline-block;
+}
+
+.rotated {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease;
+}

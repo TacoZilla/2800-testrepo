@@ -1,21 +1,44 @@
 const express = require("express");
 const session = require("express-session");
+const pgSession = require('connect-pg-simple')(session);
 const bcrypt = require("bcrypt");
 const fs = require("fs");
+const pg = require("pg");
+const dotenv = require('dotenv').config();
 
 const saltRounds = 12;
 const app = express();
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 3000;
+
+const config = {
+    user: process.env.USER,
+    password: process.env.PASSWORD,
+    host: process.env.HOST,
+    port: process.env.DBPORT,
+    database: process.env.DATABASE,
+    ssl: {
+        rejectUnauthorized: true,
+        ca: fs.readFileSync("./ca.pem").toString(),
+    }
+}
+
+const pgPool = new pg.Pool(config);
+
+app.set('view engine', 'ejs');
 
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
 
-app.use("/js", express.static(__dirname + "./js"));
-app.use("/css", express.static(__dirname + "./css"));
-app.use("/img", express.static(__dirname + "./img"));
+app.use("/js", express.static(__dirname + "/js"));
+app.use("/css", express.static(__dirname + "/css"));
+app.use("/img", express.static(__dirname + "/img"));
 
 app.use(session({
-    secret: "ed14ad73-6cf4-433e-83bc-93411dfdc2c5",
+    secret: process.env.SESSION_SECRET,
+    store: new pgSession ({
+        pool: pgPool,
+        tableName: 'sessions'
+    }),
     resave: false,
     saveUninitialized: true
 }))
@@ -23,6 +46,12 @@ app.use(session({
 // Route for landing page pre-login
 app.get("/", function (req, res) {
     let doc = fs.readFileSync("./html/index.html", "utf8");
+    res.send(doc);
+})
+
+// Route for landing page pre-login
+app.get("/createAccount", function (req, res) {
+    let doc = fs.readFileSync("./html/create_account.html", "utf8");
     res.send(doc);
 })
 
@@ -98,6 +127,9 @@ app.post("/logout", function (req, res) {
         });
     }
 });
+
+require('./api')(app);
+require('./authentication')(app);
 
 // Page not found
 app.use(function (req, res, next) {

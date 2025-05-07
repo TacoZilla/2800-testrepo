@@ -1,0 +1,89 @@
+@import url("https://fonts.googleapis.com/css2?family=Sunflower:wght@300;500;700&display=swap");
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
+/*#region GLOBALS */
+
+.sunflower-light {
+    font-family: "Sunflower", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+}
+
+.sunflower-medium {
+    font-family: "Sunflower", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+}
+
+.sunflower-bold {
+    font-family: "Sunflower", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+:root {
+    --pink-background: #fff6fe;
+    --pink-light: #fff0fe;
+    --pink-medium: #f9dde4;
+    --pink-accent: #d7828e;
+    --pink-dark: #ac6872;
+    --pink-dark-bold: #b55e6a;
+    --pink-text: #6e313a;
+    --blue-background: #f0f3ff;
+    --blue-light: #ceddf1;
+    --blue-medium: #96aac4;
+    --blue-accent: #89c4da;
+    --blue-dark: #142e4b;
+    --blue-text: #4279b8;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: "Sunflower", sans-serif;
+    background-color: var(--blue-background);
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+/*#endregion GLOBALS */
+
+/*#region HEADER */
+
+header {
+    height: 100px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--blue-accent);
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+#header-logo {
+    height: 40%;
+}
+
+#header-menu {
+    font-size: 60px;
+    color: var(--pink-light);
+}
+
+/*#endregion HEADER */
+
+.hidden {
+    display: none;
+}
+
+.spacer {
+    height: 5px;
+}

@@ -1,0 +1,97 @@
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 20px;
+}
+
+button {
+    height: 20px;
+    width: 75px;
+    border-radius: 10px;
+    border: none;
+    background-color: var(--pink-accent);
+    color: var(--pink-light);
+    font-size: 0.8em;
+    font-weight: bold;
+    padding: 0 10px;
+}
+
+button:hover {
+    background-color: var(--pink-dark);
+    cursor: pointer;
+}
+
+#user-section {
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: -20px;
+}
+
+#user-section-left {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.container {
+    padding: 5px 15px;
+    padding-bottom: 15px;
+    width: 90%;
+    background-color: var(--blue-light);
+    border-radius: 15px;
+}
+
+#locationinform {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 10px;
+    background-color: var(--pink-medium);
+    color: var(--pink-dark);
+    padding: 5% 10%;
+}
+
+#myreviews {
+    height: 175px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#addsec {
+    height: 100px;
+}
+
+#infoform {
+    margin-left: 15px;
+    margin-right: 20px;
+    font-size: 10px;
+    width: calc(100% - 20px);
+}
+
+#infoform input {
+    width: calc(100% - 10px);
+    height: 20px;
+}
+
+#notifs {
+    margin-top: 10px;
+    width: calc(100% - 30px);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: rgba(0, 0, 0, 0.664);
+    justify-self: center;
+}
+
+#expandrev {
+    align-self: flex-end;
+}
