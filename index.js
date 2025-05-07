@@ -29,9 +29,9 @@ app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/js", express.static(__dirname + "./js"));
-app.use("/css", express.static(__dirname + "./css"));
-app.use("/img", express.static(__dirname + "./img"));
+app.use("/js", express.static(__dirname + "/js"));
+app.use("/css", express.static(__dirname + "/css"));
+app.use("/img", express.static(__dirname + "/img"));
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -63,8 +63,10 @@ app.get("/login", function (req, res) {
 
 // Route for browse page
 app.get("/browse", function (req, res) {
-    let doc = fs.readFileSync("./html/browse.html", "utf8");
-    res.send(doc);
+    res.render("browse", {
+        stylesheets: ["browse.css"],
+        scripts: ["profile.js"],
+    });
 })
 
 // Route for contents page
