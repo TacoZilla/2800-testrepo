@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Community Fridge</title>
+
+
+    <!-- Link to style sheet -->
+    <link rel="stylesheet" href="/css/app.css">
+    <link rel="stylesheet" href="/css/manage.css">
+
+    <!-- <link rel="stylesheet" href="./css/contents.css"> -->
+
+</head>
+
+<body>
+
+    <!-- Navbar go here -->
+    <header>
+        <img id="header-logo" src="/img/becoolgs.png" />
+        <div id="header-menu" class="material-icons">menu</div>
+    </header>
+
+    <!-- Icon tool bar placeholder -->
+    <div id="tab-nav">
+        <div class="tab" id="tab-contents"><span class="material-icons">route</span></div>
+        <div class="tab" id="tab-contents"><span class="material-icons">shelves</span></div>
+        <div class="tab selected" id="tab-contents"><span class="material-icons">settings</span></div>
+        <div class="tab" id="tab-contents"><span class="material-icons">reviews</span></div>
+    </div>
+    <!-- Body of manage page -->
+    <div id="body-container">
+        <div class="title-container">
+            <div class="storage-title">
+                <h2 contenteditable="false" id="storageName">
+                    <%= storage.title %>
+                </h2>
+                <button class="edit-btn">
+                    <span class="material-icons" class="edit-icon">edit</span></button>
+            </div>
+        </div>
+        <div class="section">
+            <label>Storage Type:</label>
+            <div class="field-group">
+                <span id="storageType">
+                    <%= storage.storagetype===1 ? 'Community Fridge' : 'Community Pantry' %>
+                </span>
+                <select id="storageTypeSelect" disabled>
+                    <option value="1" <%=storage.storageType==1 ? 'selected' : '' %>>Community Fridge</option>
+                    <option value="2" <%=storage.storageType==2 ? 'selected' : '' %>>Community Pantry</option>
+                </select>
+                <button class="edit-btn" onclick="toggleEdit('storageTypeSelect')">
+                    <span class="material-icons edit-icon">edit</span>
+                </button>
+            </div>
+        </div>
+        <div class="section">
+            <div class="address-header">
+                <label>Address:</label>
+                <button class="edit-btn" onclick="toggleAddressEdit()">
+                    <span class="material-icons" class="edit-icon">edit</span></button>
+            </div>
+            <div class="field-group">
+                <div class="address-fields">
+                    <div class="address-field">
+
+                        <label for="street">Street:</label>
+                        <input type="text" id="street" value=" <%= storage.street || ''%>" disabled />
+                    </div>
+                    <div class="address-field">
+                        <label for="city">City:</label>
+                        <input type="text" id="city" value=" <%= storage.city || ''%>" disabled />
+                    </div>
+                    <div class="address-field">
+                        <label for="province">Province:</label>
+                        <input type="text" id="province" value=" <%= storage.province || ''%>" disabled />
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <label>Last cleaned:</label>
+            <div class="field-group">
+
+                <input type="datetime-local" id="lastCleaned"
+                    value="<%= storage.lastCleaned ? storage.lastCleaned.toISOString().slice(0, 16) : '' %>"
+                    disabled />
+                <button class="edit-btn" onclick="toggleEdit('lastCleaned')">
+                    <span class="material-icons" class="edit-icon">edit</span></button>
+            </div>
+        </div>
+
+        <div class="section">
+            <label>Change cover photo:</label>
+            <div class="photo-box">
+                <!-- Hidden file input -->
+                <input type="file" id="coverPhotoInput" accept="image/*" style="display: none;">
+
+                <button class="upload-btn" id="uploadTrigger">
+                    <span class="material-icons" class="upload-icon">upload</span>
+                </button>
+
+                <!--preview container -->
+                <div id="photoPreview" style=" <%= storage.image ? '' : 'display: none;' %>">
+                    <% if (storage.imgage) { %>
+                        <img id="previewImage" src="<%= storage.image %>" alt="Preview"
+                            style="max-width: 200px; max-height: 200px;">
+                        <% } else { %>
+                            <img id="previewImage" src="#" alt="Preview" style="max-width: 200px; max-height: 200px;">
+                            <% } %>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="man-delete-btn" onclick="openModal()">Delete</button>
+            <button class="man-save-btn">Save</button>
+        </div>
+
+    </div>
+
+    <!--Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h3>Confirm Deletion</h3>
+            <div class="modal-buttons">
+                <button type="submit" class="confirm-btn" id="confirmDelete">Confirm</button>
+                <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- Script for Modal -->
+    <script>
+        function toggleEdit(fieldId) {
+            const field = document.getElementById(fieldId);
+            field.disabled = !field.disabled;
+
+            // Special handling for select elements
+            if (field.tagName === 'SELECT' && !field.disabled) {
+                field.focus();
+            } else if (!field.disabled) {
+                field.focus();
+            }
+        }
+        function toggleAddressEdit() {
+            const fieldIds = ['street', 'city', 'province'];
+
+            fieldIds.forEach(id => {
+                const field = document.getElementById(id);
+                if (field) {
+                    field.disabled = !field.disabled;
+                }
+            });
+        }
+
+    </script>
+    <script src="/js/manage.js"></script>
+
+
+
+</body>
+
+</html>
