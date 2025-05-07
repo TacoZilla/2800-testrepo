@@ -29,9 +29,9 @@ app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/js", express.static(__dirname + "./js"));
-app.use("/css", express.static(__dirname + "./css"));
-app.use("/img", express.static(__dirname + "./img"));
+app.use("/js", express.static(__dirname + "/js"));
+app.use("/css", express.static(__dirname + "/css"));
+app.use("/img", express.static(__dirname + "/img"));
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -46,6 +46,12 @@ app.use(session({
 // Route for landing page pre-login
 app.get("/", function (req, res) {
     let doc = fs.readFileSync("./html/index.html", "utf8");
+    res.send(doc);
+})
+
+// Route for landing page pre-login
+app.get("/createAccount", function (req, res) {
+    let doc = fs.readFileSync("./html/create_account.html", "utf8");
     res.send(doc);
 })
 
@@ -123,6 +129,7 @@ app.post("/logout", function (req, res) {
 });
 
 require('./api')(app);
+require('./authentication')(app);
 
 // Page not found
 app.use(function (req, res, next) {
