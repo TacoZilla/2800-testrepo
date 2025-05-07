@@ -29,10 +29,12 @@
                 <input id="password" type="password" required="required" placeholder="Password" />
                 <label for="confirm-password">Confirm Password</label>
                 <input id="confirm-password" type="password" required="required" placeholder="Password" />
-
-                <input type="button" value="Login" id="submit" />
+                <p class="hidden" id="errormsg">All fields are required.</p>
+                <p class="hidden" id="pwderror">Passwords do not match.</p>
+                <input type="button" value="Login" id="create-submit" />
             </form>
         </div>
         <div class="spacer"></div>
+        <script src="/js/authentication-client.js"></script>
     </body>
 </html>
