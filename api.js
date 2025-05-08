@@ -8,19 +8,17 @@ const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 const saltRounds = 12;
 
-
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_CLOUD_KEY,
     api_secret: process.env.CLOUDINARY_CLOUD_SECRET
 });
 
-
 const config = ({
-    user: process.env.USER,
-    password: process.env.PASSWORD,
-    host: process.env.HOST,
-    port: process.env.DBPORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
     database: process.env.DATABASE,
     ssl: {
         rejectUnauthorized: true,

@@ -4,10 +4,10 @@ const pg = require("pg");
 const fs = require("fs");
 
 const config = ({
-    user: process.env.USER,
-    password: process.env.PASSWORD,
-    host: process.env.HOST,
-    port: process.env.DBPORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
     database: process.env.DATABASE,
     ssl: {
         rejectUnauthorized: true,
