@@ -64,3 +64,8 @@
     color: var(--blue-text);
     font-size: 0.95em;
 }
+
+.hidden {
+    display: none;
+    color: var(--pink-dark);
+}
