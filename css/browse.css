@@ -173,7 +173,7 @@
     gap: 10px;
 }
 
-#filters button {
+.filter-button {
     width: 80px;
     height: 25px;
     padding: 6px 12px;
@@ -182,11 +182,24 @@
     color: var(--pink-accent);
     font-weight: 700;
     border-radius: 20px;
+    transition: background-color 0.2s ease-in, color 0.2s ease-in;
 }
 
-#filters .active {
+.filter-button:hover{
+    cursor: pointer;
+}
+
+.filter-button.active {
     background-color: var(--pink-accent);
     color: var(--pink-light);
+}
+
+.card-container.filter-fridge .storage-card.pantry{
+    display: none;
+}
+
+.card-container.filter-pantry .storage-card.fridge{
+    display: none;
 }
 
 #map-toggle-container{

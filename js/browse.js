@@ -1,24 +1,32 @@
 initialize();
 
 async function initialize(){
-    const heroContainer = document.querySelector("#hero-card-container");
+    await loadCards();
+    setupFilterButtons();
+}
+
+function setupFilterButtons(){
+    const buttons = document.querySelectorAll(".filter-button");
     const mainContainer = document.querySelector("#main-card-container");
-    const cards = await getCards();
-    if(cards.length > 0){
-        let hero = selectHero(cards);
-        heroContainer.innerHTML = hero;
-        heroContainer.firstChild.classList.add("hero");
-
-        //TODO: show hero.
-        for(let card of cards){
-            mainContainer.innerHTML += card;
-        }
+    for(let button of buttons){
+        button.addEventListener("click", (event) => {
+            buttons.forEach(button => button.classList.remove("active"));
+            event.target.classList.add("active");
+            switch (event.target.name) {
+                case "all":
+                    mainContainer.classList.remove("filter-fridge", "filter-pantry");
+                    break;
+                case "fridge":
+                    mainContainer.classList.add("filter-fridge");
+                    mainContainer.classList.remove("filter-pantry");
+                    break;
+                case "pantry":
+                    mainContainer.classList.add("filter-pantry");
+                    mainContainer.classList.remove("filter-fridge");
+                    break;
+            }
+        })
     }
-    else{
-        //TODO: we need a "nothing to show" message to appear on browse
-        console.log("No fridges to show.")
-    }
-
 }
 
 async function getCards() {
@@ -28,6 +36,26 @@ async function getCards() {
     }
     const json = await response.json();
     return json;
+}
+
+async function loadCards() {
+    const heroContainer = document.querySelector("#hero-card-container");
+    const mainContainer = document.querySelector("#main-card-container");
+    const cards = await getCards();
+    if (cards.length > 0) {
+        let hero = selectHero(cards);
+        heroContainer.innerHTML = hero;
+        heroContainer.firstChild.classList.add("hero");
+        labelType(heroContainer.firstChild);
+        for (let card of cards) {
+            mainContainer.innerHTML += card;
+            labelType(mainContainer.lastChild);
+        }
+    }
+    else {
+        //TODO: we need a "nothing to show" message to appear on browse
+        console.log("No fridges to show.");
+    }
 }
 
 //Selects a store to show in the hero section of the page. 
@@ -40,4 +68,14 @@ function selectHero(stores){
         return hero;
     }
     return null;
+}
+
+function labelType(store){
+    const typeElement = store.querySelector(".card-storage-type");
+    if(typeElement.innerHTML == "community fridge"){
+        store.classList.add("fridge");
+    }
+    else{
+        store.classList.add("pantry");
+    }
 }

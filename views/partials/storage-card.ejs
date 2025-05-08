@@ -1,6 +1,6 @@
 <div class="storage-card">
     <%if(row.image) {%>
-    <img src="/img/<%=row.image%>" class="card-background" />
+    <img src="<%= "/img/" + row.image%>" class="card-background" />
     <% }%>
     <div class="card-background-gradient"></div>
     <div class="card-content">
@@ -10,7 +10,11 @@
         <div class="card-content-right">
             <div class="card-main">
                 <div class="card-title"><%=row.title%></div>
+                <% if(row.storageType == 1) {%>
                 <div class="card-storage-type">community fridge</div>
+                <% } else { %>
+                <div class="card-storage-type">community pantry</div>
+                <% } %>
                 <span class="card-rating-container">
                     <span class="card-rating">4.5/5</span>
                     <span class="card-rating-icon material-icons">star</span>
