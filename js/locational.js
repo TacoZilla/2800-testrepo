@@ -6,7 +6,7 @@ function getUserLocation() {
         lat = position.coords.latitude;
         lon = position.coords.longitude;
         console.log(lat + " " + lon);
-
+        return { lat, lon};
     })
 
 };
@@ -28,10 +28,9 @@ function toRad(deg) {
     return deg * Math.PI / 180;
 }
 
-function getFridgePosition() {
-    let params = new URLSearchParams(window.location.search);
-    let storageId = params.get("id");
-
+function getFridgePosition(fridgeId) {
+    // let params = new URLSearchParams(window.location.search);
+    let storageId = fridgeId;  // params.get("id");
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `/storageloc?id=${storageId}`);
     xhr.onreadystatechange = function () {
@@ -39,7 +38,8 @@ function getFridgePosition() {
             let data = JSON.parse(xhr.responseText);
             storelat = data.latitude;
             storelon = data.longitude;
-            console.log(storelat + " " + storelon);
+            
+            return {storelat, storelon};
         }
     };
     xhr.send();
@@ -80,6 +80,13 @@ apixhr.send();
 function openMap() {
     const googleMapsUrl = `https://www.google.com/maps?q=${storelat},${storelon}`;
     window.open(googleMapsUrl, '_blank'); 
+}
+
+async function getDistanceToFridge(fridgeId) {
+   let userlocation = await getUserLocation();
+    let storagelocation = await getFridgePosition(fridgeId);
+    let distance = getDistance(userlocation.lat, userlocation.lon, storagelocation.lat, storagelocation.lon);
+    return distance;
 }
 
 
