@@ -1,4 +1,31 @@
-<%- include('partials/header')%>
-<!-- no <body></body> -->
- <!-- main page content goes here -->
+<%- include('partials/header', { stylesheets: stylesheets, scripts: scripts }) %>
+
+<section id="location-bar">
+    <span class="material-icons">location_on</span>
+    <span>Current Location:&nbsp;</span>
+    <span id="location-bar-location"> Granville</span>
+</section>
+
+<div class="top-pick-title">Top Pick Near You!</div>
+
+<section id="hero-card-container" class="card-container">
+</section>
+
+<section id="filters">
+    <div id="filter-buttons">
+        <button class="active">All</button>
+        <button>Fridges</button>
+        <button>Pantries</button>
+    </div>
+    <div id="map-toggle-container">
+        <div class="material-icons map-icon">map</div>
+        <label class="toggle">
+            <input type="checkbox" />
+            <span class="slider"></span>
+        </label>
+    </div>
+</section>
+<section id="main-card-container" class="card-container">
+</section>
+<div class="spacer"></div>
 <%- include('partials/footer')%>

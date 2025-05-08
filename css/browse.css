@@ -9,6 +9,9 @@
     justify-content: baseline;
     align-items: center;
     font-size: 1.1em;
+    position: sticky;
+    top: var(--header-height);
+    z-index: 9;
 }
 
 #location-bar .material-icons {
@@ -111,9 +114,12 @@
 
 .card-title {
     font-size: 1.3em;
+    height: 1.3em;
+
     font-weight: bold;
     color: var(--blue-dark);
     margin-bottom: -2px;
+    overflow: hidden;
 }
 
 .card-storage-type {

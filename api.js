@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const fs = require("fs");
 const pg = require("pg");
+const ejs = require("ejs");
 
 const saltRounds = 12;
 
@@ -24,12 +25,28 @@ module.exports = function (app) {
                 console.log(err);
                 return;
             }
-            client.query("SELECT * FROM public.storage", (error, results) => {
+            client.query("SELECT * FROM public.storage", async (error, results) => {
                 if (error) {
                     console.log(error);
+                    client.end();
+                    return;
                 }
-                res.render('browse', results.rows);
-                client.end();
+                console.log(results)
+                try {
+                    // Map each row to a promise that renders the template
+                    const renderedCards = await Promise.all(
+                        results.rows.map(row => 
+                            ejs.renderFile("views/partials/storage-card.ejs", { row })
+                        )
+                    );
+                    // Send the array of rendered HTML
+                    res.json(renderedCards);
+                } catch (err) {
+                    console.error("Template rendering error:", err);
+                    res.status(500).json({ error: "Failed to render templates" });
+                } finally {
+                    client.end();
+                }
             });
         });
     });
