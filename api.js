@@ -1,3 +1,4 @@
+const {getDistance} = require("./js/userLocation");
 const bcrypt = require("bcrypt");
 const fs = require("fs");
 const pg = require("pg");
@@ -29,6 +30,8 @@ const config = ({
 
 module.exports = function (app) {
     app.get('/api/browse', (req, res) => {
+
+
         const client = new pg.Client(config);
         client.connect((err) => {
             if (err) {
@@ -42,10 +45,14 @@ module.exports = function (app) {
                     return;
                 }
                 try {
+                    const lat = parseFloat(req.query.lat);
+                    const lon = parseFloat(req.query.lon);
                     // Map each row to a promise that renders the template
                     const renderedCards = await Promise.all(
                         results.rows.map((row) => {
-                            return ejs.renderFile("views/partials/storage-card.ejs", { row });
+                            let distance = getDistance(lat, lon, parseFloat(row.coordinates.x), parseFloat(row.coordinates.y));
+                            distance = distance.toFixed(1);
+                            return ejs.renderFile("views/partials/storage-card.ejs", { row, distance });
                         })
                     );
                     // Send the array of rendered HTML

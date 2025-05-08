@@ -1,10 +1,11 @@
+import {getUserLocation, getDistance} from "./userLocation.js";
+
 initialize();
 
 async function initialize(){
     const heroContainer = document.querySelector("#hero-card-container");
     const mainContainer = document.querySelector("#main-card-container");
     const cards = await getCards();
-    console.log(cards);
     if(cards.length > 0){
         let hero = selectHero(cards);
         heroContainer.innerHTML = hero;
@@ -23,7 +24,8 @@ async function initialize(){
 }
 
 async function getCards() {
-    const response = await fetch("/api/browse");
+    let location = await getUserLocation();
+    const response = await fetch(`/api/browse?lat=${location.lat}&lon=${location.lon}`);
     if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
     }
