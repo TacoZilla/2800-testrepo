@@ -59,4 +59,24 @@ module.exports = function (app) {
         });
 
     });
+
+    app.get("/storageloc", async (req, res) => {
+        const storageId = req.query.id;
+        const client = new pg.Client(config);
+        await client.connect();
+        const seperate = await client.query(`
+            SELECT CAST(coordinates[0] AS FLOAT) AS latitude, CAST(coordinates[1] AS FLOAT) AS longitude
+            FROM storage WHERE "storageId" = $1`,
+            [storageId]);
+            console.log("db:", JSON.stringify(seperate.rows[0]));
+            res.json(seperate.rows[0]);
+            client.end();
+       
+    });
+
+    app.get("/gmapkey", (req, res) => {
+        const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+        res.json({apiKey})
+    });
+    
 };

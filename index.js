@@ -29,9 +29,9 @@ app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/js", express.static(__dirname + "./js"));
-app.use("/css", express.static(__dirname + "./css"));
-app.use("/img", express.static(__dirname + "./img"));
+app.use("/js", express.static(__dirname + "/js"));
+app.use("/css", express.static(__dirname + "/css"));
+app.use("/img", express.static(__dirname + "/img"));
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
