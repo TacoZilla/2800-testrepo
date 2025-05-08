@@ -1,8 +1,20 @@
 const bcrypt = require("bcrypt");
 const fs = require("fs");
 const pg = require("pg");
-
+const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
+const express = require('express');
+const router = express.Router();
+const upload = multer({ storage: multer.memoryStorage() });
 const saltRounds = 12;
+
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_CLOUD_KEY,
+    api_secret: process.env.CLOUDINARY_CLOUD_SECRET
+});
+
 
 const config = ({
     user: process.env.USER,
@@ -61,19 +73,9 @@ module.exports = function (app) {
     });
 
 
-
-
-
-
-
-
-
-
-
-
     app.get("/manage/storage", async (req, res) => {
         const storageId = req.query.storageId;
-        console.log(storageId);
+
         if (!storageId) {
             return res.status(400).json({ error: "Storage ID is required" });
         }
@@ -95,8 +97,11 @@ module.exports = function (app) {
             if (storage.lastCleaned) {
                 storage.lastCleaned = new Date(storage.lastCleaned);
             }
-            console.log('date', storage.lastCleaned)
-            res.render('manage', { storage });
+            res.render('manage', { 
+                storage, 
+                stylesheets: ["manage.css"],
+                scripts: ["manage.js"] 
+            });
         } catch (error) {
             console.error("Error fetching storage:", error);
             res.status(500).json({ error: "Internal server error" });
@@ -140,7 +145,6 @@ module.exports = function (app) {
             }
 
             res.json(result.rows[0]);
-            console.log('data', result.rows[0])
         } catch (error) {
             console.error("Error updating storage:", error);
             res.status(500).json({ error: "Internal server error" });
@@ -151,7 +155,7 @@ module.exports = function (app) {
 
     app.delete("/manage/storage/soft-delete", async (req, res) => {
         const { storageId } = req.query;
-    
+
         if (!storageId) {
             return res.status(400).json({ error: "Storage ID is required" });
         }
@@ -167,20 +171,102 @@ module.exports = function (app) {
                  RETURNING *`,
                 [storageId]
             );
-    
+
             if (result.rows.length === 0) {
                 return res.status(404).json({ error: "Storage not found" });
             }
-    
+
             res.json({ message: "Storage soft-deleted", storage: result.rows[0] });
         } catch (error) {
             console.error("Error soft-deleting storage:", error);
             res.status(500).json({ error: "Internal server error" });
-        }finally {
+        } finally {
             await client.end();
         }
     });
+
+    app.post('/manage/storage/upload', upload.single('photo'), async (req, res) => {
+
+        const storageId = req.query.storageId;
+        if (!storageId) {
+            return res.status(400).json({ error: 'Missing storageId' });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({ error: 'No file upload' });
+        }
+        const client = new pg.Client(config);
+
+        try {
+            await client.connect();
+            
+            //delete old image
+            try {
+            const existing = await client.query(
+                `SELECT "imgPublicId" FROM public.storage WHERE "storageId" = $1`,
+                [storageId]
+              );
+              
+              const oldPublicId = existing.rows[0]?.imgPublicId;
+              
+              if (oldPublicId) {
+                await cloudinary.uploader.destroy(oldPublicId);
+              }
+            } catch (error) {
+                console.error('Delete on the cloudinary error:', error);
+                res.status(500).json({ error: 'Server error' });
+
+            }
+
+
+            // Upload to Cloudinary
+            const imageUrl = await new Promise((resolve, reject) => {
+                const stream = cloudinary.uploader.upload_stream(
+
+                    { folder: 'storage_img' },
+
+                    (error, result) => {
+
+                        if (error) return reject(error);
+
+                        resolve({
+                            url: result.secure_url,
+                            publicId: result.public_id
+                        });
+                    }
+                );
+                stream.end(req.file.buffer);
+            });
+
+            // Save image URL in PostgreSQL
+            await client.query(
+                `UPDATE public.storage SET 
+                    "image" = $1,
+                    "imgPublicId" = $2
+                    WHERE "storageId" = $3`,
+                [imageUrl.url, imageUrl.publicId, storageId]
+            );
+
+            res.status(200).json({ image: imageUrl.url });
+
+            // Pipe the image buffer to Cloudinary upload stream
+        } catch (error) {
+            console.error('Upload error:', error);
+            res.status(500).json({ error: 'Server error' });
+        } finally {
+            await client.end();
+
+        }
+
+    });
 };
+
+
+
+
+
+
+
 
 
 

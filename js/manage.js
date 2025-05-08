@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.error('No storage ID in URL');
     }
 
+     
     // Edit fridge name
     document.querySelector('.storage-title .edit-btn').addEventListener('click', () => {
         const nameEl = document.getElementById('storageName');
@@ -60,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
             formData.append('photo', file);
 
             try {
-                const response = await fetch(`/storage/${storageId}/photo`, {
+                const response = await fetch(`/manage/storage/upload?storageId=${storageId}`, {
                     method: 'POST',
                     body: formData
                 });
@@ -71,8 +72,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const result = await response.json();
                 alert('Photo uploaded successfully!');
-                console.log('Upload result:', result);
-                document.getElementById('fridgeImage').src = result.image;
+
+                document.getElementById('previewImage').src = result.image;
+
             } catch (error) {
                 console.error('Upload error:', error);
                 alert('Error uploading photo: ' + error.message);
@@ -82,6 +84,28 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 });
+
+function toggleEdit(fieldId) {
+    const field = document.getElementById(fieldId);
+    field.disabled = !field.disabled;
+
+    // Special handling for select elements
+    if (field.tagName === 'SELECT' && !field.disabled) {
+        field.focus();
+    } else if (!field.disabled) {
+        field.focus();
+    }
+}
+function toggleAddressEdit() {
+    const fieldIds = ['street', 'city', 'province'];
+
+    fieldIds.forEach(id => {
+        const field = document.getElementById(id);
+        if (field) {
+            field.disabled = !field.disabled;
+        }
+    });
+}
 
 
 function openModal() {
@@ -109,8 +133,6 @@ function initalData(storageId) {
 
 function saveStorageData(storageId) {
     const lastCleanedInput = document.getElementById('lastCleaned').value;
-    console.log(lastCleanedInput);
-    // Convert to ISO string (PostgreSQL-friendly)
 
     const data = {
         title: document.getElementById('storageName').textContent.trim(),
@@ -121,7 +143,6 @@ function saveStorageData(storageId) {
             ? `${lastCleanedInput}:00`
             : null,
         storageType: parseInt(document.getElementById('storageTypeSelect').value)
-        // photo would be handled separately 
     };
 
     fetch(`/manage/storage?storageId=${storageId}`, {

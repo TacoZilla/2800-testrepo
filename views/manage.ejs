@@ -1,29 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <title>Community Fridge</title>
-
-
-    <!-- Link to style sheet -->
-    <link rel="stylesheet" href="/css/app.css">
-    <link rel="stylesheet" href="/css/manage.css">
-
-    <!-- <link rel="stylesheet" href="./css/contents.css"> -->
-
-</head>
-
-<body>
-
-    <!-- Navbar go here -->
-    <header>
-        <img id="header-logo" src="/img/becoolgs.png" />
-        <div id="header-menu" class="material-icons">menu</div>
-    </header>
-
+<%-include('partials/header')%>
     <!-- Icon tool bar placeholder -->
     <div id="tab-nav">
         <div class="tab" id="tab-contents"><span class="material-icons">route</span></div>
@@ -43,10 +18,10 @@
             </div>
         </div>
         <div class="section">
-            <label>Storage Type:</label>
+            <label id="storagetypeLabel">Storage Type:</label>
             <div class="field-group">
                 <span id="storageType">
-                    <%= storage.storagetype===1 ? 'Community Fridge' : 'Community Pantry' %>
+                    <%= storage.storageType===1 ? 'Fridge' : 'Pantry' %>
                 </span>
                 <select id="storageTypeSelect" disabled>
                     <option value="1" <%=storage.storageType==1 ? 'selected' : '' %>>Community Fridge</option>
@@ -88,8 +63,7 @@
             <div class="field-group">
 
                 <input type="datetime-local" id="lastCleaned"
-                    value="<%= storage.lastCleaned ? storage.lastCleaned.toISOString().slice(0, 16) : '' %>"
-                    disabled />
+                    value="<%= storage.lastCleaned ? storage.lastCleaned.toISOString().slice(0, 16) : '' %>" disabled />
                 <button class="edit-btn" onclick="toggleEdit('lastCleaned')">
                     <span class="material-icons" class="edit-icon">edit</span></button>
             </div>
@@ -107,12 +81,10 @@
 
                 <!--preview container -->
                 <div id="photoPreview" style=" <%= storage.image ? '' : 'display: none;' %>">
-                    <% if (storage.imgage) { %>
-                        <img id="previewImage" src="<%= storage.image %>" alt="Preview"
+                    <% if (storage.image) { %>
+                        <img id="previewImage" src="<%=storage.image%>" alt="Preview"
                             style="max-width: 200px; max-height: 200px;">
-                        <% } else { %>
-                            <img id="previewImage" src="#" alt="Preview" style="max-width: 200px; max-height: 200px;">
-                            <% } %>
+                        <% } %>
                 </div>
             </div>
         </div>
@@ -135,35 +107,4 @@
         </div>
     </div>
     </div>
-    <!-- Script for Modal -->
-    <script>
-        function toggleEdit(fieldId) {
-            const field = document.getElementById(fieldId);
-            field.disabled = !field.disabled;
-
-            // Special handling for select elements
-            if (field.tagName === 'SELECT' && !field.disabled) {
-                field.focus();
-            } else if (!field.disabled) {
-                field.focus();
-            }
-        }
-        function toggleAddressEdit() {
-            const fieldIds = ['street', 'city', 'province'];
-
-            fieldIds.forEach(id => {
-                const field = document.getElementById(id);
-                if (field) {
-                    field.disabled = !field.disabled;
-                }
-            });
-        }
-
-    </script>
-    <script src="/js/manage.js"></script>
-
-
-
-</body>
-
-</html>
+<%-include('partials/footer')%>
