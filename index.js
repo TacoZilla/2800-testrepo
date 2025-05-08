@@ -11,10 +11,10 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 const config = {
-    user: process.env.USER,
-    password: process.env.PASSWORD,
-    host: process.env.HOST,
-    port: process.env.DBPORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
     database: process.env.DATABASE,
     ssl: {
         rejectUnauthorized: true,
@@ -49,6 +49,12 @@ app.get("/", function (req, res) {
     res.send(doc);
 })
 
+// Route for landing page pre-login
+app.get("/createAccount", function (req, res) {
+    let doc = fs.readFileSync("./html/create_account.html", "utf8");
+    res.send(doc);
+})
+
 // Route for about page
 app.get("/about", function (req, res) {
     let doc = fs.readFileSync("./html/about.html", "utf8");
@@ -63,8 +69,10 @@ app.get("/login", function (req, res) {
 
 // Route for browse page
 app.get("/browse", function (req, res) {
-    let doc = fs.readFileSync("./html/browse.html", "utf8");
-    res.send(doc);
+    res.render("browse", {
+        stylesheets: ["browse.css"],
+        scripts: ["profile.js"],
+    });
 })
 
 // Route for contents page
@@ -123,6 +131,8 @@ app.post("/logout", function (req, res) {
 });
 
 require('./api')(app);
+require('./authentication')(app);
+
 
 // Page not found
 app.use(function (req, res, next) {
