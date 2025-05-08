@@ -59,4 +59,34 @@ module.exports = function (app) {
         });
 
     });
+
+    app.post('/api/donate', (req, res) => {
+        let storageId = req.query.ID;
+        let data = req.body;
+        let sql = 'INSERT INTO "content" ("storageId", "itemName", "quantity", "bbd") VALUES '
+        let items = [];
+        for (let i = 0; i < data.length; i++) {
+            let info = data[i];
+            let str = "(" + info.storageId + ", '" + info.itemName + "', " + info.quantity + ", '" + info.bbd + "')";
+            items.push(str);
+        }
+        sql += items + ';';
+
+        const client = new pg.Client(config);
+        client.connect((err) => {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            client.query(sql, (error, results) => {
+                if (error) {
+                    console.log(sql);
+                    res.send({status: "fail", msg: "Unable to add item to DB"})
+                }
+                else {
+                    res.send({status: "success", msg: "Item added to DB"})
+                }
+            })
+        })
+    });
 };

@@ -1,73 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>BeCool</title>
-        <link rel="stylesheet" href="/css/app.css" />
-        <link rel="stylesheet" href="/css/contents.css" />
-    </head>
-    <body>
-        <header>
-            <img id="header-logo" src="/img/becoolgs.png" />
-            <div id="header-menu" class="material-icons">menu</div>
-        </header>
-        <div id="tab-nav">
-            <div class="tab" id="tab-contents"><span class="material-icons">route</span></div>
-            <div class="tab selected" id="tab-contents"><span class="material-icons">shelves</span></div>
-            <div class="tab" id="tab-contents"><span class="material-icons">settings</span></div>
-            <div class="tab" id="tab-contents"><span class="material-icons">reviews</span></div>
-        </div>
-        <main>
-            <div id="title">
-                <div id="title-name">Kerrisdale</div>
-                <hr />
-                <div id="title-type">Community Fridge</div>
-            </div>
-            <div id="contents">
-                <table>
-                    <tr>
-                        <th>Qty</th>
-                        <th>Item</th>
-                        <th>BBD</th>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td>Apples</td>
-                        <td>2023-10-15</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Bananas</td>
-                        <td>2023-10-20</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Carrots</td>
-                        <td>2023-10-25</td>
-                    </tr>
-                    <tr></tr>
-                    <tr></tr>
-                    <tr></tr>
-                    <tr></tr>
-                    <tr></tr>
-                    <tr></tr>
-                    <tr></tr>
-                    <tr></tr>
 
-                </table>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BeCool</title>
+    <link rel="stylesheet" href="/css/app.css" />
+    <link rel="stylesheet" href="/css/contents.css" />
+    <link rel="stylesheet" href="/css/contents-modal.css" />
+    <!-- Bootstrap Library CSS CDN go here -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Boostrap Library JS CDN  go here -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <header>
+        <img id="header-logo" src="/img/becoolgs.png" />
+        <div id="header-menu" class="material-icons">menu</div>
+    </header>
+    <div id="tab-nav">
+        <div class="tab" id="tab-contents"><span class="material-icons">route</span></div>
+        <div class="tab selected" id="tab-contents"><span class="material-icons">shelves</span></div>
+        <div class="tab" id="tab-contents"><span class="material-icons">settings</span></div>
+        <div class="tab" id="tab-contents"><span class="material-icons">reviews</span></div>
+    </div>
+    <main>
+        <div id="title">
+            <div id="title-name">Kerrisdale</div>
+            <hr />
+            <div id="title-type">Community Fridge</div>
+        </div>
+        <div id="contents">
+            <table>
+                <tr>
+                    <th>Qty</th>
+                    <th>Item</th>
+                    <th>BBD</th>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Apples</td>
+                    <td>2023-10-15</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Bananas</td>
+                    <td>2023-10-20</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Carrots</td>
+                    <td>2023-10-25</td>
+                </tr>
+                <tr></tr>
+                <tr></tr>
+                <tr></tr>
+                <tr></tr>
+                <tr></tr>
+                <tr></tr>
+                <tr></tr>
+                <tr></tr>
+
+            </table>
+        </div>
+        <div id="buttons">
+            <button name="donate-item" value="donate-item" id="open-modal">Donate</button>
+            <button name="take-item" value="take-item">Take</button>
+        </div>
+        <div id="contact">
+            <div class="material-icons">account_circle</div>
+            <div>
+                <div>Last cleaned: <span id="clean-date">May 5th 2025</span></div>
+                <div>Contact the <span id="contact-type">fridge</span> manager</div>
             </div>
-            <div id="buttons">
-                <button name="donate-item" value="donate-item">Donate</button>
-                <button name="take-item" value="take-item">Take</button>
-            </div>
-            <div id="contact">
-                <div class="material-icons">account_circle</div>
-                <div>
-                    <div>Last cleaned: <span id="clean-date">May 5th 2025</span></div>
-                    <div>Contact the <span id="contact-type">fridge</span> manager</div>
+        </div>
+    </main>
+    <div>
+        <div id="contentsmodal" class="modal">
+            <div class="modal-content">
+                <div id="donateheader">
+                    <h3>Donate item</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        id="close-modal"></button>
+                </div>
+                <div class="item-name-input">
+                    <!-- <label for="itemName">Enter item name</label> -->
+                    <input type="text" id="itemName" placeholder="Enter item name" />
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="qty">Quantity:</label>
+                        <div class="qty-input">
+                            <!-- <button onclick="changeQty(-1)"></button> -->
+                            <input type="number" id="qty" value="0" min="0" />
+                            <!-- <button onclick="changeQty(1)"></button> -->
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="bbd-gr">
+                        <label for="bbd">Best Before Date:</label>
+                        <input type="date" id="bbd" />
+                    </div>
+                </div>
+
+                <button id="addItem">Add Item</button>
+                <div id="itempreview">
+                    <p><strong>Items for donation:</strong></p>
+                    <ul id="donationList">
+                    </ul>
+                </div>
+                <div class="modal-actions">
+                    <button id="modal-cancel">Cancel</button>
+                    <button id="donate-btn">Donate</button>
                 </div>
             </div>
-        </main>
-    </body>
+        </div>
+    </div>
+    <script src="/js/donate.js" type="module"></script>
+</body>
+
 </html>
