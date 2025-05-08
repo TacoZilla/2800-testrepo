@@ -1,5 +1,6 @@
 const express = require("express");
 const session = require("express-session");
+const pgSession = require('connect-pg-simple')(session);
 const bcrypt = require("bcrypt");
 const fs = require("fs");
 const pg = require("pg");
@@ -10,10 +11,10 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 const config = {
-    user: process.env.USER,
-    password: process.env.PASSWORD,
-    host: process.env.HOST,
-    port: process.env.DBPORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
     database: process.env.DATABASE,
     ssl: {
         rejectUnauthorized: true,
@@ -21,7 +22,9 @@ const config = {
     }
 }
 
-const client = new pg.Client(config);
+const pgPool = new pg.Pool(config);
+
+app.set('view engine', 'ejs');
 
 // Isabel code
 // client.connect()
@@ -37,7 +40,11 @@ app.use("/css", express.static(__dirname + "/css"));
 app.use("/img", express.static(__dirname + "/img"));
 
 app.use(session({
-    secret: "ed14ad73-6cf4-433e-83bc-93411dfdc2c5",
+    secret: process.env.SESSION_SECRET,
+    store: new pgSession ({
+        pool: pgPool,
+        tableName: 'sessions'
+    }),
     resave: false,
     saveUninitialized: true
 }))
@@ -45,6 +52,12 @@ app.use(session({
 // Route for landing page pre-login
 app.get("/", function (req, res) {
     let doc = fs.readFileSync("./html/index.html", "utf8");
+    res.send(doc);
+})
+
+// Route for landing page pre-login
+app.get("/createAccount", function (req, res) {
+    let doc = fs.readFileSync("./html/create_account.html", "utf8");
     res.send(doc);
 })
 
@@ -62,8 +75,10 @@ app.get("/login", function (req, res) {
 
 // Route for browse page
 app.get("/browse", function (req, res) {
-    let doc = fs.readFileSync("./html/browse.html", "utf8");
-    res.send(doc);
+    res.render("browse", {
+        stylesheets: ["browse.css"],
+        scripts: ["profile.js"],
+    });
 })
 
 // Route for contents page
@@ -138,6 +153,9 @@ app.post("/logout", function (req, res) {
         });
     }
 });
+
+require('./api')(app);
+require('./authentication')(app);
 
 
 // Page not found

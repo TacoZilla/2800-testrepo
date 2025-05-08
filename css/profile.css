@@ -1,209 +1,97 @@
-
-
-body {
-    margin: 0px;
-    padding: 0px;
-    font-family: miracode;
-    height: 100%;
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 20px;
 }
 
-#emptynav { 
-    margin: 0px; 
-    border: solid rgba(84, 84, 84, 0.579) 1px;
-    height: 120px; 
-    background-color: rgb(246, 246, 246);
+button {
+    height: 20px;
+    width: 75px;
+    border-radius: 10px;
+    border: none;
+    background-color: var(--pink-accent);
+    color: var(--pink-light);
+    font-size: 0.8em;
+    font-weight: bold;
+    padding: 0 10px;
 }
 
-#infosec {
-    margin-left: 30px;
-    margin-right: 30px;
-    margin-top: 0px; 
-    border: solid rgba(84, 84, 84, 0.579) 1px;
-    height: 200px;
-    width: calc(100% - 60px); 
-    background-color: rgb(246, 246, 246);
-    
+button:hover {
+    background-color: var(--pink-dark);
+    cursor: pointer;
+}
+
+#user-section {
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: -20px;
+}
+
+#user-section-left {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.container {
+    padding: 5px 15px;
+    padding-bottom: 15px;
+    width: 90%;
+    background-color: var(--blue-light);
+    border-radius: 15px;
 }
 
 #locationinform {
-    margin-left: 30px;
-    margin-right: 30px;
-    margin-top: 20px; 
-    border: solid rgba(84, 84, 84, 0.579) 1px;
-    height: 75px;
-    background-color: rgb(246, 246, 246); 
-   
-}
-
-#locationinform p {
-    margin-top: 5px;
-    margin-left: 5px;
-    margin-bottom: 0px;
-    color: rgba(0, 0, 0, 0.664);
-
-}
-
-#locationinform small {
-    font-size: 10px;
-    color: rgba(0, 0, 0, 0.568);;
-}
-
-#locdiv {
-  
-    height: calc(100% - 38px);
-    text-wrap: inherit;
-    margin-left: 15px;
-    
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 10px;
+    background-color: var(--pink-medium);
+    color: var(--pink-dark);
+    padding: 5% 10%;
 }
 
 #myreviews {
-    margin-left: 30px;
-    margin-right: 30px;
-    margin-top: 20px; 
-    border: solid rgba(84, 84, 84, 0.579) 1px;
     height: 175px;
-    background-color: rgb(246, 246, 246);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
+
 #addsec {
-    margin-left: 30px;
-    margin-right: 30px;
-    margin-top: 20px; 
-    border: solid rgba(84, 84, 84, 0.579) 1px;
-    height: 200px;
-    background-color: rgb(246, 246, 246);
-}
-
-#addsec p {
-    margin: 0px;
-    margin-left: 5px;
-    margin-top: 5px;
-    color: rgba(0, 0, 0, 0.664);
-}
-
-#infosec p {
-    color: rgba(0, 0, 0, 0.664);
-    margin: 10px;
-    font-size: 20px;
-
+    height: 100px;
 }
 
 #infoform {
-    
-    margin-left: 10px;
-    margin-right: 20px; 
-    font-size: 10px; 
-    color: rgba(0, 0, 0, 0.664);
+    margin-left: 15px;
+    margin-right: 20px;
+    font-size: 10px;
     width: calc(100% - 20px);
 }
 
 #infoform input {
-    width: calc(100% - 10px); 
-    height: 10px;
+    width: calc(100% - 10px);
+    height: 20px;
 }
 
 #notifs {
     margin-top: 10px;
+    width: calc(100% - 30px);
+
     display: flex;
-    justify-content: baseline;
+    justify-content: space-between;
     align-items: center;
     color: rgba(0, 0, 0, 0.664);
+    justify-self: center;
 }
 
-#notifs input {
-    margin-left: 10px; 
-    margin-right: 10px;
-    cursor:pointer;
- 
-    
+#expandrev {
+    align-self: flex-end;
 }
-
-#notifs small {
-    font-size: 11px;
-}
-
-#notifs button {
-    margin-left: calc(100% - 230px);
-    height: 20px;
-    border-radius: 10px;
-    border: 1px solid rgba(84, 84, 84, 0.579);
-    color: rgba(0, 0, 0, 0.664);
-}
-
-#notifs button:hover {
-    margin-left: calc(100% - 230px);;
-    height: 20px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.771);
-    color: rgb(0, 0, 0);
-    cursor: pointer;
-    background-color: rgb(146, 191, 209);
-}
-
-#pfpflex {
-    display: flex;
-    
-    margin-left: 30px;
-    margin-right: 30px;
-    margin-bottom: 0px;
-    height: 55px;
-    align-items: center;
-}
-
-#pfpflex p {
-    margin-left: 10px;
-}
-
-#pfpflex button:hover {
-    margin-left:  calc(100% - 190px);;;
-    height: 20px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.771);
-    color: rgb(0, 0, 0);
-    background-color: rgb(146, 191, 209);
-    cursor: pointer;
-}
-
-#pfpflex button {
-    margin-left: calc(100% - 190px);;
-    height: 20px;
-    border-radius: 10px;
-    border: 1px solid rgba(84, 84, 84, 0.579);
-    color: rgba(0, 0, 0, 0.664);
-}
-
-
-#image-placeholder {
-    width: 45px; 
-    height: 45px; 
-    border-radius: 15px; 
-    background-color: rgba(200, 200, 200, 0.5); 
-    border: 1px solid rgba(84, 84, 84, 0.579);
-    
-}
-
-#myreviews p {
-    margin-top: 5px;
-    margin-left: 5px;
-    margin-bottom: 0px;
-    color: rgba(0, 0, 0, 0.664);
-
-}
-
-#expandrev { 
-    position: relative; 
-    top: 60%; 
-    left: calc(100% - 65px);
-    cursor: pointer;
-}
-
-/* #expandrev { 
-    position: relative; 
-    top: 60%; 
-    left: calc(100% - 65px);
-    cursor: pointer;
-} */
-
-
-/* #image-placeholder image {
-
-} */
