@@ -69,8 +69,10 @@ app.get("/login", function (req, res) {
 
 // Route for browse page
 app.get("/browse", function (req, res) {
-    let doc = fs.readFileSync("./html/browse.html", "utf8");
-    res.send(doc);
+    res.render("browse", {
+        stylesheets: ["browse.css"],
+        scripts: ["profile.js"],
+    });
 })
 
 // Route for contents page
@@ -130,6 +132,7 @@ app.post("/logout", function (req, res) {
 
 require('./api')(app);
 require('./authentication')(app);
+
 
 // Page not found
 app.use(function (req, res, next) {

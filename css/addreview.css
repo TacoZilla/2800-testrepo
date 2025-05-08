@@ -1,0 +1,135 @@
+/* Modal background */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+}
+
+/* Modal box */
+.modal-content {
+    background: #fff;
+    padding: 1.5em;
+    border-radius: 8px;
+    width: 95vw;
+    font-size: 18pt;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Header */
+#reviewHeader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 0.5rem;
+    border-bottom: 1px solid #ccc;
+}
+#reviewHeader h3 {
+    margin: 0;
+    flex: 1;
+    text-align: center;
+    font-size: 22pt;
+}
+
+#reviewHeader .btn-close {
+    position: absolute;
+    right: 1rem;
+    top: 0.5rem;
+}
+
+
+/* Form layout */
+.form-group {
+    margin: 1em 0;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5em;
+    font-weight: bold;
+    font-size: 14pt;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #CEDDF1;
+    border-radius: 4px;
+    font-size: 14pt;
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* Two-column row */
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+/* Buttons */
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5em;
+    gap: 20px;
+}
+
+.modal-actions button {
+    flex: 1;
+    background-color: #F0F3FF;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14pt;
+    cursor: pointer;
+}
+
+/* Mobile responsive */
+@media (max-width: 430px) {
+    .modal-content {
+        width: 95vw;
+        height: 80vh;
+        padding: 1em;
+        margin: 1em;
+        font-size: 16pt;
+    }
+
+    h3 {
+        font-size: 16pt;
+    }
+    .form-group{
+        margin: 0.5em;
+    }
+    .form-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+        gap: 10px;
+        padding-top: 10px;
+        margin-top: 0;
+    }
+    .modal-actions button {
+        width: 100%;
+    }
+}
