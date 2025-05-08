@@ -23,12 +23,18 @@ const config = {
 
 const client = new pg.Client(config);
 
+// Isabel code
+// client.connect()
+//     .then(()=> console.log("connected to postgrs"))
+//     .catch(err => console.error("oopsie", err.stack));
+//
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/js", express.static(__dirname + "./js"));
-app.use("/css", express.static(__dirname + "./css"));
-app.use("/img", express.static(__dirname + "./img"));
+app.use("/js", express.static(__dirname + "/js"));
+app.use("/css", express.static(__dirname + "/css"));
+app.use("/img", express.static(__dirname + "/img"));
 
 app.use(session({
     secret: "ed14ad73-6cf4-433e-83bc-93411dfdc2c5",
