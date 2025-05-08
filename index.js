@@ -108,6 +108,24 @@ app.get("/new", function (req, res) {
     res.send(doc);
 })
 
+
+
+//Isabel API
+app.get("/api/reviews", async (req, res) => {
+    try {
+        const result = await client.query(`
+        SELECT r.*, u.username FROM reviews r
+        JOIN users u ON r.userId = u.userId
+        WHERE r.deletedDate IS NULL
+        ORDER BY r.createdAt DESC
+      `);
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Failed to fetch reviews");
+    }
+});
+
 // Logout user and destroys current session
 app.post("/logout", function (req, res) {
     if (req.session) {
@@ -120,6 +138,7 @@ app.post("/logout", function (req, res) {
         });
     }
 });
+
 
 // Page not found
 app.use(function (req, res, next) {
