@@ -4,6 +4,7 @@ async function initialize(){
     const heroContainer = document.querySelector("#hero-card-container");
     const mainContainer = document.querySelector("#main-card-container");
     const cards = await getCards();
+    console.log(cards);
     if(cards.length > 0){
         let hero = selectHero(cards);
         heroContainer.innerHTML = hero;

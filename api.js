@@ -41,12 +41,11 @@ module.exports = function (app) {
                     client.end();
                     return;
                 }
-                console.log(results)
                 try {
                     // Map each row to a promise that renders the template
                     const renderedCards = await Promise.all(
                         results.rows.map((row) => {
-                            ejs.renderFile("views/partials/storage-card.ejs", { row });
+                            return ejs.renderFile("views/partials/storage-card.ejs", { row });
                         })
                     );
                     // Send the array of rendered HTML
