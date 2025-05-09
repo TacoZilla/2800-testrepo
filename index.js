@@ -71,7 +71,7 @@ app.get("/login", function (req, res) {
 app.get("/browse", function (req, res) {
     res.render("browse", {
         stylesheets: ["browse.css"],
-        scripts: ["profile.js"],
+        scripts: [],
     });
 })
 

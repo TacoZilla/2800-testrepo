@@ -9,6 +9,9 @@
     justify-content: baseline;
     align-items: center;
     font-size: 1.1em;
+    position: sticky;
+    top: var(--header-height);
+    z-index: 9;
 }
 
 #location-bar .material-icons {
@@ -50,9 +53,11 @@
 
 .card-background {
     position: absolute;
-    top: -60%;
+    top: 50%;
+    transform: translateY(-50%);
     width: 60%;
-    background-size: cover;
+    min-height: 100%;
+    object-fit: cover;
     background-position: center;
     filter: opacity(50%);
 }
@@ -111,9 +116,12 @@
 
 .card-title {
     font-size: 1.3em;
+    height: 1.3em;
+
     font-weight: bold;
     color: var(--blue-dark);
     margin-bottom: -2px;
+    overflow: hidden;
 }
 
 .card-storage-type {
@@ -167,7 +175,7 @@
     gap: 10px;
 }
 
-#filters button {
+.filter-button {
     width: 80px;
     height: 25px;
     padding: 6px 12px;
@@ -176,11 +184,24 @@
     color: var(--pink-accent);
     font-weight: 700;
     border-radius: 20px;
+    transition: background-color 0.2s ease-in, color 0.2s ease-in;
 }
 
-#filters .active {
+.filter-button:hover{
+    cursor: pointer;
+}
+
+.filter-button.active {
     background-color: var(--pink-accent);
     color: var(--pink-light);
+}
+
+.card-container.filter-fridge .storage-card.pantry{
+    display: none;
+}
+
+.card-container.filter-pantry .storage-card.fridge{
+    display: none;
 }
 
 #map-toggle-container{

@@ -1,11 +1,14 @@
+const {getDistance} = require("./js/userLocation");
+const bcrypt = require("bcrypt");
 const fs = require("fs");
 const pg = require("pg");
-const ejs = require('ejs');
+const ejs = require("ejs");
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const express = require('express');
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
+const saltRounds = 12;
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -27,18 +30,39 @@ const config = ({
 
 module.exports = function (app) {
     app.get('/api/browse', (req, res) => {
+
+
         const client = new pg.Client(config);
         client.connect((err) => {
             if (err) {
                 console.log(err);
                 return;
             }
-            client.query("SELECT * FROM public.storage", (error, results) => {
+            client.query("SELECT * FROM public.storage", async (error, results) => {
                 if (error) {
                     console.log(error);
+                    client.end();
+                    return;
                 }
-                res.render('browse', results.rows);
-                client.end();
+                try {
+                    const lat = parseFloat(req.query.lat);
+                    const lon = parseFloat(req.query.lon);
+                    // Map each row to a promise that renders the template
+                    const renderedCards = await Promise.all(
+                        results.rows.map((row) => {
+                            let distance = getDistance(lat, lon, parseFloat(row.coordinates.x), parseFloat(row.coordinates.y));
+                            distance = distance.toFixed(1);
+                            return ejs.renderFile("views/partials/storage-card.ejs", { row, distance });
+                        })
+                    );
+                    // Send the array of rendered HTML
+                    res.json(renderedCards);
+                } catch (err) {
+                    console.error("Template rendering error:", err);
+                    res.status(500).json({ error: "Failed to render templates" });
+                } finally {
+                    client.end();
+                }
             });
         });
     });
