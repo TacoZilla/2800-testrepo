@@ -35,6 +35,7 @@
     --blue-accent: #89c4da;
     --blue-dark: #142e4b;
     --blue-text: #4279b8;
+    --header-height: 100px;
 }
 
 html,
@@ -55,30 +56,6 @@ body {
 }
 
 /*#endregion GLOBALS */
-
-/*#region HEADER */
-
-header {
-    height: 100px;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--blue-accent);
-    padding-left: 20px;
-    padding-right: 20px;
-}
-
-#header-logo {
-    height: 40%;
-}
-
-#header-menu {
-    font-size: 60px;
-    color: var(--pink-light);
-}
-
-/*#endregion HEADER */
 
 .hidden {
     display: none;

@@ -1,0 +1,32 @@
+<%- include('partials/header') %>
+
+<section id="location-bar">
+    <span class="material-icons">location_on</span>
+    <span>Current Location:&nbsp;</span>
+    <span id="location-bar-location"> Granville</span>
+</section>
+
+<div class="top-pick-title">Top Pick Near You!</div>
+
+<section id="hero-card-container" class="card-container">
+</section>
+
+<section id="filters">
+    <div id="filter-buttons">
+        <button class="filter-button active" name="all">All</button>
+        <button class="filter-button" name="fridge">Fridges</button>
+        <button class="filter-button" name="pantry">Pantries</button>
+    </div>
+    <div id="map-toggle-container">
+        <div class="material-icons map-icon">map</div>
+        <label class="toggle">
+            <input type="checkbox" />
+            <span class="slider"></span>
+        </label>
+    </div>
+</section>
+<section id="main-card-container" class="card-container">
+</section>
+<div class="spacer"></div>
+<script type="module" src="../js/browse.js"></script>
+<%- include('partials/footer')%>

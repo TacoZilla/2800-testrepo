@@ -4,10 +4,10 @@ const pg = require("pg");
 const fs = require("fs");
 
 const config = ({
-    user: process.env.USER,
-    password: process.env.PASSWORD,
-    host: process.env.HOST,
-    port: process.env.DBPORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
     database: process.env.DATABASE,
     ssl: {
         rejectUnauthorized: true,
@@ -62,7 +62,7 @@ module.exports = function (app) {
                 console.log(err);
                 return;
             }
-            client.query(`SELECT * FROM "users" WHERE users.email = $1`, [email], (error, results) => {
+            client.query(`SELECT * FROM "users" WHERE users.email = $1`, [email], async (error, results) => {
 
                 if (error) {
 
@@ -76,15 +76,14 @@ module.exports = function (app) {
                     return;
                 }
 
-                let invalidPassword = true;
-                if (bcrypt.compare(password, results.rows[0].password)) {
-                    invalidPassword = false;
-                }
+                let validPassword = await bcrypt.compare(password, results.rows[0].password);
 
-                if (invalidPassword) {
+                if (!validPassword) {
                     res.send({ status: 'fail', msg: 'Invalid password' });
                     return;
                 }
+
+                console.log(validPassword);
 
                 req.session.authenticated = true;
                 req.session.userId = results.rows[0]["userId"];

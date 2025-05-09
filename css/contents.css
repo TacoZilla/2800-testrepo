@@ -117,3 +117,31 @@ tr {
     justify-content: left;
     align-items: center;
 }
+
+#main-contents {
+    display: block;
+}
+
+#map-content {
+    display: none;
+    height: 100%;
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+#donationList {
+    width: 80%;
+    border-collapse: collapse;
+    margin: 0 auto;
+    font-size: 0.9em;
+    color: var(--blue-dark);
+}
+
+#donationList > th, tr {
+    text-align: left;
+    height: 2em;
+    border-bottom: 1px solid var(--blue-medium);
+}

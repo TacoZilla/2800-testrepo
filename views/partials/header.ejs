@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BeCool</title>
+    <link rel="icon" type="image/x-icon" href="/img/becoolfavicon.ico" />
+    <link rel="stylesheet" href="/css/app.css" />
+    <link rel="stylesheet" href="/css/header.css" />
+    <% if (typeof stylesheets !== "undefined") { 
+        for(let stylesheet of stylesheets) { %>
+            <link rel="stylesheet" href="/css/<%-stylesheet%>" />
+    <% } 
+    } if(typeof scripts !== "undefined") { 
+        for(let script of scripts) { %>
+            <script src="/js/<%-script%>" defer></script>
+    <% } 
+    }%>
+    <%
+    if (typeof other !== "undefined") { 
+        for(let o of other) { %>
+            <%- o %>
+    <% } 
+    }%>
+    <script src="/js/header.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <a href="/"><img id="header-logo" src="/img/becoolgs.png" /></a>
+        <div id="header-menu-button" class="material-icons">menu</div>
+        <div id="header-menu">
+            <div id="header-menu-options">
+                <a href="/profile" class="header-menu-option">
+                    <span>Account</span>
+                    <span class="material-icons">person</span>
+                </a>
+                <a href="/about" class="header-menu-option">
+                    <span>About Us</span>
+                    <span class="material-icons">info</span>
+                </a>
+                <a href="/logout" class="header-menu-option">
+                    <span>Log Out</span>
+                    <span class="material-icons">logout</span>
+                </a>
+            </div>
+        </div>
+    </header>
