@@ -67,8 +67,8 @@ module.exports = function (app) {
         });
     });
 
-    app.get('/api/contents', (req, res) => {
-        let storageID = req.query.id;
+    app.get('/api/contents/:id', (req, res) => {
+        let storageID = req.params.id;
         const client = new pg.Client(config);
         client.connect((err) => {
             if (err) {
@@ -99,7 +99,7 @@ module.exports = function (app) {
     });
 
     app.post('/api/donate', (req, res) => {
-        let storageId = req.query.ID;
+        // let storageId = req.query.ID;
         let data = req.body;
         let sql = 'INSERT INTO "content" ("storageId", "itemName", "quantity", "bbd") VALUES '
         let items = [];

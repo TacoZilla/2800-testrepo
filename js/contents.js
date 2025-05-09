@@ -1,8 +1,8 @@
+const itemsToDonate = [];
+const storageId = window.location.pathname.substring(10);
+
 async function getRows() {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const storageId = urlParams.get('ID');
-    let rows = await fetch(`/api/contents?ID=${storageId}`);
+    let rows = await fetch(`/api/contents/${storageId}`);
     return rows.json();
 }
 
@@ -34,11 +34,6 @@ function ajaxPOST(url, callback, data) {
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(data);
 }
-
-const itemsToDonate = [];
-const queryString = window.location.search;
-const urlParams = new URLSearchParams(queryString);
-const storageId = urlParams.get('ID');
 
 document.querySelector('#open-modal').addEventListener('click', function (e) {
     document.getElementById('contentsmodal').style.display = 'flex';

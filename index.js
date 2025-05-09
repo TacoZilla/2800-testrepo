@@ -41,7 +41,7 @@ app.use(session({
     }),
     resave: false,
     saveUninitialized: true
-}))
+}));
 
 // Route for landing page pre-login
 app.get("/", function (req, res) {
@@ -76,8 +76,8 @@ app.get("/browse", function (req, res) {
 })
 
 // Route for contents page
-app.get("/contents", function (req, res) {
-    let storageID = req.query.id;
+app.get("/contents/:id", function (req, res) {
+    let storageID = req.params.id;
     const client = new pg.Client(config);
     client.connect((err) => {
         if (err) {
