@@ -1,5 +1,5 @@
 const itemsToDonate = [];
-const storageId = window.location.pathname.substring(10);
+const storageId = window.location.pathname.split("/")[2];
 
 async function getRows() {
     let rows = await fetch(`/api/contents/${storageId}`);

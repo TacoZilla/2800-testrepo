@@ -18,7 +18,7 @@ function getFridgePosition(fridgeId) {
 }
 
 function switchMapView() {
-    const storageId = window.location.pathname.substring(10);
+    const storageId = window.location.pathname.split("/")[2];
     const apixhr = new XMLHttpRequest();
     apixhr.open("GET", "/gmapkey");
     apixhr.onreadystatechange = function () {
