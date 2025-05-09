@@ -1,0 +1,30 @@
+<div class="review">
+    <div class="review-header">
+        <div class="review-header-left">
+            <img class="review-header-avatar" src="/img/avatar.jpeg" alt="profile picture" />
+            <div>
+                <div class="review-header-username"><%= row.userId %></div>
+                <div class="review-header-date"><%= new Date(row.createdAt).toDateString() %></div>
+            </div>
+        </div>
+        <div class="review-header-right">
+            <span class="review-action">report</span>
+        </div>
+    </div>
+    <div class="review-title"><%= row.title %></div>
+    <div class="review-rating">
+        <% for (let i = 0; i < 5; i++) { %>
+            <span class="star material-icons">
+                <%= i < row.rating ? 'star' : 'star_border' %>
+            </span>
+        <% } %>
+    </div>
+    <div class="review-body">
+        <% if (row.imageurl) { %>
+            <img src="<%= row.imageurl %>" class="review-image" />
+        <% } else { %>
+            <img src="/img/fridge1.png" class="review-image" />
+        <% } %>
+        <div class="review-text"><%= row.body %></div>
+    </div>
+</div>

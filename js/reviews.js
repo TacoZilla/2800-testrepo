@@ -48,3 +48,55 @@ function updateReadMoreButton() {
         }
     });
 }
+
+// add review modal scripts
+function openModal() {
+    document.getElementById("reviewModal").style.display = "flex";
+}
+
+function closeModal() {
+    document.getElementById("reviewModal").style.display = "none";
+}
+//isabel
+
+function saveReviewData(userId, storageId) {
+    const title = document.getElementById("reviewTitle");
+    const body = document.getElementById("reviewText");
+    const rating = document.getElementById("reviewStars");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("submit").addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        const review = {
+            title: document.getElementById("reviewTitle").value.trim(),
+            body: document.getElementById("reviewText").value.trim(),
+            rating: parseInt(document.getElementById("reviewRating").value.trim(), 10),
+        };
+        console.log(review.body);
+        try {
+            const res = await fetch(`/reviews?storageId=1`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(review),
+            });
+            if (res.ok) {
+                alert("Review submitted!");
+                //loadReviews();
+            } else {
+                alert("Failed to submit review.");
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    });
+    // loadReviews();
+});
+
+getReviews();
+async function getReviews() {
+    let response = await fetch("api/reviews");
+    let reviews = await response.text(); 
+    document.getElementById('reviews-container').innerHTML = reviews;
+}
