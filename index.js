@@ -54,8 +54,15 @@ app.use(session({
 
 // Route for landing page pre-login
 app.get("/", function (req, res) {
-    let doc = fs.readFileSync("./html/index.html", "utf8");
-    res.send(doc);
+    if(session.authenticated){
+        res.redirect("/browse");
+    }
+    else{
+        res.render("index", {
+            stylesheets: ["index.css"],
+            scripts: [],
+        });
+    }
 })
 
 // Route for landing page pre-login
