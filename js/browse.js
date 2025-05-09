@@ -1,3 +1,5 @@
+import {getUserLocation, getDistance} from "./userLocation.js";
+
 initialize();
 
 async function initialize(){
@@ -30,7 +32,8 @@ function setupFilterButtons(){
 }
 
 async function getCards() {
-    const response = await fetch("/api/browse");
+    let location = await getUserLocation();
+    const response = await fetch(`/api/browse?lat=${location.lat}&lon=${location.lon}`);
     if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
     }

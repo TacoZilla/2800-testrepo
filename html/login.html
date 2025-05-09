@@ -20,18 +20,20 @@
                 <h1>Login</h1>
 
                 <label for="email">Email</label>
-                <input id="email" type="email" required="required" placeholder="Email" />
+                <input id="login-email" type="email" required="required" placeholder="Email" />
 
                 <label for="password">Password</label>
-                <input id="password" type="password" required="required" placeholder="Password" />
+                <input id="login-password" type="password" required="required" placeholder="Password" />
 
-                <input type="button" value="Login" id="submit" />
+                <input type="button" value="Login" id="login-submit" />
+                <p class="hidden" id="errormsg">Highlighted fields cannot be empty.</p>
                 <div id="links">
                     <p id="forgotP"><a href="#">Forgot Login?</a></p>
-                    <p id="notMemberP"><a href="/create_account.html">Create Account</a></p>
+                    <p id="notMemberP"><a href="/createAccount">Create Account</a></p>
                 </div>
             </form>
         </div>
         <div class="spacer"></div>
+        <script src="/js/authentication-client.js"></script>
     </body>
 </html>
