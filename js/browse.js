@@ -56,7 +56,6 @@ async function loadCards() {
         }
     }
     else {
-        //TODO: we need a "nothing to show" message to appear on browse
         console.log("No fridges to show.");
     }
 }

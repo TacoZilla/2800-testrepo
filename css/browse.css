@@ -53,9 +53,11 @@
 
 .card-background {
     position: absolute;
-    top: -60%;
+    top: 50%;
+    transform: translateY(-50%);
     width: 60%;
-    background-size: cover;
+    min-height: 100%;
+    object-fit: cover;
     background-position: center;
     filter: opacity(50%);
 }
