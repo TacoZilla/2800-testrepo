@@ -218,7 +218,7 @@ input[type="datetime-local"] {
 
 .modal-content {
     background: white;
-    width: 50%;
+    width: 90%;
     height: contain;
     padding: 20px 10px;
     border-radius: 10px;

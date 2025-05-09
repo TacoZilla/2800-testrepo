@@ -81,8 +81,8 @@
 
                 <!--preview container -->
                 <div id="photoPreview" style=" <%= storage.image ? '' : 'display: none;' %>">
-                    <% if (storage.image) { %>
-                        <img id="previewImage" src="<%=storage.image%>" alt="Preview"
+                    <% if (typeof storage.image != 'undefined') { %>
+                        <img id="previewImage" src="<%=storage.image ? storage.image : '#' %> " alt="Preview"
                             style="max-width: 200px; max-height: 200px;">
                         <% } %>
                 </div>

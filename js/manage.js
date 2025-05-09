@@ -44,15 +44,25 @@ document.addEventListener('DOMContentLoaded', function () {
                     alert('Image must be less than 5MB');
                     return;
                 }
-
                 const reader = new FileReader();
-                reader.onload = function (e) {
-                    previewImage.src = e.target.result;
-                    photoPreview.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
 
-                uploadPhoto(file, storageId);
+                reader.onload = function (e) {
+                    if (e.target && e.target.result) {
+                        previewImage.src = e.target.result;
+                        photoPreview.style.display = 'block';
+                        uploadPhoto(file, storageId);
+                    } else {
+                        console.error("FileReader result is null");
+                        alert("Failed to preview image.");
+                    }
+                };
+        
+                reader.onerror = function (error) {
+                    console.error("FileReader error:", error);
+                    alert("Error reading file.");
+                };
+        
+                reader.readAsDataURL(file);
             }
         });
 
@@ -73,14 +83,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 const result = await response.json();
                 alert('Photo uploaded successfully!');
 
-                document.getElementById('previewImage').src = result.image;
+                console.log('result after upload',result);
 
+                if(!result.image){
+                    document.getElementById('previewImage').src = '#';
+
+                } else {
+                document.getElementById('previewImage').src = result.image;
+                }
             } catch (error) {
                 console.error('Upload error:', error);
                 alert('Error uploading photo: ' + error.message);
                 photoPreview.style.display = 'none';
             }
-
         }
     }
 });
@@ -96,6 +111,7 @@ function toggleEdit(fieldId) {
         field.focus();
     }
 }
+
 function toggleAddressEdit() {
     const fieldIds = ['street', 'city', 'province'];
 
@@ -107,7 +123,6 @@ function toggleAddressEdit() {
     });
 }
 
-
 function openModal() {
     document.getElementById('deleteModal').style.display = 'flex';
 }
@@ -115,7 +130,6 @@ function openModal() {
 function closeModal() {
     document.getElementById('deleteModal').style.display = 'none';
 }
-
 
 function initalData(storageId) {
     // Save button click handler
