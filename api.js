@@ -1,12 +1,11 @@
-const bcrypt = require("bcrypt");
 const fs = require("fs");
 const pg = require("pg");
+const ejs = require('ejs');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const express = require('express');
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
-const saltRounds = 12;
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -53,21 +52,56 @@ module.exports = function (app) {
                 return;
             }
             client.query(`
-                SELECT s."storageType", s."title", s."street", s."city", s."province", s."image", s."lastCleaned", s."coordinates", 
-                c."contentId", c."itemName", c."quantity", c."bbd" 
-                FROM public.storage AS s 
-                JOIN public.content AS c ON s."storageId" = c."storageId" 
-                WHERE s."storageId" = $1`, [storageID], (error, results) => {
+                SELECT 
+                c."contentId", c."itemName", c."quantity", to_char(c."bbd", 'Mon dd, yyyy') AS bbd
+                FROM public.content AS c
+                WHERE c."storageId" = $1`, [storageID], async (error, results) => {
                 if (error) {
                     console.log(error);
                     client.end();
                     return;
                 }
-                res.render('contents', results.rows);
+                const renderedRows = await Promise.all(
+                    results.rows.map((row) => {
+                        return ejs.renderFile("views/partials/content-rows.ejs", {row});
+                    })
+                );
+                
+                res.json(renderedRows)
                 client.end();
             });
         });
 
+    });
+
+    app.post('/api/donate', (req, res) => {
+        let storageId = req.query.ID;
+        let data = req.body;
+        let sql = 'INSERT INTO "content" ("storageId", "itemName", "quantity", "bbd") VALUES '
+        let items = [];
+        for (let i = 0; i < data.length; i++) {
+            let info = data[i];
+            let str = "(" + info.storageId + ", '" + info.itemName + "', " + info.quantity + ", '" + info.bbd + "')";
+            items.push(str);
+        }
+        sql += items + ';';
+
+        const client = new pg.Client(config);
+        client.connect((err) => {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            client.query(sql, (error, results) => {
+                if (error) {
+                    console.log(sql);
+                    res.send({status: "fail", msg: "Unable to add item to DB"})
+                }
+                else {
+                    res.send({status: "success", msg: "Item added to DB"})
+                }
+            })
+        })
     });
 
 

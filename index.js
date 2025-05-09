@@ -35,7 +35,7 @@ app.use("/img", express.static(__dirname + "/img"));
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
-    store: new pgSession ({
+    store: new pgSession({
         pool: pgPool,
         tableName: 'sessions'
     }),
@@ -77,8 +77,29 @@ app.get("/browse", function (req, res) {
 
 // Route for contents page
 app.get("/contents", function (req, res) {
-    let doc = fs.readFileSync("./html/contents.html", "utf8");
-    res.send(doc);
+    let storageID = req.query.ID;
+    const client = new pg.Client(config);
+    client.connect((err) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        client.query(`
+                    SELECT s."storageType", s."title", s."lastCleaned" 
+                    FROM public.storage AS s 
+                    WHERE s."storageId" = $1`, [storageID], async (error, results) => {
+            if (error) {
+                console.log(error);
+                client.end();
+                return;
+            }
+            let type = results.rows[0].storageType;
+            let title = results.rows[0].title;
+            let lastCleaned = results.rows[0].lastCleaned;
+            res.render("contents", {type: type, title: title, lastCleaned: lastCleaned});
+        });
+    })
+
 })
 
 // Route for directions page
