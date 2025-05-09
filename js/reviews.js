@@ -1,5 +1,3 @@
-//const { response } = require("express");
-
 registerEventListeners();
 
 function registerEventListeners() {
@@ -61,7 +59,6 @@ function closeModal() {
 }
 //isabel
 
-// save review data to pgadmin?
 function saveReviewData(userId, storageId) {
     const title = document.getElementById("reviewTitle");
     const body = document.getElementById("reviewText");

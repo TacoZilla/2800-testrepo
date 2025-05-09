@@ -135,33 +135,6 @@ app.get("/new", function (req, res) {
     res.send(doc);
 })
 
-
-// app.get("/api/reviews", async (req, res) => {
-//     const userId = 1;
-//     //if (!userId) return res.status(401).send('Not logged in');
-  
-//     const {storageId} = req.query;
-//     const { title, body, rating} = req.body;
-//     //const photo = req.file ? `/uploads/${req.file.filename}` : null;
-  
-//     const client = new pg.Client(config);
-//     client.connect();
-
-//     try {
-//         const result = await client.query(`
-//             SELECT "reviewId", "userId", "storageId", "rating", "title", "body", "createdAt"
-//             FROM reviews
-//             WHERE "deletedDate" IS NULL
-//             ORDER BY "createdAt" DESC
-//         `);
-//         res.json(result.rows);
-//     } catch (err) {
-//         console.error(err);
-//         res.status(500).json({ error: "Failed to fetch reviews" });
-//     }
-//     client.end();
-// });
-
 app.post('/reviews', async (req, res) => {
     const userId = 1;
     //if (!userId) return res.status(401).send('Not logged in');

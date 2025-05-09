@@ -261,41 +261,6 @@ module.exports = function (app) {
     });
     // isabel put ur code here
 
-    // app.get('/api/reviews', (req, res) => {
-    //     const client = new pg.Client(config);
-    //     client.connect((err) => {
-    //         if (err) {
-    //             console.log(err);
-    //             return;
-    //         }
-    //         client.query(
-    //             "SELECT * FROM public.reviews", async (error, results) => {
-    //                 if (error) {
-    //                     console.log(error);
-    //                     client.end();
-    //                     return;
-    //                 }
-    //                 console.log(results)
-    //                 try {
-    //                     // Map each row to a promise that renders the template
-    //                     const renderedCards = await Promise.all(
-    //                         results.rows.map(row =>
-    //                             ejs.renderFile("views/partials/review-card.ejs", { row })
-    //                         )
-    //                     );
-    //                     // Send the array of rendered HTML
-    //                     res.json(renderedCards);
-    //                 } catch (err) {
-    //                     console.error("Template rendering error:", err);
-    //                     res.status(500).json({ error: "Failed to render templates" });
-    //                 } finally {
-    //                     client.end();
-    //                 }
-    //             });
-    //     });
-    // });
-
-    // api.js
     app.get('/api/reviews', (req, res) => {
         console.log("isabel")
         const client = new pg.Client(config);
@@ -331,7 +296,6 @@ module.exports = function (app) {
         });
     });
 
-    //end isabel
 };
 
 
