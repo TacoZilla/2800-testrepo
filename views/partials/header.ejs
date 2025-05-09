@@ -8,13 +8,19 @@
     <link rel="icon" type="image/x-icon" href="/img/becoolfavicon.ico" />
     <link rel="stylesheet" href="/css/app.css" />
     <link rel="stylesheet" href="/css/header.css" />
-    <% if (stylesheets) { 
+    <% if (typeof stylesheets !== "undefined") { 
         for(let stylesheet of stylesheets) { %>
             <link rel="stylesheet" href="/css/<%-stylesheet%>" />
     <% } 
-    } if(scripts) { 
+    } if(typeof scripts !== "undefined") { 
         for(let script of scripts) { %>
             <script src="/js/<%-script%>" defer></script>
+    <% } 
+    }%>
+    <%
+    if (typeof other !== "undefined") { 
+        for(let o of other) { %>
+            <%- o %>
     <% } 
     }%>
     <script src="/js/header.js" defer></script>

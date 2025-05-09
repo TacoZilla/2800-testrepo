@@ -54,10 +54,10 @@ app.use(session({
 
 // Route for landing page pre-login
 app.get("/", function (req, res) {
-    if(session.authenticated){
+    if (session.authenticated) {
         res.redirect("/browse");
     }
-    else{
+    else {
         res.render("index", {
             stylesheets: ["index.css"],
             scripts: [],
@@ -93,6 +93,10 @@ app.get("/browse", function (req, res) {
 
 // Route for contents page
 app.get("/contents/:id", function (req, res) {
+    let css = ["contents.css", "contents-modal.css"];
+    let js = ["contents.js", "locational.js"];
+    let other = [`<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">`, `<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>`]
     let storageID = req.params.id;
     const client = new pg.Client(config);
     client.connect((err) => {
@@ -112,7 +116,7 @@ app.get("/contents/:id", function (req, res) {
             let type = results.rows[0].storageType;
             let title = results.rows[0].title;
             let lastCleaned = results.rows[0].lastCleaned;
-            res.render("contents", {type: type, title: title, lastCleaned: lastCleaned});
+            res.render("contents", { type: type, title: title, lastCleaned: lastCleaned, stylesheets: css, scripts: js, other: other});
         });
     })
 
@@ -139,9 +143,10 @@ app.get("/manage", function (req, res) {
 ///route for reviews
 app.get("/reviews", function (req, res) {
     res.render("reviews", {
-        stylesheets: ["reviews.css"],
+        stylesheets: ["reviews.css", "contents.css", "addreview.css"],
         scripts: ["reviews.js"],
-
+        other: [`<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">`, `<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>`]
     });
 })
 
@@ -166,29 +171,29 @@ app.get("/new", function (req, res) {
 app.post('/reviews', async (req, res) => {
     const userId = 1;
     //if (!userId) return res.status(401).send('Not logged in');
-  
-    const {storageId} = req.query;
-    const { title, body, rating} = req.body;
+
+    const { storageId } = req.query;
+    const { title, body, rating } = req.body;
     //const photo = req.file ? `/uploads/${req.file.filename}` : null;
-  
+
     const client = new pg.Client(config);
     client.connect();
 
     try {
-      await client.query(`
+        await client.query(`
         INSERT INTO public.reviews 
        ( "userId", "storageId", "title", "body", "rating", "createdAt")
         VALUES ($1, $2, $3, $4, $5, NOW())
         RETURNING *
       `, [userId, storageId, title, body, rating]);
-      res.redirect('/reviews');
+        res.redirect('/reviews');
     } catch (err) {
-      console.error(err);
-      res.status(500).send("Error saving review");
+        console.error(err);
+        res.status(500).send("Error saving review");
     } finally {
         await client.end();
     }
-  });
+});
 
 //isabel
 app.get('/reviews', (req, res) => {

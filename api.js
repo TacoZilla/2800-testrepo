@@ -350,8 +350,8 @@ module.exports = function (app) {
     });
 
 
-    app.get("/storageloc", async (req, res) => {
-        const storageId = req.query.id;
+    app.get("/storageloc/:id", async (req, res) => {
+        const storageId = req.params.id;
         const client = new pg.Client(config);
         await client.connect();
         const seperate = await client.query(`
