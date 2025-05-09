@@ -1,8 +1,6 @@
-const bcrypt = require("bcrypt");
 const fs = require("fs");
 const pg = require("pg");
-
-const saltRounds = 12;
+const ejs = require('ejs');
 
 const config = ({
     user: process.env.USER,
@@ -43,17 +41,22 @@ module.exports = function (app) {
                 return;
             }
             client.query(`
-                SELECT s."storageType", s."title", s."street", s."city", s."province", s."image", s."lastCleaned", s."coordinates", 
-                c."contentId", c."itemName", c."quantity", c."bbd" 
-                FROM public.storage AS s 
-                JOIN public.content AS c ON s."storageId" = c."storageId" 
-                WHERE s."storageId" = $1`, [storageID], (error, results) => {
+                SELECT 
+                c."contentId", c."itemName", c."quantity", to_char(c."bbd", 'Mon dd, yyyy') AS bbd
+                FROM public.content AS c
+                WHERE c."storageId" = $1`, [storageID], async (error, results) => {
                 if (error) {
                     console.log(error);
                     client.end();
                     return;
                 }
-                res.render('contents', results.rows);
+                const renderedRows = await Promise.all(
+                    results.rows.map((row) => {
+                        return ejs.renderFile("views/partials/content-rows.ejs", {row});
+                    })
+                );
+                
+                res.json(renderedRows)
                 client.end();
             });
         });

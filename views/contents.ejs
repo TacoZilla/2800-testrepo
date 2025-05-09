@@ -30,41 +30,22 @@
     </div>
     <main>
         <div id="title">
-            <div id="title-name">Kerrisdale</div>
+            <div id="title-name"><%=title%></div>
             <hr />
-            <div id="title-type">Community Fridge</div>
+            <% if (type == 1) { %>
+                <div id="title-type">Community Fridge</div>
+            <% } else { %>
+                <div id="title-type">Community Pantry</div>
+            <% } %>
+            
         </div>
         <div id="contents">
-            <table>
+            <table id="content-rows">
                 <tr>
                     <th>Qty</th>
                     <th>Item</th>
                     <th>BBD</th>
                 </tr>
-                <tr>
-                    <td>5</td>
-                    <td>Apples</td>
-                    <td>2023-10-15</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Bananas</td>
-                    <td>2023-10-20</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Carrots</td>
-                    <td>2023-10-25</td>
-                </tr>
-                <tr></tr>
-                <tr></tr>
-                <tr></tr>
-                <tr></tr>
-                <tr></tr>
-                <tr></tr>
-                <tr></tr>
-                <tr></tr>
-
             </table>
         </div>
         <div id="buttons">
@@ -74,7 +55,7 @@
         <div id="contact">
             <div class="material-icons">account_circle</div>
             <div>
-                <div>Last cleaned: <span id="clean-date">May 5th 2025</span></div>
+                <div>Last cleaned: <span id="clean-date"><%=lastCleaned%></span></div>
                 <div>Contact the <span id="contact-type">fridge</span> manager</div>
             </div>
         </div>
@@ -111,8 +92,13 @@
                 <button id="addItem">Add Item</button>
                 <div id="itempreview">
                     <p><strong>Items for donation:</strong></p>
-                    <ul id="donationList">
-                    </ul>
+                    <table id="donationList">
+                        <tr>
+                            <th>Qty</th>
+                            <th>Item</th>
+                            <th>BBD</th>
+                        </tr>
+                    </table>
                 </div>
                 <div class="modal-actions">
                     <button id="modal-cancel">Cancel</button>
@@ -121,15 +107,7 @@
             </div>
         </div>
     </div>
-    <script src="/js/donate.js" type="module"></script>
+    <script src="/js/contents.js"></script>
 </body>
 
 </html>
-
-<table>
-    <tr>
-        <th>
-            
-        </th>
-    </tr>
-</table>

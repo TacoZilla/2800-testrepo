@@ -1,3 +1,25 @@
+async function getRows() {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const storageId = urlParams.get('ID');
+    let rows = await fetch(`/api/contents?ID=${storageId}`);
+    return rows.json();
+}
+
+async function loadRows() {
+    let table = document.getElementById("content-rows");
+    let rows = await getRows();
+    if (rows.length > 0) {
+        for (let row of rows) {
+            let rowHTML = document.createElement('tr');
+            rowHTML.innerHTML = row.trim();
+            table.appendChild(rowHTML);
+        }
+    } else {
+        console.log("fridge is empty");
+    }
+} loadRows();
+
 function ajaxPOST(url, callback, data) {
     const xhr = new XMLHttpRequest();
     xhr.onload = function () {
@@ -24,13 +46,15 @@ document.querySelector('#open-modal').addEventListener('click', function (e) {
 
 function resetValues() {
     let list = document.getElementById('donationList');
-    let name = document.getElementById('itemName');
     let qty = document.getElementById('qty');
+    let name = document.getElementById('itemName');
     let bbd = document.getElementById('bbd');
     name.value = "";
     qty.value = "0";
     bbd.value = "";
-    list.innerHTML = "";
+    while (2 <= list.rows.length) {
+        list.deleteRow(1);
+    }
     itemsToDonate.length = 0;
 }
 
@@ -48,16 +72,22 @@ document.querySelector('#addItem').addEventListener('click', function (e) {
     let name = document.getElementById('itemName');
     let qty = document.getElementById('qty');
     let bbd = document.getElementById('bbd');
-    let data = "Item: " + name.value + " Qty: " + qty.value + " BBD: " + bbd.value;
 
     let donateItem = {"storageId": storageId, "itemName": name.value, "quantity": qty.value, "bbd": bbd.value};
     itemsToDonate.push(donateItem);
 
     const list = document.getElementById('donationList');
-    let item = document.createElement('li');
-    item.textContent = data;
+    let itemName = document.createElement('td');
+    let itemQty = document.createElement('td');
+    let itemBBD = document.createElement('td');
+    itemName.textContent = name.value;
+    itemQty.textContent = qty.value;
+    itemBBD.textContent = bbd.value;
+    let item = document.createElement('tr');
+    item.appendChild(itemName);
+    item.appendChild(itemQty);
+    item.appendChild(itemBBD);
     list.appendChild(item);
-    console.log(itemsToDonate);
 });
 
 document.querySelector('#donate-btn').addEventListener('click', function (e) {
@@ -70,7 +100,13 @@ document.querySelector('#donate-btn').addEventListener('click', function (e) {
             if (parsedData.status == "fail") {
                 alert(parsedData.msg);
             } else {
-                alert(parsedData.msg);
+                let table = document.getElementById('content-rows');
+                while (2 <= table.rows.length) {
+                    table.deleteRow(1);
+                }
+                loadRows();
+                resetValues();
+                document.getElementById('contentsmodal').style.display = 'none';
             }
         }
     }, items)

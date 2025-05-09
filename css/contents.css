@@ -117,3 +117,17 @@ tr {
     justify-content: left;
     align-items: center;
 }
+
+#donationList {
+    width: 80%;
+    border-collapse: collapse;
+    margin: 0 auto;
+    font-size: 0.9em;
+    color: var(--blue-dark);
+}
+
+#donationList > th, tr {
+    text-align: left;
+    height: 2em;
+    border-bottom: 1px solid var(--blue-medium);
+}
