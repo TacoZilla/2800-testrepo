@@ -1,5 +1,4 @@
 const {getDistance} = require("./js/userLocation");
-const bcrypt = require("bcrypt");
 const fs = require("fs");
 const pg = require("pg");
 const ejs = require("ejs");
@@ -8,7 +7,6 @@ const cloudinary = require('cloudinary').v2;
 const express = require('express');
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
-const saltRounds = 12;
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -153,10 +151,10 @@ module.exports = function (app) {
             if (storage.lastCleaned) {
                 storage.lastCleaned = new Date(storage.lastCleaned);
             }
-            res.render('manage', { 
-                storage, 
+            res.render('manage', {
+                storage,
                 stylesheets: ["manage.css"],
-                scripts: ["manage.js"] 
+                scripts: ["manage.js"]
             });
         } catch (error) {
             console.error("Error fetching storage:", error);
@@ -255,19 +253,19 @@ module.exports = function (app) {
 
         try {
             await client.connect();
-            
+
             //delete old image
             try {
-            const existing = await client.query(
-                `SELECT "imgPublicId" FROM public.storage WHERE "storageId" = $1`,
-                [storageId]
-              );
-              
-              const oldPublicId = existing.rows[0]?.imgPublicId;
-              
-              if (oldPublicId) {
-                await cloudinary.uploader.destroy(oldPublicId);
-              }
+                const existing = await client.query(
+                    `SELECT "imgPublicId" FROM public.storage WHERE "storageId" = $1`,
+                    [storageId]
+                );
+
+                const oldPublicId = existing.rows[0]?.imgPublicId;
+
+                if (oldPublicId) {
+                    await cloudinary.uploader.destroy(oldPublicId);
+                }
             } catch (error) {
                 console.error('Delete on the cloudinary error:', error);
                 res.status(500).json({ error: 'Server error' });
@@ -315,6 +313,42 @@ module.exports = function (app) {
         }
 
     });
+    // isabel put ur code here
+
+    app.get('/api/reviews', (req, res) => {
+        const client = new pg.Client(config);
+        client.connect((err) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send("DB connection error");
+            }
+
+            client.query(
+                `SELECT * FROM public.reviews WHERE "deletedDate" IS NULL ORDER BY "createdAt" DESC`,
+                async (error, results) => {
+                    if (error) {
+                        console.error(error);
+                        return res.status(500).send("Query error");
+                    }
+
+                    try {
+                        const renderedCards = await Promise.all(
+                            results.rows.map(row =>
+                                ejs.renderFile("views/partials/review-card.ejs", { row })
+                            )
+                        );
+                        res.send(renderedCards.join("")); // Send HTML string
+                    } catch (err) {
+                        console.error("Template rendering error:", err);
+                        res.status(500).send("Template rendering error");
+                    } finally {
+                        client.end();
+                    }
+                }
+            );
+        });
+    });
+
 
     app.get("/storageloc", async (req, res) => {
         const storageId = req.query.id;

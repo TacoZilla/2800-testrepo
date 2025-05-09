@@ -5,7 +5,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BeCool</title>
+    <link rel="icon" type="image/x-icon" href="/img/becoolfavicon.ico" />
     <link rel="stylesheet" href="/css/app.css" />
+    <link rel="stylesheet" href="/css/header.css" />
     <% if (stylesheets) { 
         for(let stylesheet of stylesheets) { %>
             <link rel="stylesheet" href="/css/<%-stylesheet%>" />
@@ -20,7 +22,7 @@
 
 <body>
     <header>
-        <img id="header-logo" src="/img/becoolgs.png" />
+        <a href="/"><img id="header-logo" src="/img/becoolgs.png" /></a>
         <div id="header-menu-button" class="material-icons">menu</div>
         <div id="header-menu">
             <div id="header-menu-options">

@@ -26,6 +26,13 @@ const pgPool = new pg.Pool(config);
 
 app.set('view engine', 'ejs');
 
+
+// Isabel code
+// client.connect()
+//     .then(()=> console.log("connected to postgrs"))
+//     .catch(err => console.error("oopsie", err.stack));
+//
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -43,10 +50,19 @@ app.use(session({
     saveUninitialized: true
 }));
 
+
+
 // Route for landing page pre-login
 app.get("/", function (req, res) {
-    let doc = fs.readFileSync("./html/index.html", "utf8");
-    res.send(doc);
+    if(session.authenticated){
+        res.redirect("/browse");
+    }
+    else{
+        res.render("index", {
+            stylesheets: ["index.css"],
+            scripts: [],
+        });
+    }
 })
 
 // Route for landing page pre-login
@@ -115,9 +131,18 @@ app.get("/manage", function (req, res) {
 })
 
 // Route for reviews page
+// app.get("/reviews", function (req, res) {
+//     let doc = fs.readFileSync("./html/reviews.html", "utf8");
+//     res.send(doc);
+// })
+
+///route for reviews
 app.get("/reviews", function (req, res) {
-    let doc = fs.readFileSync("./html/reviews.html", "utf8");
-    res.send(doc);
+    res.render("reviews", {
+        stylesheets: ["reviews.css"],
+        scripts: ["reviews.js"],
+
+    });
 })
 
 // Route for profile page
@@ -137,6 +162,40 @@ app.get("/new", function (req, res) {
     let doc = fs.readFileSync("./html/create_new.html", "utf8");
     res.send(doc);
 })
+
+app.post('/reviews', async (req, res) => {
+    const userId = 1;
+    //if (!userId) return res.status(401).send('Not logged in');
+  
+    const {storageId} = req.query;
+    const { title, body, rating} = req.body;
+    //const photo = req.file ? `/uploads/${req.file.filename}` : null;
+  
+    const client = new pg.Client(config);
+    client.connect();
+
+    try {
+      await client.query(`
+        INSERT INTO public.reviews 
+       ( "userId", "storageId", "title", "body", "rating", "createdAt")
+        VALUES ($1, $2, $3, $4, $5, NOW())
+        RETURNING *
+      `, [userId, storageId, title, body, rating]);
+      res.redirect('/reviews');
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Error saving review");
+    } finally {
+        await client.end();
+    }
+  });
+
+//isabel
+app.get('/reviews', (req, res) => {
+    res.render("reviews");
+});
+
+//end
 
 // Logout user and destroys current session
 app.post("/logout", function (req, res) {
