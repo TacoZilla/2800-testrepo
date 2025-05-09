@@ -8,6 +8,8 @@ const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 const saltRounds = 12;
 
+const ejs = require("ejs");
+
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_CLOUD_KEY,
