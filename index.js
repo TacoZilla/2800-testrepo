@@ -132,6 +132,7 @@ app.post("/logout", function (req, res) {
 
 require('./api')(app);
 require('./authentication')(app);
+require('./create_manageStorage')(app);
 
 
 // Page not found

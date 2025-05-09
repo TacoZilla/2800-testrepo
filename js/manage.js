@@ -145,7 +145,7 @@ function initalData(storageId) {
 }
 
 
-function saveStorageData(storageId) {
+async function saveStorageData(storageId) {
     const lastCleanedInput = document.getElementById('lastCleaned').value;
 
     const data = {
@@ -159,7 +159,7 @@ function saveStorageData(storageId) {
         storageType: parseInt(document.getElementById('storageTypeSelect').value)
     };
 
-    fetch(`/manage/storage?storageId=${storageId}`, {
+    await fetch(`/manage/storage?storageId=${storageId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
