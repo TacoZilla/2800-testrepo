@@ -95,10 +95,10 @@ module.exports = function (app) {
             if (storage.lastCleaned) {
                 storage.lastCleaned = new Date(storage.lastCleaned);
             }
-            res.render('manage', { 
-                storage, 
+            res.render('manage', {
+                storage,
                 stylesheets: ["manage.css"],
-                scripts: ["manage.js"] 
+                scripts: ["manage.js"]
             });
         } catch (error) {
             console.error("Error fetching storage:", error);
@@ -197,19 +197,19 @@ module.exports = function (app) {
 
         try {
             await client.connect();
-            
+
             //delete old image
             try {
-            const existing = await client.query(
-                `SELECT "imgPublicId" FROM public.storage WHERE "storageId" = $1`,
-                [storageId]
-              );
-              
-              const oldPublicId = existing.rows[0]?.imgPublicId;
-              
-              if (oldPublicId) {
-                await cloudinary.uploader.destroy(oldPublicId);
-              }
+                const existing = await client.query(
+                    `SELECT "imgPublicId" FROM public.storage WHERE "storageId" = $1`,
+                    [storageId]
+                );
+
+                const oldPublicId = existing.rows[0]?.imgPublicId;
+
+                if (oldPublicId) {
+                    await cloudinary.uploader.destroy(oldPublicId);
+                }
             } catch (error) {
                 console.error('Delete on the cloudinary error:', error);
                 res.status(500).json({ error: 'Server error' });
@@ -257,6 +257,79 @@ module.exports = function (app) {
         }
 
     });
+    // isabel put ur code here
+
+    // app.get('/api/reviews', (req, res) => {
+    //     const client = new pg.Client(config);
+    //     client.connect((err) => {
+    //         if (err) {
+    //             console.log(err);
+    //             return;
+    //         }
+    //         client.query(
+    //             "SELECT * FROM public.reviews", async (error, results) => {
+    //                 if (error) {
+    //                     console.log(error);
+    //                     client.end();
+    //                     return;
+    //                 }
+    //                 console.log(results)
+    //                 try {
+    //                     // Map each row to a promise that renders the template
+    //                     const renderedCards = await Promise.all(
+    //                         results.rows.map(row =>
+    //                             ejs.renderFile("views/partials/review-card.ejs", { row })
+    //                         )
+    //                     );
+    //                     // Send the array of rendered HTML
+    //                     res.json(renderedCards);
+    //                 } catch (err) {
+    //                     console.error("Template rendering error:", err);
+    //                     res.status(500).json({ error: "Failed to render templates" });
+    //                 } finally {
+    //                     client.end();
+    //                 }
+    //             });
+    //     });
+    // });
+
+    // api.js
+    app.get('/api/reviews', (req, res) => {
+        console.log("isabel")
+        const client = new pg.Client(config);
+        client.connect((err) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send("DB connection error");
+            }
+
+            client.query(
+                `SELECT * FROM public.reviews WHERE "deletedDate" IS NULL ORDER BY "createdAt" DESC`,
+                async (error, results) => {
+                    if (error) {
+                        console.error(error);
+                        return res.status(500).send("Query error");
+                    }
+
+                    try {
+                        const renderedCards = await Promise.all(
+                            results.rows.map(row =>
+                                ejs.renderFile("views/partials/review-card.ejs", { row })
+                            )
+                        );
+                        res.send(renderedCards.join("")); // Send HTML string
+                    } catch (err) {
+                        console.error("Template rendering error:", err);
+                        res.status(500).send("Template rendering error");
+                    } finally {
+                        client.end();
+                    }
+                }
+            );
+        });
+    });
+
+    //end isabel
 };
 
 
