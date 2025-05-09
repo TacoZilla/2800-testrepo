@@ -83,6 +83,9 @@ document.querySelector('#addItem').addEventListener('click', function (e) {
     itemName.textContent = name.value;
     itemQty.textContent = qty.value;
     itemBBD.textContent = bbd.value;
+    name.value = "";
+    qty.value = "0";
+    bbd.value = "";
     let item = document.createElement('tr');
     item.appendChild(itemName);
     item.appendChild(itemQty);
