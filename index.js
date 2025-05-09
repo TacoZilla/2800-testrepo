@@ -77,7 +77,7 @@ app.get("/browse", function (req, res) {
 
 // Route for contents page
 app.get("/contents", function (req, res) {
-    let storageID = req.query.ID;
+    let storageID = req.query.id;
     const client = new pg.Client(config);
     client.connect((err) => {
         if (err) {

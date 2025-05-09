@@ -68,7 +68,7 @@ module.exports = function (app) {
     });
 
     app.get('/api/contents', (req, res) => {
-        let storageID = req.query.ID;
+        let storageID = req.query.id;
         const client = new pg.Client(config);
         client.connect((err) => {
             if (err) {

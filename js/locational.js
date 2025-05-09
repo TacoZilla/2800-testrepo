@@ -20,7 +20,7 @@ function getFridgePosition(fridgeId) {
 
 function switchMapView() {
     let params = new URLSearchParams(window.location.search);
-     let storageId = 7; //params.get("id");
+    let storageId = params.get("id");
 const apixhr = new XMLHttpRequest();
 apixhr.open("GET", "/gmapkey");
 apixhr.onreadystatechange = function() {

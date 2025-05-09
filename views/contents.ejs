@@ -23,12 +23,12 @@
         <div id="header-menu" class="material-icons">menu</div>
     </header>
     <div id="tab-nav">
-        <div class="tab" id="tab-contents"><span class="material-icons">route</span></div>
+        <div class="tab" id="tab-contents" onclick="switchMapView()"><span class="material-icons">route</span></div>
         <div class="tab selected" id="tab-contents"><span class="material-icons">shelves</span></div>
         <div class="tab" id="tab-contents"><span class="material-icons">settings</span></div>
         <div class="tab" id="tab-contents"><span class="material-icons">reviews</span></div>
     </div>
-    <main>
+    <main id="main-contents">
         <div id="title">
             <div id="title-name"><%=title%></div>
             <hr />
@@ -60,6 +60,11 @@
             </div>
         </div>
     </main>
+     <div id="map-content">
+            <iframe id="map" src=""></iframe>
+            <button id="maps-btn" onclick="openMap()"> Directions in Google Maps</button>
+
+        </div>
     <div>
         <div id="contentsmodal" class="modal">
             <div class="modal-content">
@@ -108,6 +113,8 @@
         </div>
     </div>
     <script src="/js/contents.js"></script>
+    <script src="/js/locational.js"></script>
+    
 </body>
 
 </html>
