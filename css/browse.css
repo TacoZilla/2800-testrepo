@@ -45,6 +45,7 @@
     background-color: var(--blue-light);
     position: relative;
     overflow: hidden;
+    display: block;
 }
 
 .storage-card.hero {

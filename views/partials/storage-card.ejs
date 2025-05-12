@@ -1,4 +1,4 @@
-<div class="storage-card">
+<a href="contents/<%= row.storageId %>" class="storage-card">
     <%if(row.image) {%>
     <img src="<%= "/img/" + row.image%>" class="card-background" />
     <% }%>
@@ -26,4 +26,4 @@
             </span>
         </div>
     </div>
-</div>
+</a>

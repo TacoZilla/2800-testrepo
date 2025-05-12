@@ -313,7 +313,6 @@ module.exports = function (app) {
         }
 
     });
-    // isabel put ur code here
 
     app.get('/api/reviews', (req, res) => {
         const client = new pg.Client(config);
