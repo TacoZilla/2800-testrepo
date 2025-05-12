@@ -1,0 +1,70 @@
+<%- include('partials/header') %>
+<div id="body-container">
+    <div class="title-container">
+        <div class="header-title">
+            <h2>Create New Storage</h2>
+            <br>
+        </div>
+
+
+
+    </div>
+
+    <div class="type-toggle">
+        <button id="fridgeBtn" class="type-btn active" onclick="selectType('fridge')">Fridge</button>
+        <button id="pantryBtn" class="type-btn" onclick="selectType('pantry')">Pantry</button>
+      </div>
+
+    <div class="section">
+        <label>Name:</label>
+        <div class="field-group">
+            <input type="text" id="locationname" placeholder="Enter name"  />
+            
+        </div>
+    </div>
+
+    <div class="section">
+        <label>Address:</label>
+        <div class="field-group">
+            <input type="text" id="address" placeholder="Enter address" />
+        </div>
+    </div>
+
+
+    <div class="section">
+        <label>Upload cover photo:</label>
+        <div class="photo-box">
+            <button class="upload-btn"><span class="material-icons" class="upload-icon">upload</span></button>
+        </div>
+    </div>
+
+    <div class="section">
+        <label>Description:</label>
+        <div class="field-group">
+            <input type="text" id="description" placeholder="Enter Message"  />
+                       
+        </div>
+    </div>
+
+    <div class="actions">
+        <button class="cre-back-btn">Back</button>
+        <button class="cre-save-btn">Save</button>
+    </div>
+</div>
+    <!-- Script for toggle fridge/pantry button -->
+    <script>
+        function selectType(type) {
+          const fridgeBtn = document.getElementById('fridgeBtn');
+          const pantryBtn = document.getElementById('pantryBtn');
+      
+          if (type === 'fridge') {
+            fridgeBtn.classList.add('active');
+            pantryBtn.classList.remove('active');
+          } else {
+            pantryBtn.classList.add('active');
+            fridgeBtn.classList.remove('active');
+          
+        }
+    }
+      </script>
+<%- include('partials/footer') %>

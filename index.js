@@ -67,20 +67,26 @@ app.get("/", function (req, res) {
 
 // Route for landing page pre-login
 app.get("/createAccount", function (req, res) {
-    let doc = fs.readFileSync("./html/create_account.html", "utf8");
-    res.send(doc);
+    res.render("create_account", {
+        stylesheets: ["login.css"],
+        scripts: ["authentication-client.js"],
+    });
 })
 
 // Route for about page
 app.get("/about", function (req, res) {
-    let doc = fs.readFileSync("./html/about.html", "utf8");
-    res.send(doc);
+    res.render("about", {
+        stylesheets: ["about.css"],
+        scripts: [],
+    });
 })
 
 // Route for login page
 app.get("/login", function (req, res) {
-    let doc = fs.readFileSync("./html/login.html", "utf8");
-    res.send(doc);
+    res.render("login", {
+        stylesheets: ["login.css"],
+        scripts: ["authentication-client.js"],
+    });
 })
 
 // Route for browse page
@@ -134,12 +140,6 @@ app.get("/manage", function (req, res) {
     res.send(doc);
 })
 
-// Route for reviews page
-// app.get("/reviews", function (req, res) {
-//     let doc = fs.readFileSync("./html/reviews.html", "utf8");
-//     res.send(doc);
-// })
-
 ///route for reviews
 app.get("/reviews", function (req, res) {
     res.render("reviews", {
@@ -152,8 +152,10 @@ app.get("/reviews", function (req, res) {
 
 // Route for profile page
 app.get("/profile", function (req, res) {
-    let doc = fs.readFileSync("./html/profile.html", "utf8");
-    res.send(doc);
+    res.render("profile", {
+        stylesheets: ["profile.css"],
+        scripts: ["profile.js"],
+    });
 })
 
 // Route for view your fridges page
@@ -164,17 +166,17 @@ app.get("/view-own", function (req, res) {
 
 // Route for create new fridge/pantry page
 app.get("/new", function (req, res) {
-    let doc = fs.readFileSync("./html/create_new.html", "utf8");
-    res.send(doc);
+    res.render("create_new", {
+        stylesheets: ["create_new.css"],
+        scripts: [],
+    });
 })
 
 app.post('/reviews', async (req, res) => {
     const userId = 1;
-    //if (!userId) return res.status(401).send('Not logged in');
 
     const { storageId } = req.query;
     const { title, body, rating } = req.body;
-    //const photo = req.file ? `/uploads/${req.file.filename}` : null;
 
     const client = new pg.Client(config);
     client.connect();
@@ -195,12 +197,13 @@ app.post('/reviews', async (req, res) => {
     }
 });
 
-//isabel
 app.get('/reviews', (req, res) => {
-    res.render("reviews");
+    res.render("reviews", {
+        stylesheets: ["contents.css", "reviews.css", "addreview.css"],
+        scripts: ["reviews.js"],
+    });
 });
 
-//end
 
 // Logout user and destroys current session
 app.post("/logout", function (req, res) {
@@ -221,9 +224,7 @@ require('./authentication')(app);
 
 // Page not found
 app.use(function (req, res, next) {
-    let doc = fs.readFileSync("./html/404.html", "utf8");
-    res.status(404).send(doc);
-    next();
+    res.status(404).redirect("404");
 });
 
 app.listen(port, () => {
