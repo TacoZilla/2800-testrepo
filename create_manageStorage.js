@@ -29,28 +29,6 @@ const config = ({
 
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
-// async function geocodeAddress(fullAddress) {
-//     const encoded = encodeURIComponent(fullAddress);
-//     const url = `https://nominatim.openstreetmap.org/search?q=${encoded}&format=json&limit=1`;
-
-//     const response = await fetch(url, {
-//         headers: {
-//             'User-Agent': 'YourAppNameHere/1.0 (your@email.com)' // optional but polite
-//         }
-//     });
-
-//     const data = await response.json();
-
-//     if (data.length === 0) {
-//         throw new Error('Geocoding failed: No results found');
-//     }
-
-//     return {
-//         lat: parseFloat(data[0].lat),
-//         lng: parseFloat(data[0].lon), // note: OpenStreetMap uses "lon" for longitude
-//     };
-// }
-
 async function geocodeAddress(fullAddress) {
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;
     const encoded = encodeURIComponent(fullAddress);
@@ -70,160 +48,103 @@ async function geocodeAddress(fullAddress) {
     }
 }
 
+async function uploadPhotoCloud(fileBuffer, oldPublicId = null, folder = 'default_folder') {
+    try {
+        if (oldPublicId) {
+            await cloudinary.uploader.destroy(oldPublicId);
+        }
+
+        const cloudResult = await new Promise((resolve, reject) => {
+            cloudinary.uploader.upload_stream({ folder }, (err, result) => {
+                if (err) return reject(err);
+                resolve(result);
+            }).end(fileBuffer);
+        });
+
+        return {
+            image: cloudResult.secure_url,
+            imgPublicId: cloudResult.public_id
+        };
+    } catch (err) {
+        throw new Error('Cloudinary upload failed: ' + err.message);
+    }
+}
+
 module.exports = function (app) {
 
-    app.get("/manage/storage", async (req, res) => {
-        const storageId = req.query.storageId;
-
-        if (!storageId) {
-            return res.status(400).json({ error: "Storage ID is required" });
-        }
-        const client = new pg.Client(config);
-        try {
-            await client.connect();
-
-            const result = await client.query(
-                `SELECT * FROM public.storage WHERE "storageId" = $1 AND "deletedDate" IS NULL`, // ✅ spelling fix: storageId
-                [storageId]
-            );
-
-            if (result.rows.length === 0) {
-                return res.status(404).json({ error: "Storage not found" });
-            }
-
-            const storage = result.rows[0];
-
-            if (storage.lastCleaned) {
-                storage.lastCleaned = new Date(storage.lastCleaned);
-            }
-            res.render('manage', {
-                storage,
-                stylesheets: ["manage.css"],
-                scripts: ["manage.js"]
-            });
-        } catch (error) {
-            console.error("Error fetching storage:", error);
-            res.status(500).json({ error: "Internal server error" });
-        } finally {
-            await client.end(); // ✅ Close connection
-        }
-
-    });
     
-    app.post('/manage/storage/upload', upload.single('photo'), async (req, res) => {
+    app.put('/manage/storage', upload.single('photo'), async (req, res) => {
+        const { storageId } = req.query;
+        const { title, storageType, street, city, province, lastCleaned, description } = req.body;
 
-        const storageId = req.query.storageId;
+        const address = `${street}, ${city}, ${province}, Canada`;
+
+        const coords = await geocodeAddress(address);
+        console.log(coords);
+
         if (!storageId) {
-            return res.status(400).json({ error: 'Missing storageId' });
+            return res.status(400).json({ error: 'Storage ID is required' });
         }
 
-        if (!req.file) {
-            return res.status(400).json({ error: 'No file upload' });
-        }
         const client = new pg.Client(config);
 
         try {
             await client.connect();
 
-            //delete old image
-            try {
+            let image = null;
+            let imgPublicId = null;
+
+            if (req.file) {
+
+                // Delete old image
                 const existing = await client.query(
                     `SELECT "imgPublicId" FROM public.storage WHERE "storageId" = $1`,
                     [storageId]
                 );
-
                 const oldPublicId = existing.rows[0]?.imgPublicId;
 
-                if (oldPublicId) {
-                    await cloudinary.uploader.destroy(oldPublicId);
-                }
-            } catch (error) {
-                console.error('Delete on the cloudinary error:', error);
-                res.status(500).json({ error: 'Server error' });
+                const cloudResult = await uploadPhotoCloud(req.file.buffer, oldPublicId, 'storage_img');
+                console.log('cloud result', cloudResult);
 
+                image = cloudResult.image;
+                imgPublicId = cloudResult.imgPublicId;
+            } else {
+                // Keep existing image
+                const existing = await client.query(
+                    `SELECT "image", "imgPublicId" FROM public.storage WHERE "storageId" = $1`,
+                    [storageId]
+                );
+                image = existing.rows[0]?.image || null;
+                imgPublicId = existing.rows[0]?.imgPublicId || null;
             }
 
-
-            // Upload to Cloudinary
-            const imageUrl = await new Promise((resolve, reject) => {
-                const stream = cloudinary.uploader.upload_stream(
-
-                    { folder: 'storage_img' },
-
-                    (error, result) => {
-
-                        if (error) return reject(error);
-
-                        resolve({
-                            url: result.secure_url,
-                            publicId: result.public_id
-                        });
-                    }
-                );
-                stream.end(req.file.buffer);
-            });
-
-            // Save image URL in PostgreSQL
-            await client.query(
-                `UPDATE public.storage SET 
-                        "image" = $1,
-                        "imgPublicId" = $2
-                        WHERE "storageId" = $3`,
-                [imageUrl.url, imageUrl.publicId, storageId]
-            );
-
-            res.status(200).json({ image: imageUrl.url });
-
-            // Pipe the image buffer to Cloudinary upload stream
-        } catch (error) {
-            console.error('Upload error:', error);
-            res.status(500).json({ error: 'Server error' });
-        } finally {
-            await client.end();
-
-        }
-
-    });
-
-    app.put("/manage/storage", async (req, res) => {
-        const { storageId } = req.query;
-        const { title, storageType, street, city, province, lastCleaned, image } = req.body;
-
-        if (!storageId) {
-            return res.status(400).json({ error: "Storage ID is required" });
-        }
-        const client = new pg.Client(config);
-        try {
-            // Convert empty string to NULL
-            const cleanedValue = lastCleaned === '' || lastCleaned === null
-                ? null
-                : lastCleaned;
-            await client.connect();
+            const cleanedDate = lastCleaned?.trim() ? `${lastCleaned}:00` : null;
 
             const result = await client.query(
                 `UPDATE public.storage
-                     SET "title" = $1, 
-                         "storageType" = $2, 
-                         "street" = $3, 
-                         "city" = $4, 
-                         "province" = $5, 
-                         "lastCleaned" = $6,
-                         "image"= $7
-                     WHERE "storageId" = $8
-                     RETURNING *`,
-                [title, storageType, street, city, province, cleanedValue, image, storageId]
+                 SET "title" = $1,
+                     "storageType" = $2,
+                     "street" = $3,
+                     "city" = $4,
+                     "province" = $5,
+                     "lastCleaned" = $6,
+                     "image" = $7,
+                     "imgPublicId" = $8,
+                     "description" = $9,
+                     "coordinates" = POINT($10, $11)
+                 WHERE "storageId" = $12
+                 RETURNING *`,
+                [title, storageType, street, city, province, cleanedDate, image, imgPublicId, description, coords.lat, coords.lng, storageId]
             );
 
-            if (result.rows.length === 0) {
-                return res.status(404).json({ error: "Storage not found" });
-            }
+            res.status(200).json(result.rows[0]);
 
-            res.json(result.rows[0]);
-        } catch (error) {
-            console.error("Error updating storage:", error);
-            res.status(500).json({ error: "Internal server error" });
+            console.log('server', result.rows[0]);
+        } catch (err) {
+            console.error('Update error:', err);
+            res.status(500).json({ error: 'Internal server error' });
         } finally {
-            await client.end(); // ✅ Close connection
+            await client.end();
         }
     });
 
@@ -259,16 +180,10 @@ module.exports = function (app) {
         }
     });
 
-    
 
-    app.get('/storage/createnew', (req, res) => {
-        res.render('create_new', {
-            stylesheets: ["create_new.css"],
-            scripts: ["create_new.js"]
-        });
-    });
 
-    app.post('/storage/createnew', async (req, res) => {
+
+    app.post('/storage/createnew', upload.single('photo'), async (req, res) => {
         // const ownerId = req.session.userId;
         const ownerId = '1';
         if (!ownerId) {
@@ -287,11 +202,24 @@ module.exports = function (app) {
 
             await client.connect();
 
+            let image = null;
+            let imgPublicId = null;
+
+            if (req.file) {
+
+                const cloudResult = await uploadPhotoCloud(req.file.buffer, oldPublicId = null, 'storage_img');
+                console.log('cloud result', cloudResult);
+
+                image = cloudResult.image;
+                imgPublicId = cloudResult.imgPublicId;
+            }
             const createData = await client.query(
-                `INSERT INTO public.storage ("storageType", "title", "street", "city", "ownerId", "province", "description", "coordinates" ) 
-                        VALUES ($1, $2, $3, $4, $5, $6, $7, POINT($8, $9)) 
+                `INSERT INTO public.storage ("storageType", "title", "street", 
+                "city", "ownerId", "province", "description", "coordinates","image",
+                     "imgPublicId") 
+                        VALUES ($1, $2, $3, $4, $5, $6, $7, POINT($8, $9), $10, $11) 
                         RETURNING *`,
-                [storageType, title, street, city, ownerId, province, description, coords.lat, coords.lng]
+                [storageType, title, street, city, ownerId, province, description, coords.lat, coords.lng, image, imgPublicId]
             );
 
             if (createData.rows.length === 0) {
@@ -299,6 +227,8 @@ module.exports = function (app) {
             }
 
             res.json({ message: "Storage created", storage: createData.rows[0] });
+            console.log('new storage', createData.rows[0]);
+
         } catch (error) {
             console.error("Error creating storage:", error);
             res.status(500).json({ error: "Internal server error" });
@@ -308,81 +238,4 @@ module.exports = function (app) {
 
     });
 
-    app.post('/storage/createnew/upload', upload.single('photo'), async (req, res) => {
-
-        if (!req.file) {
-            return res.status(400).json({ error: 'No file upload' });
-        }
-        const client = new pg.Client(config);
-
-        try {
-            await client.connect();
-
-            //delete old image
-            try {
-                const existing = await client.query(
-                    `SELECT "imgPublicId" FROM public.storage WHERE "storageId" = $1`,
-                    [storageId]
-                );
-
-                const oldPublicId = existing.rows[0]?.imgPublicId;
-
-                if (oldPublicId) {
-                    await cloudinary.uploader.destroy(oldPublicId);
-                }
-            } catch (error) {
-                console.error('Delete on the cloudinary error:', error);
-                res.status(500).json({ error: 'Server error' });
-
-            }
-
-
-            // Upload to Cloudinary
-            const imageUrl = await new Promise((resolve, reject) => {
-                const stream = cloudinary.uploader.upload_stream(
-
-                    { folder: 'storage_img' },
-
-                    (error, result) => {
-
-                        if (error) return reject(error);
-
-                        resolve({
-                            url: result.secure_url,
-                            publicId: result.public_id
-                        });
-                        if (!result?.secure_url || !result?.public_id) {
-                            return reject(new Error('Cloudinary upload did not return valid URL or public ID.'));
-                        }
-                    }
-                );
-                stream.end(req.file.buffer);
-            });
-            
-            console.log('Saving image URL to DB:', imageUrl);
-
-            // Save image URL in PostgreSQL
-            await client.query(
-                `UPDATE public.storage SET 
-                            "image" = $1,
-                            "imgPublicId" = $2
-                            WHERE "storageId" = $3`,
-                [imageUrl.url, imageUrl.publicId, storageId]
-            );
-            console.log('Rows affected:', result.rowCount);
-            if (result.rowCount === 0) {
-                throw new Error('No rows updated. Check if storageId exists.');
-            }
-            res.status(200).json({ image: imageUrl.url });
-
-            // Pipe the image buffer to Cloudinary upload stream
-        } catch (error) {
-            console.error('Upload error:', error);
-            res.status(500).json({ error: 'Server error' });
-        } finally {
-            await client.end();
-
-        }
-
-    });
 };

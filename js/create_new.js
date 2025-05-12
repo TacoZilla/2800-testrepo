@@ -1,31 +1,39 @@
 
 document.addEventListener('DOMContentLoaded', function () {
 
-    document.querySelector('.cre-save-btn').addEventListener('click', () => {
-        const data = {
-            storageType: parseInt(document.getElementById('storageType').value.trim()),
-            title: document.getElementById('locationname').value.trim(),
-            street: document.getElementById('street').value.trim(),
-            city: document.getElementById('city').value.trim(),
-            province: document.getElementById('province').value.trim(),
-            //image: document.getElementById('').value.trim(),
-            description: document.getElementById('description').value.trim()
+    initImageUploadPreview(
+        'uploadTrigger',
+        'coverPhotoInput',
+        'photoPreview',
+        'previewImage',
+        (file) => {
+            console.log('User selected file:', file);
+        }
+    );
+    
+    document.getElementById('newStorageForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const coverPhotoInput = document.getElementById('coverPhotoInput');
 
-        };
+        const formData = new FormData(form);
+
+        formData.set('storageType', parseInt(formData.get('storageType')));
+
+        if (coverPhotoInput.files.length > 0) {
+            formData.set('photo', coverPhotoInput.files[0]);
+        }
 
 
         fetch(`/storage/createnew/`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
+            body: formData
         })
             .then(res => res.json())
             .then(() => {
 
                 alert('Storage created in database');
-                window.location.href = '/api/browse';
+                window.location.href = '/browse';
             })
 
             .catch(error => {
@@ -34,3 +42,21 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     });
 });
+
+function selectType(type) {
+    const fridgeBtn = document.getElementById('fridgeBtn');
+    const pantryBtn = document.getElementById('pantryBtn');
+    const storageTypeInput = document.getElementById('storageType')
+
+    if (type === 'fridge') {
+        fridgeBtn.classList.add('active');
+        pantryBtn.classList.remove('active');
+        storageTypeInput.value = 1;
+    } else {
+        pantryBtn.classList.add('active');
+        fridgeBtn.classList.remove('active');
+        storageTypeInput.value = 2;
+
+
+    }
+}
