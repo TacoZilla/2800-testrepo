@@ -43,19 +43,31 @@ module.exports = function (app) {
             const lat = parseFloat(req.query.lat);
             const lon = parseFloat(req.query.lon);
 
-            const renderedCards = await Promise.all(
+            let renderedCards = await Promise.all(
                 storageResults.rows.map((row) => {
                     let distance = getDistance(lat, lon, parseFloat(row.coordinates.x), parseFloat(row.coordinates.y));
                     distance = distance.toFixed(1);
                     const isFavourite = favoriteIds.includes(row.storageId);
-                    return ejs.renderFile("views/partials/storage-card.ejs", {
-                        row,
-                        distance,
-                        isFavourite,
-                    });
+                    return ejs
+                        .renderFile("views/partials/storage-card.ejs", {
+                            row,
+                            distance,
+                            isFavourite,
+                        })
+                        .then((html) => ({
+                            html,
+                            isFavourite,
+                            distance,
+                        }));
                 })
             );
-            res.json(renderedCards);
+            //sort the cards by favourite/non-favourite, and then sort the sublists by distance.
+            let sortByDistance = (arr) => arr.sort((a, b) => a.distance - b.distance);
+            let favouriteCards = sortByDistance(renderedCards.filter((card) => card.isFavourite));
+            let nonFavouriteCards = sortByDistance(renderedCards.filter((card) => !card.isFavourite));
+            let allCards = [...favouriteCards, ...nonFavouriteCards];
+            allCards = allCards.map((card) => card.html);
+            res.json(allCards);
         } catch (err) {
             console.error("Error:", err);
             res.status(500).json({ error: "Failed to fetch data" });

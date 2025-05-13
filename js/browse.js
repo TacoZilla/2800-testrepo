@@ -44,10 +44,11 @@ async function getCards() {
 async function loadCards() {
     const heroContainer = document.querySelector("#hero-card-container");
     const mainContainer = document.querySelector("#main-card-container");
+    //List is returned already sorted first by distance, and then by favourite status
     const cards = await getCards();
     if (cards.length > 0) {
-        let hero = selectHero(cards);
-        heroContainer.innerHTML = hero;
+        //The hero card is the first one in the list (closest favourite)
+        heroContainer.innerHTML = cards.shift();
         heroContainer.firstChild.classList.add("hero");
         for (let card of cards) {
             mainContainer.innerHTML += card;
@@ -60,18 +61,6 @@ async function loadCards() {
     } else {
         console.log("No fridges to show.");
     }
-}
-
-//Selects a store to show in the hero section of the page.
-//removes it from the stores array and returns it.
-function selectHero(stores) {
-    //TODO: this should use favourites and distance to select a hero
-    if (stores.length > 0) {
-        let hero = stores[0];
-        stores.splice(0, 1);
-        return hero;
-    }
-    return null;
 }
 
 function labelType(store) {
