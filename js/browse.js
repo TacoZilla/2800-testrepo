@@ -87,6 +87,7 @@ function addFavouriteButtonListener(element) {
     element.addEventListener("click", async (event) => {
         const id = element.dataset.id;
         event.preventDefault();
+        element.classList.toggle("active");
         const response = await fetch("/api/favourite", {
             method: "POST",
             headers: {
@@ -94,6 +95,8 @@ function addFavouriteButtonListener(element) {
             },
             body: JSON.stringify({ id }),
         });
-        console.log("server response: " + response.ok);
+        if (!response.ok) {
+            console.log("Error adding to favourites");
+        }
     });
 }

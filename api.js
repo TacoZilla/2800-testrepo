@@ -48,7 +48,6 @@ module.exports = function (app) {
                     let distance = getDistance(lat, lon, parseFloat(row.coordinates.x), parseFloat(row.coordinates.y));
                     distance = distance.toFixed(1);
                     const isFavourite = favoriteIds.includes(row.storageId);
-
                     return ejs.renderFile("views/partials/storage-card.ejs", {
                         row,
                         distance,
@@ -358,7 +357,6 @@ module.exports = function (app) {
 
     app.post("/api/favourite", async (req, res) => {
         const id = req.body.id;
-        console.log("id received: " + id);
         const client = new pg.Client(config);
         await client.connect();
 
@@ -369,18 +367,14 @@ module.exports = function (app) {
         let favoriteIds = [];
         favoriteIds = favResults.rows.map((row) => row.storageId);
 
-        if (favoriteIds.includes(id)) {
+        if (favoriteIds.includes(Number(id))) {
             // If already favourite, remove from favourites
-            console.log("Deleting favourite");
-
             await client.query('DELETE FROM public.favourites WHERE "userId" = $1 AND "storageId" = $2', [
                 req.session.userId,
                 id,
             ]);
         } else {
             // If not favourite, add to favourites
-            console.log("Adding new favourite");
-
             await client.query('INSERT INTO public.favourites ("userId", "storageId") VALUES ($1, $2)', [
                 req.session.userId,
                 id,
