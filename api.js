@@ -1,20 +1,20 @@
-const {getDistance} = require("./js/userLocation");
+const { getDistance } = require("./js/userLocation");
 const fs = require("fs");
 const pg = require("pg");
 const ejs = require("ejs");
-const multer = require('multer');
-const cloudinary = require('cloudinary').v2;
-const express = require('express');
+const multer = require("multer");
+const cloudinary = require("cloudinary").v2;
+const express = require("express");
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_CLOUD_KEY,
-    api_secret: process.env.CLOUDINARY_CLOUD_SECRET
+    api_secret: process.env.CLOUDINARY_CLOUD_SECRET,
 });
 
-const config = ({
+const config = {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     host: process.env.DB_HOST,
@@ -23,49 +23,49 @@ const config = ({
     ssl: {
         rejectUnauthorized: true,
         ca: fs.readFileSync("./ca.pem").toString(),
-    }
-});
+    },
+};
 
 module.exports = function (app) {
-    app.get('/api/browse', (req, res) => {
-
-
+    app.get("/api/browse", async (req, res) => {
         const client = new pg.Client(config);
-        client.connect((err) => {
-            if (err) {
-                console.log(err);
-                return;
-            }
-            client.query("SELECT * FROM public.storage", async (error, results) => {
-                if (error) {
-                    console.log(error);
-                    client.end();
-                    return;
-                }
-                try {
-                    const lat = parseFloat(req.query.lat);
-                    const lon = parseFloat(req.query.lon);
-                    // Map each row to a promise that renders the template
-                    const renderedCards = await Promise.all(
-                        results.rows.map((row) => {
-                            let distance = getDistance(lat, lon, parseFloat(row.coordinates.x), parseFloat(row.coordinates.y));
-                            distance = distance.toFixed(1);
-                            return ejs.renderFile("views/partials/storage-card.ejs", { row, distance });
-                        })
-                    );
-                    // Send the array of rendered HTML
-                    res.json(renderedCards);
-                } catch (err) {
-                    console.error("Template rendering error:", err);
-                    res.status(500).json({ error: "Failed to render templates" });
-                } finally {
-                    client.end();
-                }
-            });
-        });
+        try {
+            await client.connect();
+
+            const storageResults = await client.query('SELECT * FROM public.storage WHERE "deletedDate" IS NULL');
+
+            let favoriteIds = [];
+            const favResults = await client.query('SELECT "storageId" FROM public.favourites WHERE "userId" = $1', [
+                req.session.userId,
+            ]);
+            favoriteIds = favResults.rows.map((row) => row.storageId);
+
+            const lat = parseFloat(req.query.lat);
+            const lon = parseFloat(req.query.lon);
+
+            const renderedCards = await Promise.all(
+                storageResults.rows.map((row) => {
+                    let distance = getDistance(lat, lon, parseFloat(row.coordinates.x), parseFloat(row.coordinates.y));
+                    distance = distance.toFixed(1);
+                    const isFavourite = favoriteIds.includes(row.storageId);
+
+                    return ejs.renderFile("views/partials/storage-card.ejs", {
+                        row,
+                        distance,
+                        isFavourite,
+                    });
+                })
+            );
+            res.json(renderedCards);
+        } catch (err) {
+            console.error("Error:", err);
+            res.status(500).json({ error: "Failed to fetch data" });
+        } finally {
+            await client.end();
+        }
     });
 
-    app.get('/api/contents/:id', (req, res) => {
+    app.get("/api/contents/:id", (req, res) => {
         let storageID = req.params.id;
         const client = new pg.Client(config);
         client.connect((err) => {
@@ -73,40 +73,43 @@ module.exports = function (app) {
                 console.log(err);
                 return;
             }
-            client.query(`
+            client.query(
+                `
                 SELECT 
                 c."contentId", c."itemName", c."quantity", to_char(c."bbd", 'Mon dd, yyyy') AS bbd
                 FROM public.content AS c
-                WHERE c."storageId" = $1`, [storageID], async (error, results) => {
-                if (error) {
-                    console.log(error);
-                    client.end();
-                    return;
-                }
-                const renderedRows = await Promise.all(
-                    results.rows.map((row) => {
-                        return ejs.renderFile("views/partials/content-rows.ejs", {row});
-                    })
-                );
-                
-                res.json(renderedRows)
-                client.end();
-            });
-        });
+                WHERE c."storageId" = $1`,
+                [storageID],
+                async (error, results) => {
+                    if (error) {
+                        console.log(error);
+                        client.end();
+                        return;
+                    }
+                    const renderedRows = await Promise.all(
+                        results.rows.map((row) => {
+                            return ejs.renderFile("views/partials/content-rows.ejs", { row });
+                        })
+                    );
 
+                    res.json(renderedRows);
+                    client.end();
+                }
+            );
+        });
     });
 
-    app.post('/api/donate', (req, res) => {
+    app.post("/api/donate", (req, res) => {
         // let storageId = req.query.ID;
         let data = req.body;
-        let sql = 'INSERT INTO "content" ("storageId", "itemName", "quantity", "bbd") VALUES '
+        let sql = 'INSERT INTO "content" ("storageId", "itemName", "quantity", "bbd") VALUES ';
         let items = [];
         for (let i = 0; i < data.length; i++) {
             let info = data[i];
             let str = "(" + info.storageId + ", '" + info.itemName + "', " + info.quantity + ", '" + info.bbd + "')";
             items.push(str);
         }
-        sql += items + ';';
+        sql += items + ";";
 
         const client = new pg.Client(config);
         client.connect((err) => {
@@ -117,15 +120,13 @@ module.exports = function (app) {
             client.query(sql, (error, results) => {
                 if (error) {
                     console.log(sql);
-                    res.send({status: "fail", msg: "Unable to add item to DB"})
+                    res.send({ status: "fail", msg: "Unable to add item to DB" });
+                } else {
+                    res.send({ status: "success", msg: "Item added to DB" });
                 }
-                else {
-                    res.send({status: "success", msg: "Item added to DB"})
-                }
-            })
-        })
+            });
+        });
     });
-
 
     app.get("/manage/storage", async (req, res) => {
         const storageId = req.query.storageId;
@@ -151,10 +152,10 @@ module.exports = function (app) {
             if (storage.lastCleaned) {
                 storage.lastCleaned = new Date(storage.lastCleaned);
             }
-            res.render('manage', {
+            res.render("manage", {
                 storage,
                 stylesheets: ["manage.css"],
-                scripts: ["manage.js"]
+                scripts: ["manage.js"],
             });
         } catch (error) {
             console.error("Error fetching storage:", error);
@@ -162,7 +163,6 @@ module.exports = function (app) {
         } finally {
             await client.end(); // ✅ Close connection
         }
-
     });
 
     app.put("/manage/storage", async (req, res) => {
@@ -175,9 +175,7 @@ module.exports = function (app) {
         const client = new pg.Client(config);
         try {
             // Convert empty string to NULL
-            const cleanedValue = lastCleaned === '' || lastCleaned === null
-                ? null
-                : lastCleaned;
+            const cleanedValue = lastCleaned === "" || lastCleaned === null ? null : lastCleaned;
             await client.connect();
 
             const result = await client.query(
@@ -239,15 +237,14 @@ module.exports = function (app) {
         }
     });
 
-    app.post('/manage/storage/upload', upload.single('photo'), async (req, res) => {
-
+    app.post("/manage/storage/upload", upload.single("photo"), async (req, res) => {
         const storageId = req.query.storageId;
         if (!storageId) {
-            return res.status(400).json({ error: 'Missing storageId' });
+            return res.status(400).json({ error: "Missing storageId" });
         }
 
         if (!req.file) {
-            return res.status(400).json({ error: 'No file upload' });
+            return res.status(400).json({ error: "No file upload" });
         }
         const client = new pg.Client(config);
 
@@ -256,10 +253,9 @@ module.exports = function (app) {
 
             //delete old image
             try {
-                const existing = await client.query(
-                    `SELECT "imgPublicId" FROM public.storage WHERE "storageId" = $1`,
-                    [storageId]
-                );
+                const existing = await client.query(`SELECT "imgPublicId" FROM public.storage WHERE "storageId" = $1`, [
+                    storageId,
+                ]);
 
                 const oldPublicId = existing.rows[0]?.imgPublicId;
 
@@ -267,25 +263,21 @@ module.exports = function (app) {
                     await cloudinary.uploader.destroy(oldPublicId);
                 }
             } catch (error) {
-                console.error('Delete on the cloudinary error:', error);
-                res.status(500).json({ error: 'Server error' });
-
+                console.error("Delete on the cloudinary error:", error);
+                res.status(500).json({ error: "Server error" });
             }
-
 
             // Upload to Cloudinary
             const imageUrl = await new Promise((resolve, reject) => {
                 const stream = cloudinary.uploader.upload_stream(
-
-                    { folder: 'storage_img' },
+                    { folder: "storage_img" },
 
                     (error, result) => {
-
                         if (error) return reject(error);
 
                         resolve({
                             url: result.secure_url,
-                            publicId: result.public_id
+                            publicId: result.public_id,
                         });
                     }
                 );
@@ -305,16 +297,14 @@ module.exports = function (app) {
 
             // Pipe the image buffer to Cloudinary upload stream
         } catch (error) {
-            console.error('Upload error:', error);
-            res.status(500).json({ error: 'Server error' });
+            console.error("Upload error:", error);
+            res.status(500).json({ error: "Server error" });
         } finally {
             await client.end();
-
         }
-
     });
 
-    app.get('/api/reviews', (req, res) => {
+    app.get("/api/reviews", (req, res) => {
         const client = new pg.Client(config);
         client.connect((err) => {
             if (err) {
@@ -332,9 +322,7 @@ module.exports = function (app) {
 
                     try {
                         const renderedCards = await Promise.all(
-                            results.rows.map(row =>
-                                ejs.renderFile("views/partials/review-card.ejs", { row })
-                            )
+                            results.rows.map((row) => ejs.renderFile("views/partials/review-card.ejs", { row }))
                         );
                         res.send(renderedCards.join("")); // Send HTML string
                     } catch (err) {
@@ -348,24 +336,56 @@ module.exports = function (app) {
         });
     });
 
-
     app.get("/storageloc/:id", async (req, res) => {
         const storageId = req.params.id;
         const client = new pg.Client(config);
         await client.connect();
-        const seperate = await client.query(`
+        const seperate = await client.query(
+            `
             SELECT CAST(coordinates[0] AS FLOAT) AS latitude, CAST(coordinates[1] AS FLOAT) AS longitude
             FROM storage WHERE "storageId" = $1`,
-            [storageId]);
-            console.log("db:", JSON.stringify(seperate.rows[0]));
-            res.json(seperate.rows[0]);
-            client.end();
-       
+            [storageId]
+        );
+        console.log("db:", JSON.stringify(seperate.rows[0]));
+        res.json(seperate.rows[0]);
+        client.end();
     });
 
     app.get("/gmapkey", (req, res) => {
         const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-        res.json({apiKey})
+        res.json({ apiKey });
     });
-    
+
+    app.post("/api/favourite", async (req, res) => {
+        const id = req.body.id;
+        console.log("id received: " + id);
+        const client = new pg.Client(config);
+        await client.connect();
+
+        const favResults = await client.query(
+            'SELECT "storageId" FROM public.favourites WHERE "userId" = $1 AND "storageId" = $2',
+            [req.session.userId, id]
+        );
+        let favoriteIds = [];
+        favoriteIds = favResults.rows.map((row) => row.storageId);
+
+        if (favoriteIds.includes(id)) {
+            // If already favourite, remove from favourites
+            console.log("Deleting favourite");
+
+            await client.query('DELETE FROM public.favourites WHERE "userId" = $1 AND "storageId" = $2', [
+                req.session.userId,
+                id,
+            ]);
+        } else {
+            // If not favourite, add to favourites
+            console.log("Adding new favourite");
+
+            await client.query('INSERT INTO public.favourites ("userId", "storageId") VALUES ($1, $2)', [
+                req.session.userId,
+                id,
+            ]);
+        }
+        res.status(200).send();
+    });
 };
