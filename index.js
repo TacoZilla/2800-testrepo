@@ -155,10 +155,43 @@ app.get("/directions", function (req, res) {
 });
 
 // Route for manage page
-app.get("/manage", function (req, res) {
-    let doc = fs.readFileSync("./html/manage.html", "utf8");
-    res.send(doc);
+app.get("/manage/storage", async (req, res) => {
+    const storageId = req.query.storageId;
+
+    if (!storageId) {
+        return res.status(400).json({ error: "Storage ID is required" });
+    }
+    const client = new pg.Client(config);
+    try {
+        await client.connect();
+
+        const result = await client.query(
+            `SELECT * FROM public.storage WHERE "storageId" = $1 AND "deletedDate" IS NULL`,
+            [storageId]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Storage not found" });
+        }
+
+        const storage = result.rows[0];
+
+        if (storage.lastCleaned) {
+            storage.lastCleaned = new Date(storage.lastCleaned);
+        }
+        res.render('manage', {
+            storage,
+            stylesheets: ["manage.css"],
+            scripts: ["imageUploadUtil.js", "manage.js"]
+        });
+    } catch (error) {
+        console.error("Error fetching storage:", error);
+        res.status(500).json({ error: "Internal server error" });
+    } finally {
+        await client.end();
+    }
 });
+
 
 ///route for reviews
 app.get("/reviews", function (req, res) {
@@ -182,11 +215,13 @@ app.get("/profile", function (req, res) {
 });
 
 // Route for create new fridge/pantry page
-app.get("/new", function (req, res) {
-    res.render("create_new", {
+
+app.get('/storage/createnew', (req, res) => {
+    res.render('create_new', {
         stylesheets: ["create_new.css"],
-        scripts: [],
+        scripts: ["imageUploadUtil.js", "create_new.js"]
     });
+
 });
 
 app.post("/reviews", async (req, res) => {
@@ -237,8 +272,10 @@ app.get("/logout", function (req, res) {
     }
 });
 
-require("./api")(app);
-require("./authentication")(app);
+require('./api')(app);
+require('./authentication')(app);
+require('./create_manageStorage')(app);
+
 
 // Page not found
 app.use(function (req, res, next) {
