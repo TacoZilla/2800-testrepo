@@ -472,3 +472,123 @@ const QUERY_INPUT_LABELS = ["edible","non-edible"];
 const THRESHOLD: 0.9,
 test accuracy: 0.7466568554319987
 errors: {"falsePositives":1,"falseNegatives":0}
+
+Test 38
+model: https://router.huggingface.co/hf-inference/models/typeform/distilbert-base-uncased-mnli,
+dataset: 0,
+const QUERY_INPUT = "undefined";
+const QUERY_INPUT_TEMPLATE = "undefined";
+const QUERY_INPUT_LABELS = undefined;
+const THRESHOLD: undefined,
+test accuracy: 0.7466568554319987
+errors: {"falsePositives":0,"falseNegatives":24}
+
+Test 38
+model: https://router.huggingface.co/hf-inference/models/typeform/distilbert-base-uncased-mnli,
+dataset: 0,
+const QUERY_INPUT = "undefined";
+const QUERY_INPUT_TEMPLATE = "undefined";
+const QUERY_INPUT_LABELS = undefined;
+const THRESHOLD: undefined,
+test accuracy: 0.7466568554319987
+errors: {"falsePositives":0,"falseNegatives":24}
+
+Test 39
+model: https://router.huggingface.co/hf-inference/models/typeform/distilbert-base-uncased-mnli,
+dataset: 0,
+const QUERY_INPUT = "I ate a [INPUT] for lunch today.";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+test accuracy: 0.7466568554319987
+errors: {"falsePositives":1,"falseNegatives":0}
+
+Test 40
+model: https://router.huggingface.co/hf-inference/models/typeform/distilbert-base-uncased-mnli,
+dataset: 0,
+const QUERY_INPUT = "Is it ok to eat [INPUT].";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+test accuracy: 0.5924088068124724
+errors: {"falsePositives":16,"falseNegatives":0}
+
+Test 40
+model: https://router.huggingface.co/hf-inference/models/typeform/distilbert-base-uncased-mnli,
+dataset: 0,
+const QUERY_INPUT = "Is it ok to eat [INPUT].";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["food","non-edible"];
+const THRESHOLD: 0.9,
+test accuracy: 0.6112071624616298
+errors: {"falsePositives":12,"falseNegatives":0}
+
+Test 40
+model: https://router.huggingface.co/hf-inference/models/typeform/distilbert-base-uncased-mnli,
+dataset: 0,
+const QUERY_INPUT = "[INPUT] at the grocery store";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["food","non-edible"];
+const THRESHOLD: 0.9,
+test accuracy: 0.5985951220116964
+errors: {"falsePositives":10,"falseNegatives":5}
+
+Test 41
+model: https://router.huggingface.co/hf-inference/models/typeform/distilbert-base-uncased-mnli,
+dataset: 0,
+const QUERY_INPUT = "This morning I had a [INPUT] with my coffee.";
+const QUERY_INPUT_TEMPLATE = "This statement is about {}.";
+const QUERY_INPUT_LABELS = ["food","non-food"];
+const THRESHOLD: 0.9,
+test accuracy: 0.6918431593150627
+errors: {"falsePositives":3,"falseNegatives":1}
+
+Test 42
+model: https://router.huggingface.co/hf-inference/models/typeform/distilbert-base-uncased-mnli,
+dataset: 0,
+const QUERY_INPUT = "I really enjoyed a [INPUT] today.";
+const QUERY_INPUT_TEMPLATE = "The text describes something {}.";
+const QUERY_INPUT_LABELS = ["edible","inedible"];
+const THRESHOLD: 0.9,
+test accuracy: 0.6794592883528733
+errors: {"falsePositives":0,"falseNegatives":1}
+
+Test 43
+model: https://router.huggingface.co/hf-inference/models/typeform/distilbert-base-uncased-mnli,
+dataset: 0,
+const QUERY_INPUT = "At dinner, I served [INPUT].";
+const QUERY_INPUT_TEMPLATE = "This sentence refers to {}.";
+const QUERY_INPUT_LABELS = ["something you eat","something you don’t eat"];
+const THRESHOLD: 0.9,
+test accuracy: 0.5531865198437761
+errors: {"falsePositives":17,"falseNegatives":6}
+
+Test 44
+model: https://router.huggingface.co/hf-inference/models/typeform/distilbert-base-uncased-mnli,
+dataset: 0,
+const QUERY_INPUT = "Is [INPUT] something you can eat?";
+const QUERY_INPUT_TEMPLATE = "{} is something you can eat.";
+const QUERY_INPUT_LABELS = ["True","False"];
+const THRESHOLD: 0.9,
+test accuracy: 0.597329475530764
+errors: {"falsePositives":8,"falseNegatives":11}
+
+Test 45
+model: https://router.huggingface.co/hf-inference/models/typeform/distilbert-base-uncased-mnli,
+dataset: 0,
+const QUERY_INPUT = "Hey, want a [INPUT]?";
+const QUERY_INPUT_TEMPLATE = "This is about {}.";
+const QUERY_INPUT_LABELS = ["food","non-food"];
+const THRESHOLD: 0.9,
+test accuracy: 0.5433949697308424
+errors: {"falsePositives":7,"falseNegatives":13}
+
+Test 45
+model: https://router.huggingface.co/hf-inference/models/typeform/distilbert-base-uncased-mnli,
+dataset: 0,
+const QUERY_INPUT = "I ate a [INPUT] for lunch today.";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible","food"];
+const THRESHOLD: 0.9,
+test accuracy: 0.45598564060722907
+errors: {"falsePositives":16,"falseNegatives":23}
