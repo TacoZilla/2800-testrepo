@@ -127,3 +127,9 @@ main {
     align-items: center;
     gap: 20px;
 }
+
+.reply-text {
+    color: var(--blue-dark);
+    font-style: italic;
+    padding: 5px 10px;
+}
