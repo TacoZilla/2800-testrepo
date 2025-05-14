@@ -30,7 +30,7 @@ async function checkDistance() {
 
     document.getElementById('distance').innerHTML = `${distance}km Away`;
 
-    if (distance > 2) {
+    if (distance > 50) {
         document.querySelector('#open-modal').disabled = true;
         document.querySelector('#take').disabled = true;
         document.querySelector('#distance-error').classList.remove('hidden');
@@ -38,7 +38,7 @@ async function checkDistance() {
         document.getElementById('distance-error').classList.add('hidden');
     }
 
-} 
+}
 
 async function loadRows() {
     let table = document.getElementById("content-rows");
@@ -52,8 +52,7 @@ async function loadRows() {
     } else {
         console.log("fridge is empty");
     }
-} 
-
+}
 
 function ajaxPOST(url, callback, data) {
     const xhr = new XMLHttpRequest();
@@ -117,19 +116,19 @@ document.querySelector('#addItem').addEventListener('click', function (e) {
     itemsToDonate.push(donateItem);
 
     const list = document.getElementById('donationList');
-    let itemName = document.createElement('td');
     let itemQty = document.createElement('td');
+    let itemName = document.createElement('td');
     let itemBBD = document.createElement('td');
-    itemName.textContent = name.value;
     itemQty.textContent = qty.value;
+    itemName.textContent = name.value;
     itemBBD.textContent = bbd.value;
 
     name.value = "";
     qty.value = "0";
     bbd.value = "";
     let item = document.createElement('tr');
-    item.appendChild(itemName);
     item.appendChild(itemQty);
+    item.appendChild(itemName);
     item.appendChild(itemBBD);
     list.appendChild(item);
 });
@@ -154,6 +153,7 @@ document.querySelector('#donate-btn').addEventListener('click', function (e) {
             }
         }
     }, items)
+
 });
 
 var qtyList = [];
