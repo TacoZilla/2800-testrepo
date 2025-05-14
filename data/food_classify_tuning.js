@@ -1,34 +1,47 @@
-import { QUERY_PARAMETERS, queryFood } from "../js/food-classify.js";
+import { configs, query } from "../js/food-classify.js";
 import fs from "fs";
 import path from "path";
 
 let datasets = JSON.parse(fs.readFileSync("data/datasets.json", "utf8"));
 const getDataFilePath = (version) => `data/classified_food_${version || testVersion}.txt`;
 
-let dataset = 1;
-const testVersion = "57";
+let dataset = 0;
+const testVersion = "61";
 
-runTests(true, true);
+runTests(configs, true, true);
+// runTests([configs[0]], true, true);
 
-async function runTests(generate = false, log = false) {
+async function runTests(testConfigs, generate, log) {
     if (generate) {
         console.log("Generating test data...");
-        await generateTestData(datasets[dataset]);
+        await generateTestData(testConfigs, datasets[dataset]);
     }
     let testErrors = calculatePredictionErrors(getDataFilePath());
     if (log) {
         console.log("Logging test data...");
-        logFoodClassificationTest(testErrors);
+        logFoodClassificationTest(testConfigs, testErrors);
     }
 }
 
-async function generateTestData(dataset) {
+async function generateTestData(testConfigs, dataset) {
+    let errors = "===Prediction Errors===";
     for (let data of dataset) {
-        const results = await queryFood(data.word);
-        data.food = results.label == "food" ? results.score : 0;
-        data.notFood = results.label == "not_food" ? results.score : 0;
-        console.log(data.word + ": " + results.label + ": " + results.score);
+        let score = 0;
+        for (let config of testConfigs) {
+            const response = await query(data.word, config);
+            const responseScore = config.model.getScore(response.result, config.threshold, data.label);
+            if (responseScore == 0) {
+                errors += `\n${config.model.name}: [false ${
+                    data.label == "food" ? "negative" : "positive"
+                }]  WORD: ${data.word} `;
+            }
+            score += responseScore;
+        }
+        score /= testConfigs.length;
+        data.score = score;
+        console.log(data.word + ": " + data.score);
     }
+    console.log(errors);
     fs.writeFileSync(getDataFilePath(), JSON.stringify(dataset));
 }
 
@@ -37,16 +50,15 @@ function calculatePredictionErrors(path) {
     let falsePositives = 0;
     let falseNegatives = 0;
     let correct = 0;
-    console.log("counting errors. Current threshold: " + QUERY_PARAMETERS.threshold);
+    console.log("===Errors in Final Result===");
     for (let data of testData) {
-        // Predict as food if score > THRESHOLD
-        const predictedFood = data.food > QUERY_PARAMETERS.threshold;
+        const isError = data.score < 0.5;
         const actualFood = data.label === "food";
 
-        if (predictedFood && !actualFood) {
+        if (isError && !actualFood) {
             console.log("false positive: " + data.word);
             falsePositives++;
-        } else if (!predictedFood && actualFood) {
+        } else if (isError && actualFood) {
             console.log("false negative: " + data.word);
             falseNegatives++;
         } else {
@@ -62,20 +74,22 @@ function calculatePredictionErrors(path) {
         accuracy: accuracy,
     };
 }
-function logFoodClassificationTest(errors, logFile = "data/food_classification_tests.txt") {
+function logFoodClassificationTest(testConfigs, errors, logFile = "data/food_classification_tests.txt") {
     const entry = [
         "",
         `Test ${testVersion}`,
-        `model: ${QUERY_PARAMETERS.model},`,
+        ...testConfigs.map((config, i) =>
+            [
+                `model ${i + 1}: ${config.model.name}`,
+                `  queryInput: ${config.queryInput}`,
+                `  parameters: ${JSON.stringify(config.parameters)}`,
+                `  threshold: ${config.threshold}`,
+            ].join("\n")
+        ),
         `dataset: ${dataset},`,
-        `const QUERY_INPUT = "${QUERY_PARAMETERS.queryInput}";`,
-        `const QUERY_INPUT_TEMPLATE = "${QUERY_PARAMETERS.queryInputTemplate}";`,
-        `const QUERY_INPUT_LABELS = ${JSON.stringify(QUERY_PARAMETERS.queryInputLabels)};`,
-        `const THRESHOLD: ${QUERY_PARAMETERS.threshold},`,
         `errors: ${JSON.stringify(errors)}`,
-        `accuracy: ${errors.accuracy}`,
         "",
-    ].join("\n");
+    ];
 
-    fs.appendFileSync(path.resolve(logFile), entry);
+    fs.appendFileSync(path.resolve(logFile), entry.join("\n"));
 }

@@ -2,48 +2,104 @@ import dotenv from "dotenv";
 dotenv.config();
 const api_key = process.env.HF_API_KEY;
 
+//evaluates the success of a result from uncased Distilbert and Bart models
+const scoreFunction1 = (result, threshold, label) => {
+    if ((label == "food" && result.scores[0] >= threshold) || (label == "not food" && result.scores[0] < threshold)) {
+        return 1;
+    }
+    return 0;
+};
+
+//evaluates the success of a result from fine-tuned Distilbert models
+const scoreFunction2 = (result, threshold, label) => {
+    result = result[0];
+    if ((result.label == "food" && label == "food") || (result.label == "not food" && label == "not food")) {
+        return 1;
+    }
+    return 0;
+};
+
 const models = {
-    distilbert: "https://router.huggingface.co/hf-inference/models/typeform/distilbert-base-uncased-mnli",
-    bart: "https://router.huggingface.co/hf-inference/models/facebook/bart-large-mnli",
-    distilbert_tuned_01: "https://bnqjgs7r11kf8y8v.us-east-1.aws.endpoints.huggingface.cloud",
-    distilbert_tuned_02: "https://el3jnvq87xefbu7g.us-east-1.aws.endpoints.huggingface.cloud",
-    distilbert_tuned_03: "https://jt7cjgx3amnf5tos.us-east-1.aws.endpoints.huggingface.cloud",
+    distilbert: {
+        name: "Distilbert Uncased",
+        url: "https://router.huggingface.co/hf-inference/models/typeform/distilbert-base-uncased-mnli",
+        getScore: scoreFunction1,
+    },
+    bart: {
+        name: "Bart",
+        url: "https://router.huggingface.co/hf-inference/models/facebook/bart-large-mnli",
+        getScore: scoreFunction1,
+    },
+    distilbert_tuned_01: {
+        name: "Distilbert Finetuned 1",
+        url: "https://bnqjgs7r11kf8y8v.us-east-1.aws.endpoints.huggingface.cloud",
+        getScore: scoreFunction2,
+    },
+    distilbert_tuned_02: {
+        name: "Distilbert Finetuned 2",
+        url: "https://el3jnvq87xefbu7g.us-east-1.aws.endpoints.huggingface.cloud",
+        getScore: scoreFunction2,
+    },
+    distilbert_tuned_03: {
+        name: "Distilbert Finetuned 3",
+        url: "https://jt7cjgx3amnf5tos.us-east-1.aws.endpoints.huggingface.cloud",
+        getScore: scoreFunction2,
+    },
 };
 
-export const QUERY_PARAMETERS = {
-    model: models.distilbert_tuned_03,
-    queryInput: "delicious [INPUT]",
-    queryInputTemplate: "The subject is {}.",
-    queryInputLabels: ["edible", "non-edible"],
-    threshold: 0.9,
-};
+//define score strategies as an array, assign a strategy to each model.
+export const configs = [
+    // {
+    //     model: models.distilbert_tuned_03,
+    //     queryInput: "delicious [INPUT]",
+    //     parameters: {},
+    //     threshold: 0.9,
+    // },
+    {
+        model: models.distilbert,
+        queryInput: "Would you like a [INPUT]?",
+        parameters: {
+            candidate_labels: ["edible", "non-edible"],
+            hypothesis_template: "The subject is {}.",
+            multi_label: false,
+        },
+        threshold: 0.9,
+    },
+    {
+        model: models.distilbert,
+        queryInput: "I ate a [INPUT] for lunch today.",
+        parameters: {
+            candidate_labels: ["edible", "non-edible"],
+            hypothesis_template: "The subject is {}.",
+            multi_label: false,
+        },
+        threshold: 0.9,
+    },
+    {
+        model: models.bart,
+        queryInput: "Some delicious [INPUT].",
+        parameters: {
+            candidate_labels: ["food", "not-food"],
+            hypothesis_template: "The subject is {}.",
+            multi_label: false,
+        },
+        threshold: 0.9,
+    },
+];
 
-export async function isFood(input) {
-    const result = await queryFood(input);
-    console.log(input + ": " + results[0]);
-    return result[0] > QUERY_PARAMETERS.threshold;
-}
-
-//returns a floating point number (0-1) representing how strongly the input is classified as "food"
-export async function queryFood(input) {
+export async function query(input, config) {
     const payload = {
-        inputs: QUERY_PARAMETERS.queryInput.replace("[INPUT]", input),
-        parameters: {},
+        inputs: config.queryInput.replace("[INPUT]", input),
+        parameters: config.parameters,
     };
-    const result = await query(payload);
-    return result[0];
-}
-
-//code from https://huggingface.co/
-async function query(data) {
-    const response = await fetch(QUERY_PARAMETERS.model, {
+    const response = await fetch(config.model.url, {
         headers: {
             Authorization: `Bearer ${api_key}`,
             "Content-Type": "application/json",
         },
         method: "POST",
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
     });
     const result = await response.json();
-    return result;
+    return { result, config };
 }
