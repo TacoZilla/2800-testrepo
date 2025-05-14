@@ -1,15 +1,15 @@
-import { configs, query } from "../js/food-classify.js";
+import { CONFIGS, classify } from "../js/food-classify.js";
 import fs from "fs";
 import path from "path";
 
 let datasets = JSON.parse(fs.readFileSync("data/datasets.json", "utf8"));
 const getDataFilePath = (version) => `data/classified_food_${version || testVersion}.txt`;
 
-let dataset = 0;
-const testVersion = "61";
+let dataset = 1;
+const testVersion = "63";
 
-runTests(configs, true, true);
-// runTests([configs[0]], true, true);
+runTests(CONFIGS, true, true);
+// runTests([CONFIGS[4]], true, true);
 
 async function runTests(testConfigs, generate, log) {
     if (generate) {
@@ -24,24 +24,11 @@ async function runTests(testConfigs, generate, log) {
 }
 
 async function generateTestData(testConfigs, dataset) {
-    let errors = "===Prediction Errors===";
     for (let data of dataset) {
-        let score = 0;
-        for (let config of testConfigs) {
-            const response = await query(data.word, config);
-            const responseScore = config.model.getScore(response.result, config.threshold, data.label);
-            if (responseScore == 0) {
-                errors += `\n${config.model.name}: [false ${
-                    data.label == "food" ? "negative" : "positive"
-                }]  WORD: ${data.word} `;
-            }
-            score += responseScore;
-        }
-        score /= testConfigs.length;
-        data.score = score;
+        const score = await classify(data.word, testConfigs);
+        data.score = data.label == "food" ? score : 1 - score;
         console.log(data.word + ": " + data.score);
     }
-    console.log(errors);
     fs.writeFileSync(getDataFilePath(), JSON.stringify(dataset));
 }
 
