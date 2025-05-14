@@ -1,6 +1,6 @@
 
-const urlParams = new URLSearchParams(window.location.search);
-const storageId = urlParams.get('storageId');
+//const urlParams = new URLSearchParams(window.location.search);
+const storageId = window.location.pathname.split("/")[2];
 
 localStorage.setItem('storageId', storageId);
 if (!storageId) {

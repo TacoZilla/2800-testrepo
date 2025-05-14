@@ -184,8 +184,8 @@ module.exports = function (app) {
 
 
     app.post('/storage/createnew', upload.single('photo'), async (req, res) => {
-        // const ownerId = req.session.userId;
-        const ownerId = '1';
+        
+        const ownerId = req.session.userId;
         if (!ownerId) {
             return res.status(400).json({ error: "userID is required" });
         }

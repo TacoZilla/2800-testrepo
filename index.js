@@ -155,8 +155,9 @@ app.get("/directions", function (req, res) {
 });
 
 // Route for manage page
-app.get("/manage/storage", async (req, res) => {
-    const storageId = req.query.storageId;
+app.get("/manage/:id", async (req, res) => {
+
+    const storageId = req.params.id;
 
     if (!storageId) {
         return res.status(400).json({ error: "Storage ID is required" });
@@ -180,6 +181,7 @@ app.get("/manage/storage", async (req, res) => {
             storage.lastCleaned = new Date(storage.lastCleaned);
         }
         res.render('manage', {
+            id: storageId,
             storage,
             stylesheets: ["manage.css"],
             scripts: ["imageUploadUtil.js", "manage.js"]
@@ -207,11 +209,39 @@ app.get("/reviews", function (req, res) {
 });
 
 // Route for profile page
-app.get("/profile", function (req, res) {
-    res.render("profile", {
-        stylesheets: ["profile.css"],
-        scripts: ["profile.js"],
-    });
+app.get("/profile", async function (req, res) {
+
+    const userId = req.session.userId;
+    if (!userId) {
+        return res.status(400).json({ error: "user ID is missing" });
+    }
+
+    const client = new pg.Client(config);
+    try {
+        await client.connect();
+
+        const result = await client.query(
+            `SELECT * FROM public.users WHERE "userId" = $1`,
+            [userId]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "user not found" });
+        }
+
+        const userInfo = result.rows[0];
+
+        res.render("profile", {
+            userInfo,
+            stylesheets: ["browse.css","reviews.css", "profile.css"],
+            scripts: ["profile.js"],
+        });
+    } catch (error) {
+        console.error("Error fetching storage:", error);
+        res.status(500).json({ error: "Internal server error" });
+    } finally {
+        await client.end();
+    }
 });
 
 // Route for create new fridge/pantry page
@@ -275,6 +305,7 @@ app.get("/logout", function (req, res) {
 require('./api')(app);
 require('./authentication')(app);
 require('./create_manageStorage')(app);
+require('./profile_route')(app);
 
 
 // Page not found

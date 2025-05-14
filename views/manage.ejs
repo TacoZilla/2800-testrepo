@@ -41,15 +41,15 @@
                         <div class="address-field">
 
                             <label for="street">Street:</label>
-                            <input type="text" id="street" value=" <%= storage.street || ''%>" disabled />
+                            <input type="text" id="street" value="<%= storage.street || ''%>" disabled />
                         </div>
                         <div class="address-field">
                             <label for="city">City:</label>
-                            <input type="text" id="city" value=" <%= storage.city || ''%>" disabled />
+                            <input type="text" id="city" value="<%= storage.city || ''%>" disabled />
                         </div>
                         <div class="address-field">
                             <label for="province">Province:</label>
-                            <input type="text" id="province" value=" <%= storage.province || ''%>" disabled />
+                            <input type="text" id="province" value="<%= storage.province || ''%>" disabled />
 
                         </div>
                     </div>
@@ -82,7 +82,7 @@
                     <div id="photoPreview" style="<%= storage.image ? '' : 'display: none;' %>">
                         <% if (typeof storage.image !='undefined' ) { %>
                             <img id="previewImage" src="<%= storage.image ? storage.image : '#' %>" alt="Preview"
-                                style="max-width: 200px; max-height: 200px;">
+                                style="max-width: 200px; max-height: 180px;">
                             <% } %>
                     </div>
                 </div>
