@@ -13,7 +13,6 @@ function expandReviews() {
 
     } else {
         revsec.style.height = "350px";
-
     }
 
 }
@@ -21,11 +20,9 @@ function expandReviews() {
 function togglePasswordFields() {
     const container = document.getElementById("change-password-container");
     container.style.display = container.style.display === "none" ? "block" : "none";
-    // const fieldpassword = ['oldPassword', 'newPassword'];
-    // for(let pass of fieldpassword){
-    //     pass.disabled =!pass.disabled
-    // };
+   
 }
+
 function toggleProfileEdit() {
     const fieldIds = ['firstName', 'lastName', 'email'];
 
@@ -38,8 +35,6 @@ function toggleProfileEdit() {
 }
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('submit').addEventListener('click', async () => {
-        //e.preventDefault();
-        //const form = e.target;
 
         let newPassword = document.getElementById('newPassword').value;
         let oldPassword = document.getElementById('oldPassword').value;
@@ -55,21 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
             data.oldPassword = oldPassword;
             data.newPassword = newPassword;
         }
-
-        // const formData = new FormData();
-        // formData.append("firstName", document.getElementById('firstName').value.trim());
-        // formData.append("lastName", document.getElementById('lastName').value.trim());
-        // formData.append("email", document.getElementById('email').value.trim());
-
-        // formData.append("notifications", document.getElementById('notifications').checked ? "true" : "false")
-        // if (oldPassword && newPassword) {
-        //     formData.append("oldPassword", oldPassword);
-        //     formData.append("newPassword", newPassword);
-        // }
-        // console.log('FormData contents:');
-        // for (const [key, value] of formData.entries()) {
-        //     console.log(`${key}: ${value}`);
-        // }
 
         try {
             const response = await fetch(`/update-profile`, {
@@ -89,8 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-async function getStorageCards(){
-     const response = await fetch(`/ownedstorage`);
+async function getStorageCards() {
+    const response = await fetch(`/ownedstorage`);
     if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
     }
@@ -99,8 +79,8 @@ async function getStorageCards(){
 
 }
 
-async function getReviewCards(){
-     const response = await fetch(`/ownedReview`);
+async function getReviewCards() {
+    const response = await fetch(`/ownedReview`);
     if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
     }
@@ -108,14 +88,12 @@ async function getReviewCards(){
     return json;
 
 }
-
 
 async function loadStorageCards() {
-    //const heroContainer = document.querySelector("#hero-card-container");
     const mainContainer = document.querySelector("#storage-card-container");
     const cards = await getStorageCards();
     if (cards.length > 0) {
-        
+
         for (let card of cards) {
             mainContainer.innerHTML += card;
         }
@@ -130,7 +108,7 @@ async function loadReviewCards() {
     const mainContainer = document.querySelector("#review-card-container");
     const cards = await getReviewCards();
     if (cards.length > 0) {
-        
+
         for (let card of cards) {
             mainContainer.innerHTML += card;
         }
@@ -144,3 +122,24 @@ async function loadReviewCards() {
 loadStorageCards();
 loadReviewCards();
 
+function applyFilter() {
+    const selectedRadius = document.getElementById('distanceFilter').value;
+    localStorage.setItem('radiusFilter', selectedRadius);
+    updateRadiusDisplay(selectedRadius);
+}
+
+function updateRadiusDisplay(radius) {
+    const display = document.getElementById('radiusDisplay');
+    if (radius && radius !== 'none') {
+        display.textContent = `${radius} km`;
+    } else {
+        display.textContent = 'None';
+    }
+}
+
+// Initialize display on page load
+const storedRadius = localStorage.getItem('radiusFilter') || 'none';
+updateRadiusDisplay(storedRadius);
+
+// Pre-select the dropdown to match stored value
+document.getElementById('distanceFilter').value = storedRadius;

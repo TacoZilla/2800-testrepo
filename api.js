@@ -42,12 +42,19 @@ module.exports = function (app) {
 
             const lat = parseFloat(req.query.lat);
             const lon = parseFloat(req.query.lon);
+            const radius = req.query.radiusFilter === "none" || isNaN(parseFloat(req.query.radiusFilter))
+                ? null
+                : parseFloat(req.query.radiusFilter);
 
+                console.log('radius', radius);
             let renderedCards = await Promise.all(
                 storageResults.rows.map((row) => {
                     let distance = getDistance(lat, lon, parseFloat(row.coordinates.x), parseFloat(row.coordinates.y));
                     distance = distance.toFixed(1);
                     const isFavourite = favoriteIds.includes(row.storageId);
+
+                    if (radius !== null && !isFavourite && distance > radius) return null;
+
                     return ejs
                         .renderFile("views/partials/storage-card.ejs", {
                             row,
@@ -61,6 +68,9 @@ module.exports = function (app) {
                         }));
                 })
             );
+
+            renderedCards = renderedCards.filter(card => card !== null);
+
             //sort the cards by favourite/non-favourite, and then sort the sublists by distance.
             let sortByDistance = (arr) => arr.sort((a, b) => a.distance - b.distance);
             let favouriteCards = sortByDistance(renderedCards.filter((card) => card.isFavourite));

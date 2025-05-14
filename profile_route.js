@@ -66,7 +66,6 @@ module.exports = function (app) {
 
             const result = await client.query(query, updateFields);
             res.json({ message: "Profile updated successfully." });
-            console.log('user changed', result.rows[0]);
 
         } catch (err) {
             console.error(err);
@@ -85,7 +84,7 @@ module.exports = function (app) {
 
             await client.connect();
             const ownedResult = await client.query(`SELECT * FROM public.storage WHERE "ownerId" = $1`, [ownerId]);
-            console.log(ownedResult.rows[0]);
+            
             const renderedCards = await Promise.all(
                 ownedResult.rows.map((row) => {
 

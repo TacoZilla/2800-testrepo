@@ -1,5 +1,4 @@
 
-//const urlParams = new URLSearchParams(window.location.search);
 const storageId = window.location.pathname.split("/")[2];
 
 localStorage.setItem('storageId', storageId);
@@ -29,12 +28,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Handle form submit
     document.querySelector('.man-save-btn').addEventListener('click', async () => {
-        //const storageId = document.getElementById('storageId').value; // or wherever your storageId is stored
 
         const coverPhotoInput = document.getElementById('coverPhotoInput');
 
         const formData = new FormData();
-
 
         formData.append('title', document.getElementById('storageName').textContent.trim());
         formData.append('street', document.getElementById('street').value.trim());
@@ -62,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const result = await response.json();
             alert('Storage saved successfully!');
             console.log('client side', result);
+
             // Update preview image if new one was uploaded
             if (result.image) {
                 document.getElementById('previewImage').src = result.image;
@@ -120,7 +118,7 @@ async function softDeleteStorage(storageId) {
 
         if (response.ok) {
             alert('Storage archived successfully!');
-            window.location.href = '/browse'; // Redirect after success
+            window.location.href = '/browse';
         } else {
             throw new Error('Failed to archive storage');
         }

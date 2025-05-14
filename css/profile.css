@@ -98,14 +98,6 @@ button:hover {
     font-size: 1rem;
     cursor: pointer;
     flex-basis: auto;
-    /* width: calc(100% - 30px);
-
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    align-items: center;
-    color: rgba(0, 0, 0, 0.664);
-    justify-self: center; */
 }
 
 
@@ -132,9 +124,22 @@ button:hover {
     gap: 20px;
     margin-bottom: 25px;
 }
+
 .storage-card {
     background-color: var(--blue-medium);
 }
+
 .review {
     background-color: var(--blue-medium);
+}
+
+#distance-filter-div {
+    font-size: 1rem;
+    margin: 10px;
+}
+
+#change-password-btn {
+    width: 100px;
+    padding: 5px;
+    margin-top: 10px;
 }
