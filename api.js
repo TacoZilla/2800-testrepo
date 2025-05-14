@@ -149,45 +149,59 @@ module.exports = function (app) {
 
         let updateSql = 'UPDATE "content" AS c SET "quantity" = d.qty FROM (VALUES ' + updateList.map(d => { return `(${d.id}, ${d.qty})` }).join(', ') + ') as d(id, qty) WHERE d.id = c."contentId"';
 
-        let deleteSql = 'DELETE FROM "content" WHERE "contentId" IN (' + deleteList.map(d => { return `${d.id}` }).join(', ') + ')'
+        let deleteSql = 'DELETE FROM "content" WHERE "contentId" IN (' + deleteList.map(d => { return `${d.id}` }).join(', ') + ')';
 
-        if (updateList.length > 0) {
-            const client = new pg.Client(config);
-            await client.connect((err) => {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-                client.query(updateSql, (error, results) => {
-                    if (error) {
-                        console.error(error);
-                        res.send({ status: "fail", msg: "Unable to remove items from DB" });
-                        return;
+        const queryPromises = [];
+
+        queryPromises.push(new Promise((resolve, reject) => {
+            if (updateList.length > 0) {
+                const client = new pg.Client(config);
+                client.connect((err) => {
+                    if (err) {
+                        reject(err);
                     }
-                    client.end();
-                });
-            });
-        }
+                    client.query(updateSql, (error, results) => {
+                        if (error) {
+                            reject(err);
+                        }
 
-        if (deleteList.length > 0) {
-            const client = new pg.Client(config);
-            await client.connect((err) => {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-                client.query(deleteSql, (error, results) => {
-                    if (error) {
-                        console.error(error);
-                        res.send({ status: "fail", msg: "Unable to remove items from DB" });
-                        return;
+                        resolve();
+                        client.end();
+                    });
+                });
+            } else {
+                resolve();
+            }
+        }));
+
+        queryPromises.push(new Promise((resolve, reject) => {
+            if (deleteList.length > 0) {
+                const client = new pg.Client(config);
+                client.connect((err) => {
+                    if (err) {
+                        reject(err);
                     }
+                    client.query(deleteSql, (error, results) => {
+                        if (error) {
+                            reject(err);
+                        }
+                        resolve();
+                        client.end();
+                    });
+                })
+            } else {
+                resolve();
+            }
+        }));
 
-                    client.end();
-                });
+        Promise.all(queryPromises)
+            .then(() => {
+                res.send({ status: "success", msg: "Database successfully updated" });
             })
-        }
-       res.send({ status: "success", msg: "Database successfully updated" });
+            .catch(err =>{
+                console.log(err);
+                res.send({ status:"fail", msg: "Unable to remove items"});
+            });
     })
 
     app.get("/manage/storage", async (req, res) => {

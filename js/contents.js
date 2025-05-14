@@ -118,7 +118,7 @@ function takeMode() {
     quantities.forEach(qty => {
         let itemId = qty.dataset["contentid"];
         let itemQty = qty.dataset["qty"];
-        qtyList.push({id : parseInt(itemId), qty : parseInt(itemQty)});
+        qtyList.push({ id: parseInt(itemId), qty: parseInt(itemQty) });
         qty.innerHTML = `<input type="number" class="input-values" id="qty" value="0" min="0" data-itemid=${itemId} data-qty=${itemQty} max=${itemQty} /><span id="maxValue">/${itemQty}</span>`;
     });
     console.log(qtyList);
@@ -150,11 +150,20 @@ async function confirmTake() {
 
     const response = await fetch('/api/take', {
         method: "POST",
-        headers : {
-            'Content-Type' : 'application/json'
+        headers: {
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify(qtyList)
     })
-    
-    console.log(response);
+
+    console.log("response: ", response);
+    if (response.status == 200) {
+        let table = document.getElementById('content-rows');
+        while (2 <= table.rows.length) {
+            table.deleteRow(1);
+        }
+        loadRows();
+    } else {
+        console.log("An error has occurred!");
+    }
 }
