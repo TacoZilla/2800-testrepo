@@ -1,4 +1,4 @@
-const {getDistance} = require("./js/userLocation");
+const { getDistance } = require("./js/userLocation");
 const fs = require("fs");
 const pg = require("pg");
 const ejs = require("ejs");
@@ -85,10 +85,10 @@ module.exports = function (app) {
                 }
                 const renderedRows = await Promise.all(
                     results.rows.map((row) => {
-                        return ejs.renderFile("views/partials/content-rows.ejs", {row});
+                        return ejs.renderFile("views/partials/content-rows.ejs", { row });
                     })
                 );
-                
+
                 res.json(renderedRows)
                 client.end();
             });
@@ -117,10 +117,10 @@ module.exports = function (app) {
             client.query(sql, (error, results) => {
                 if (error) {
                     console.log(sql);
-                    res.send({status: "fail", msg: "Unable to add item to DB"})
+                    res.send({ status: "fail", msg: "Unable to add item to DB" })
                 }
                 else {
-                    res.send({status: "success", msg: "Item added to DB"})
+                    res.send({ status: "success", msg: "Item added to DB" })
                 }
             })
         })
@@ -315,7 +315,8 @@ module.exports = function (app) {
     });
     // isabel put ur code here
 
-    app.get('/api/reviews', (req, res) => {
+    app.get('/api/reviews/:storageId', (req, res) => {
+        const { storageId } = req.params;
         const client = new pg.Client(config);
         client.connect((err) => {
             if (err) {
@@ -324,19 +325,37 @@ module.exports = function (app) {
             }
 
             client.query(
-                `SELECT * FROM public.reviews WHERE "deletedDate" IS NULL ORDER BY "createdAt" DESC`,
+                `SELECT * 
+            FROM public.reviews AS r
+            JOIN public.users AS u ON r."userId" = u."userId"
+            WHERE r."storageId" = $1 
+            AND r."deletedDate" IS NULL 
+            ORDER BY r."createdAt" DESC
+                `, [storageId],
                 async (error, results) => {
                     if (error) {
                         console.error(error);
                         return res.status(500).send("Query error");
                     }
 
+                    const replies = await client.query(
+                        `SELECT * 
+                        FROM public.replies AS r
+                        JOIN public.users AS u ON r."userId" = u."userId"
+                        AND r."deletedDate" IS NULL 
+                        ORDER BY r."createdAt" DESC`
+                    ) 
                     try {
                         const renderedCards = await Promise.all(
-                            results.rows.map(row =>
-                                ejs.renderFile("views/partials/review-card.ejs", { row })
+                            results.rows.map((row) =>
+                                {
+                                    const reviewReplies = replies.rows.filter(reply => reply.reviewId == row.reviewId);
+                                    
+                                    return ejs.renderFile("views/partials/review-card.ejs", { row, replies: reviewReplies });
+                                }
                             )
                         );
+
                         res.send(renderedCards.join("")); // Send HTML string
                     } catch (err) {
                         console.error("Template rendering error:", err);
@@ -345,7 +364,7 @@ module.exports = function (app) {
                         client.end();
                     }
                 }
-            );
+            )
         });
     });
 
@@ -358,15 +377,15 @@ module.exports = function (app) {
             SELECT CAST(coordinates[0] AS FLOAT) AS latitude, CAST(coordinates[1] AS FLOAT) AS longitude
             FROM storage WHERE "storageId" = $1`,
             [storageId]);
-            console.log("db:", JSON.stringify(seperate.rows[0]));
-            res.json(seperate.rows[0]);
-            client.end();
-       
+        console.log("db:", JSON.stringify(seperate.rows[0]));
+        res.json(seperate.rows[0]);
+        client.end();
+
     });
 
     app.get("/gmapkey", (req, res) => {
         const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-        res.json({apiKey})
+        res.json({ apiKey })
     });
-    
+
 };
