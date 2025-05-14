@@ -592,3 +592,222 @@ const QUERY_INPUT_LABELS = ["edible","non-edible","food"];
 const THRESHOLD: 0.9,
 test accuracy: 0.45598564060722907
 errors: {"falsePositives":16,"falseNegatives":23}
+
+Test 46
+model: https://bnqjgs7r11kf8y8v.us-east-1.aws.endpoints.huggingface.cloud,
+dataset: 0,
+const QUERY_INPUT = "I ate a [INPUT] for lunch today.";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+test accuracy: 0.4146341463414634
+errors: {"falsePositives":0,"falseNegatives":24}
+
+Test 46
+model: https://bnqjgs7r11kf8y8v.us-east-1.aws.endpoints.huggingface.cloud,
+dataset: 0,
+const QUERY_INPUT = "I ate a [INPUT] for lunch today.";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+test accuracy: 0.4146341463414634
+errors: {"falsePositives":0,"falseNegatives":24}
+
+Test 46
+model: https://bnqjgs7r11kf8y8v.us-east-1.aws.endpoints.huggingface.cloud,
+dataset: 0,
+const QUERY_INPUT = "I ate a [INPUT] for lunch today.";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+test accuracy: 0.8178499370086484
+errors: {"falsePositives":0,"falseNegatives":10}
+
+Test 47
+model: https://bnqjgs7r11kf8y8v.us-east-1.aws.endpoints.huggingface.cloud,
+dataset: 0,
+const QUERY_INPUT = "I bought [INPUT] at the store.";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+test accuracy: 0.012977543400555121
+errors: {"falsePositives":0,"falseNegatives":24}
+
+Test 47
+model: https://bnqjgs7r11kf8y8v.us-east-1.aws.endpoints.huggingface.cloud,
+dataset: 0,
+const QUERY_INPUT = "I put [INPUT] in my refrigerator.";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+test accuracy: 0.0157930850982666
+errors: {"falsePositives":0,"falseNegatives":24}
+
+Test 47
+model: https://bnqjgs7r11kf8y8v.us-east-1.aws.endpoints.huggingface.cloud,
+dataset: 0,
+const QUERY_INPUT = "[INPUT] placed on the kitchen table.";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+test accuracy: 0
+errors: {"falsePositives":0,"falseNegatives":24}
+
+Test 47
+model: https://bnqjgs7r11kf8y8v.us-east-1.aws.endpoints.huggingface.cloud,
+dataset: 0,
+const QUERY_INPUT = "[INPUT].";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+test accuracy: 0.501688342268874
+errors: {"falsePositives":0,"falseNegatives":5}
+
+Test 47
+model: https://bnqjgs7r11kf8y8v.us-east-1.aws.endpoints.huggingface.cloud,
+dataset: 0,
+const QUERY_INPUT = "delicious [INPUT].";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+errors: {"falsePositives":1,"falseNegatives":1}
+
+Test 47
+model: https://bnqjgs7r11kf8y8v.us-east-1.aws.endpoints.huggingface.cloud,
+dataset: 0,
+const QUERY_INPUT = "delicious [INPUT].";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+errors: {"falsePositives":1,"falseNegatives":1,"accuracy":"95.12%"}
+accuracy: 95.12%
+
+Test 47
+model: https://bnqjgs7r11kf8y8v.us-east-1.aws.endpoints.huggingface.cloud,
+dataset: 0,
+const QUERY_INPUT = "delicious [INPUT].";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+errors: {"falsePositives":1,"falseNegatives":1,"accuracy":"95.12%"}
+accuracy: 95.12%
+
+Test 47
+model: https://bnqjgs7r11kf8y8v.us-east-1.aws.endpoints.huggingface.cloud,
+dataset: 0,
+const QUERY_INPUT = "tasty [INPUT].";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+errors: {"falsePositives":1,"falseNegatives":1,"accuracy":"95.12%"}
+accuracy: 95.12%
+
+Test 48
+model: https://bnqjgs7r11kf8y8v.us-east-1.aws.endpoints.huggingface.cloud,
+dataset: 1,
+const QUERY_INPUT = "delicious [INPUT].";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+errors: {"falsePositives":1,"falseNegatives":6,"accuracy":"96.63%"}
+accuracy: 96.63%
+
+Test 49
+model: https://bnqjgs7r11kf8y8v.us-east-1.aws.endpoints.huggingface.cloud,
+dataset: 1,
+const QUERY_INPUT = "[INPUT] for lunch";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+errors: {"falsePositives":0,"falseNegatives":90,"accuracy":"56.73%"}
+accuracy: 56.73%
+
+Test 50
+model: https://bnqjgs7r11kf8y8v.us-east-1.aws.endpoints.huggingface.cloud,
+dataset: 0,
+const QUERY_INPUT = "a plate of tasty [INPUT]";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+errors: {"falsePositives":1,"falseNegatives":1,"accuracy":"95.12%"}
+accuracy: 95.12%
+
+Test 51
+model: https://bnqjgs7r11kf8y8v.us-east-1.aws.endpoints.huggingface.cloud,
+dataset: 1,
+const QUERY_INPUT = "a plate of tasty [INPUT]";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+errors: {"falsePositives":7,"falseNegatives":2,"accuracy":"95.67%"}
+accuracy: 95.67%
+
+Test 52
+model: https://bnqjgs7r11kf8y8v.us-east-1.aws.endpoints.huggingface.cloud,
+dataset: 0,
+const QUERY_INPUT = "I'm hungry for [INPUT]";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+errors: {"falsePositives":0,"falseNegatives":23,"accuracy":"43.90%"}
+accuracy: 43.90%
+
+Test 53
+model: https://bnqjgs7r11kf8y8v.us-east-1.aws.endpoints.huggingface.cloud,
+dataset: 0,
+const QUERY_INPUT = "Some delicious [INPUT]";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+errors: {"falsePositives":0,"falseNegatives":3,"accuracy":"92.68%"}
+accuracy: 92.68%
+
+Test 54
+model: https://bnqjgs7r11kf8y8v.us-east-1.aws.endpoints.huggingface.cloud,
+dataset: 0,
+const QUERY_INPUT = "Delicious [INPUT]";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+errors: {"falsePositives":0,"falseNegatives":6,"accuracy":"85.37%"}
+accuracy: 85.37%
+
+Test 54
+model: https://bnqjgs7r11kf8y8v.us-east-1.aws.endpoints.huggingface.cloud,
+dataset: 0,
+const QUERY_INPUT = "delicious [INPUT]";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+errors: {"falsePositives":0,"falseNegatives":6,"accuracy":"85.37%"}
+accuracy: 85.37%
+
+Test 55
+model: https://el3jnvq87xefbu7g.us-east-1.aws.endpoints.huggingface.cloud,
+dataset: 0,
+const QUERY_INPUT = "delicious [INPUT]";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+errors: {"falsePositives":0,"falseNegatives":3,"accuracy":"92.68%"}
+accuracy: 92.68%
+
+Test 56
+model: https://el3jnvq87xefbu7g.us-east-1.aws.endpoints.huggingface.cloud,
+dataset: 1,
+const QUERY_INPUT = "delicious [INPUT]";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+errors: {"falsePositives":0,"falseNegatives":11,"accuracy":"94.71%"}
+accuracy: 94.71%
+
+Test 57
+model: https://jt7cjgx3amnf5tos.us-east-1.aws.endpoints.huggingface.cloud,
+dataset: 1,
+const QUERY_INPUT = "delicious [INPUT]";
+const QUERY_INPUT_TEMPLATE = "The subject is {}.";
+const QUERY_INPUT_LABELS = ["edible","non-edible"];
+const THRESHOLD: 0.9,
+errors: {"falsePositives":0,"falseNegatives":16,"accuracy":"92.31%"}
+accuracy: 92.31%
