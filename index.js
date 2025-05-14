@@ -7,7 +7,7 @@ const pg = require("pg");
 const dotenv = require('dotenv').config();
 
 const ejs = require("ejs");
-const dotenv = require("dotenv").config();
+
 
 const saltRounds = 12;
 const app = express();
