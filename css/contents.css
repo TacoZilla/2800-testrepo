@@ -111,6 +111,10 @@ tr {
     background-color: var(--blue-medium);
 }
 
+#buttons>button:disabled {
+    background-color: rgb(167, 158, 158);
+}
+
 #contact {
     grid-area: contact;
     width: 100%;
@@ -151,4 +155,22 @@ tr {
 
 #maxValue {
     margin-left: 0.3em;
+}
+
+#donate-errors {
+    color: red;
+    text-align: center;
+}
+
+#distance-error, #take-error {
+    display: flex;
+    justify-self: center;
+    padding: 0.5em;
+    background-color: var(--pink-light);
+    text-align: center;
+    border: 1px solid var(--pink-accent);
+}
+
+#distance {
+    color: rgb(138, 134, 134);
 }

@@ -4,6 +4,7 @@ const pgSession = require('connect-pg-simple')(session);
 const bcrypt = require("bcrypt");
 const fs = require("fs");
 const pg = require("pg");
+const { getUserLocation } = require("./js/userLocation");
 const dotenv = require('dotenv').config();
 
 const saltRounds = 12;
@@ -105,7 +106,7 @@ app.get("/contents/:id", function (req, res) {
             return;
         }
         client.query(`
-                    SELECT s."storageType", s."title", s."lastCleaned" 
+                    SELECT s."storageType", s."title", s."lastCleaned", s."coordinates" 
                     FROM public.storage AS s 
                     WHERE s."storageId" = $1`, [storageID], async (error, results) => {
             if (error) {
