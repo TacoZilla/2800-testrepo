@@ -68,7 +68,7 @@ document.querySelector('#addItem').addEventListener('click', function (e) {
     let qty = document.getElementById('qty');
     let bbd = document.getElementById('bbd');
 
-    let donateItem = {"storageId": storageId, "itemName": name.value, "quantity": qty.value, "bbd": bbd.value};
+    let donateItem = { "storageId": storageId, "itemName": name.value, "quantity": qty.value, "bbd": bbd.value };
     itemsToDonate.push(donateItem);
 
     const list = document.getElementById('donationList');
@@ -110,3 +110,51 @@ document.querySelector('#donate-btn').addEventListener('click', function (e) {
     }, items)
 });
 
+var qtyList = [];
+
+function takeMode() {
+    let elements = document.getElementsByClassName("item-quantity");
+    let quantities = Array.from(elements);
+    quantities.forEach(qty => {
+        let itemId = qty.dataset["contentid"];
+        let itemQty = qty.dataset["qty"];
+        qtyList.push({id : parseInt(itemId), qty : parseInt(itemQty)});
+        qty.innerHTML = `<input type="number" class="input-values" id="qty" value="0" min="0" data-itemid=${itemId} data-qty=${itemQty} max=${itemQty} /><span id="maxValue">/${itemQty}</span>`;
+    });
+    console.log(qtyList);
+    document.getElementById("open-modal").classList.add('hidden');
+    document.getElementById("take").classList.add('hidden');
+    document.getElementById("take-cancel").classList.remove('hidden');
+    document.getElementById("take-confirm").classList.remove('hidden');
+};
+
+function cancelTake() {
+    let elements = document.getElementsByClassName("item-quantity");
+    let quantities = Array.from(elements);
+    for (let i = 0; i < quantities.length; i++) {
+        quantities[i].innerHTML = qtyList[i].qty;
+    }
+    document.getElementById("open-modal").classList.remove('hidden');
+    document.getElementById("take").classList.remove('hidden');
+    document.getElementById("take-cancel").classList.add('hidden');
+    document.getElementById("take-confirm").classList.add('hidden');
+}
+
+async function confirmTake() {
+
+    qtyList.forEach(item => {
+        let subQty = parseInt(document.querySelector(`[data-itemid~="${item.id}"]`).value);
+        let newQty = (item.qty - subQty);
+        item["qty"] = newQty;
+    })
+
+    const response = await fetch('/api/take', {
+        method: "POST",
+        headers : {
+            'Content-Type' : 'application/json'
+        },
+        body: JSON.stringify(qtyList)
+    })
+    
+    console.log(response);
+}

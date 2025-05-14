@@ -2,6 +2,7 @@ body {
     display: flex;
     flex-direction: column;
 }
+
 #tab-nav {
     height: 30px;
     background-color: var(--blue-light);
@@ -52,7 +53,7 @@ main {
     color: var(--blue-dark);
 }
 
-#title > hr {
+#title>hr {
     width: 90%;
     border: 1px solid var(--pink-dark);
     margin: 0;
@@ -66,13 +67,14 @@ main {
 #title-type {
     color: var(--pink-dark);
 }
+
 #contents {
     grid-area: contents;
     margin: 20px;
     overflow: auto;
 }
 
-#contents > table {
+#contents>table {
     width: 90%;
     border-collapse: collapse;
     margin: 0 auto;
@@ -80,12 +82,13 @@ main {
     color: var(--blue-dark);
 }
 
-#contents > table th,
+#contents>table th,
 tr {
     text-align: left;
     height: 2em;
     border-bottom: 1px solid var(--blue-medium);
 }
+
 #buttons {
     grid-area: buttons;
     display: flex;
@@ -93,7 +96,7 @@ tr {
     margin: 5%;
 }
 
-#buttons > button {
+#buttons>button {
     width: 150px;
     height: 50px;
     border-radius: 50px;
@@ -104,7 +107,7 @@ tr {
     cursor: pointer;
 }
 
-#buttons > button:hover {
+#buttons>button:hover {
     background-color: var(--blue-medium);
 }
 
@@ -140,8 +143,12 @@ tr {
     color: var(--blue-dark);
 }
 
-#donationList > th, tr {
+#donationList>th, tr {
     text-align: left;
     height: 2em;
     border-bottom: 1px solid var(--blue-medium);
+}
+
+#maxValue {
+    margin-left: 0.3em;
 }

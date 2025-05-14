@@ -1,4 +1,4 @@
-const {getDistance} = require("./js/userLocation");
+const { getDistance } = require("./js/userLocation");
 const fs = require("fs");
 const pg = require("pg");
 const ejs = require("ejs");
@@ -28,7 +28,6 @@ const config = ({
 
 module.exports = function (app) {
     app.get('/api/browse', (req, res) => {
-
 
         const client = new pg.Client(config);
         client.connect((err) => {
@@ -85,10 +84,10 @@ module.exports = function (app) {
                 }
                 const renderedRows = await Promise.all(
                     results.rows.map((row) => {
-                        return ejs.renderFile("views/partials/content-rows.ejs", {row});
+                        return ejs.renderFile("views/partials/content-rows.ejs", { row });
                     })
                 );
-                
+
                 res.json(renderedRows)
                 client.end();
             });
@@ -97,7 +96,6 @@ module.exports = function (app) {
     });
 
     app.post('/api/donate', (req, res) => {
-        // let storageId = req.query.ID;
         let data = req.body;
         let sql = 'INSERT INTO "content" ("storageId", "itemName", "quantity", "bbd") VALUES '
         let items = [];
@@ -116,16 +114,81 @@ module.exports = function (app) {
             }
             client.query(sql, (error, results) => {
                 if (error) {
-                    console.log(sql);
-                    res.send({status: "fail", msg: "Unable to add item to DB"})
+                    console.log(error);
+                    res.send({ status: "fail", msg: "Unable to add item to DB" })
                 }
                 else {
-                    res.send({status: "success", msg: "Item added to DB"})
+                    res.send({ status: "success", msg: "Item added to DB" })
                 }
+                client.end();
             })
+
         })
     });
 
+    app.post("/api/take", async (req, res) => {
+        let data = req.body;
+        let deleteList = [];
+        let updateList = [];
+        let failure = false;
+        data.forEach(item => {
+            if (typeof item.id !== 'number' || typeof item.qty !== 'number') {
+                failure = true;
+                return;
+            }
+            if (item.qty == 0) {
+                deleteList.push(item);
+            } else {
+                updateList.push(item);
+            }
+        })
+        if (failure) {
+            res.send({ status: "fail", msg: "Unable to remove items from DB" });
+            return;
+        }
+
+        let updateSql = 'UPDATE "content" AS c SET "quantity" = d.qty FROM (VALUES ' + updateList.map(d => { return `(${d.id}, ${d.qty})` }).join(', ') + ') as d(id, qty) WHERE d.id = c."contentId"';
+
+        let deleteSql = 'DELETE FROM "content" WHERE "contentId" IN (' + deleteList.map(d => { return `${d.id}` }).join(', ') + ')'
+
+        if (updateList.length > 0) {
+            const client = new pg.Client(config);
+            await client.connect((err) => {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                client.query(updateSql, (error, results) => {
+                    if (error) {
+                        console.error(error);
+                        res.send({ status: "fail", msg: "Unable to remove items from DB" });
+                        return;
+                    }
+                    client.end();
+                });
+            });
+        }
+
+        if (deleteList.length > 0) {
+            const client = new pg.Client(config);
+            await client.connect((err) => {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                client.query(deleteSql, (error, results) => {
+                    if (error) {
+                        console.error(error);
+                        res.send({ status: "fail", msg: "Unable to remove items from DB" });
+                        return;
+                    }
+
+                    client.end();
+                });
+            })
+        }
+       res.send({ status: "success", msg: "Database successfully updated" });
+    })
 
     app.get("/manage/storage", async (req, res) => {
         const storageId = req.query.storageId;
@@ -358,15 +421,15 @@ module.exports = function (app) {
             SELECT CAST(coordinates[0] AS FLOAT) AS latitude, CAST(coordinates[1] AS FLOAT) AS longitude
             FROM storage WHERE "storageId" = $1`,
             [storageId]);
-            console.log("db:", JSON.stringify(seperate.rows[0]));
-            res.json(seperate.rows[0]);
-            client.end();
-       
+        console.log("db:", JSON.stringify(seperate.rows[0]));
+        res.json(seperate.rows[0]);
+        client.end();
+
     });
 
     app.get("/gmapkey", (req, res) => {
         const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-        res.json({apiKey})
+        res.json({ apiKey })
     });
-    
+
 };
