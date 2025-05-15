@@ -1,11 +1,5 @@
 <%- include('partials/header') %>
-<div id="tab-nav">
-    <div class="tab" id="tab-contents"><span class="material-icons">route</span></div>
-    <div class="tab" id="tab-contents"><span class="material-icons">shelves</span></div>
-    <div class="tab" id="tab-contents"><span class="material-icons">settings</span></div>
-    <div class="tab selected" id="tab-contents"><span class="material-icons">reviews</span></div>
-</div>
-
+<%- include('partials/contents-tab', {selected: 'reviews'}) %>
 <main>
 
     <!-- add review modal -->
@@ -52,9 +46,12 @@
         </div>
     </div>
 
-    <div id="reviews-container">
-        
-    </div>
-    <div class="spacer"></div>
-</main>
+        <div id="reviews-container">
+        </div>
+
+        <div class="reply-form-container">
+        </div>
+
+        <div class="spacer"></div>
+    </main>
 <%- include('partials/footer') %>
