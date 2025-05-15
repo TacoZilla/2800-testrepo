@@ -17,6 +17,25 @@ function expandReviews() {
 
 }
 
+function registerEventListeners() {
+
+    document.addEventListener("click", (event) => {
+
+        const executeOnMatch = (selector, callback) => {
+            if (event.target.matches(selector)) {
+                callback(event.target);
+            }
+        };
+
+        executeOnMatch("#expandrev", expandReviews);
+        executeOnMatch("#change-password-btn", togglePasswordFields);
+        executeOnMatch("#apply-btn", applyFilter);
+        executeOnMatch("#profile-edit-btn", toggleProfileEdit);
+    });
+
+    
+}
+
 function togglePasswordFields() {
     const container = document.getElementById("change-password-container");
     container.style.display = container.style.display === "none" ? "block" : "none";
@@ -34,6 +53,8 @@ function toggleProfileEdit() {
     });
 }
 document.addEventListener('DOMContentLoaded', () => {
+    registerEventListeners();
+
     document.getElementById('submit').addEventListener('click', async () => {
 
         let newPassword = document.getElementById('newPassword').value;

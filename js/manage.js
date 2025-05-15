@@ -8,6 +8,8 @@ if (!storageId) {
 
 document.addEventListener('DOMContentLoaded', function () {
 
+    registerEventListeners();
+    
     // Edit fridge name
     document.querySelector('.storage-title .edit-btn').addEventListener('click', () => {
         const nameEl = document.getElementById('storageName');
@@ -82,6 +84,26 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+function registerEventListeners() {
+
+    document.addEventListener("click", (event) => {
+
+        const executeOnMatch = (selector, callback) => {
+            if (event.target.matches(selector)) {
+                callback(event.target);
+            }
+        };
+
+        executeOnMatch("#description-btn", toggleEdit('description'));
+        executeOnMatch("#address-btn", toggleAddressEdit);
+        executeOnMatch("#type-btn", toggleEdit('storageTypeSelect'));
+        executeOnMatch("#clean-btn", toggleEdit('lastCleaned'));
+        executeOnMatch(".cancel-btn", closeModal);
+
+    });
+
+
+}
 
 function toggleEdit(fieldId) {
     const field = document.getElementById(fieldId);
