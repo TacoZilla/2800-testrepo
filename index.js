@@ -1,3 +1,4 @@
+const { getYourCity } = require("./js/city.js");
 const express = require("express");
 const session = require("express-session");
 const pgSession = require("connect-pg-simple")(session);
@@ -89,10 +90,16 @@ app.get("/login", function (req, res) {
 });
 
 // Route for browse page
-app.get("/browse", function (req, res) {
+app.get("/browse", async function (req, res) {
+    const  { lat, lon } = req.query;
+    const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+    const city = await getYourCity(lat, lon, process.env.GOOGLE_MAPS_API_KEY);
+    
     res.render("browse", {
+        city,
         stylesheets: ["browse.css"],
         scripts: [],
+        apiKey
     });
 });
 

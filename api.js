@@ -271,6 +271,35 @@ module.exports = function (app) {
         });
     });
 
+     app.get('/api/fridgePoint', (req, res) => {
+
+
+        const client = new pg.Client(config);
+        client.connect((err) => {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            client.query("SELECT * FROM public.storage", async (error, results) => {
+                if (error) {
+                    console.log(error);
+                    client.end();
+                    return;
+                }
+                 const points = results.rows.map(row => ({
+                id: row.id,
+                name: row.title,
+                lat: parseFloat(row.coordinates.x),
+                lon: parseFloat(row.coordinates.y)
+            }));
+
+            res.json(points);
+              
+            });
+        });
+    });
+
+
     app.get("/storageloc/:id", async (req, res) => {
         const storageId = req.params.id;
         const client = new pg.Client(config);
@@ -280,6 +309,7 @@ module.exports = function (app) {
             SELECT CAST(coordinates[0] AS FLOAT) AS latitude, CAST(coordinates[1] AS FLOAT) AS longitude
             FROM storage WHERE "storageId" = $1`,
             [storageId]);
+       
         res.json(seperate.rows[0]);
         client.end();
 
