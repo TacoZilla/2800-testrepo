@@ -54,8 +54,8 @@ function registerEventListeners() {
             }
         };
 
-        executeOnMatch("#fridgBtn", toggleEdit, 'fridge');
-        executeOnMatch("#pantryBtn", toggleEdit,'pantry');
+        executeOnMatch("#fridgeBtn", selectType,'fridge');
+        executeOnMatch("#pantryBtn", selectType,'pantry');
         
 
     });
