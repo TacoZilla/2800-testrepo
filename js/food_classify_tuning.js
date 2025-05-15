@@ -1,4 +1,4 @@
-import { CONFIGS, classify } from "../js/food-classify.js";
+import { DISTILBERT_CONFIGS, classify, threshold } from "./food-classify.js";
 import fs from "fs";
 import path from "path";
 
@@ -6,10 +6,9 @@ let datasets = JSON.parse(fs.readFileSync("data/datasets.json", "utf8"));
 const getDataFilePath = (version) => `data/classified_food_${version || testVersion}.txt`;
 
 let dataset = 1;
-const testVersion = "63";
+const testVersion = "65";
 
-runTests(CONFIGS, true, true);
-// runTests([CONFIGS[4]], true, true);
+runTests(DISTILBERT_CONFIGS, true, true);
 
 async function runTests(testConfigs, generate, log) {
     if (generate) {
@@ -25,8 +24,8 @@ async function runTests(testConfigs, generate, log) {
 
 async function generateTestData(testConfigs, dataset) {
     for (let data of dataset) {
-        const score = await classify(data.word, testConfigs);
-        data.score = data.label == "food" ? score : 1 - score;
+        const result = await classify(data.word, testConfigs);
+        data.score = result.score;
         console.log(data.word + ": " + data.score);
     }
     fs.writeFileSync(getDataFilePath(), JSON.stringify(dataset));
@@ -39,13 +38,11 @@ function calculatePredictionErrors(path) {
     let correct = 0;
     console.log("===Errors in Final Result===");
     for (let data of testData) {
-        const isError = data.score < 0.5;
         const actualFood = data.label === "food";
-
-        if (isError && !actualFood) {
+        if (!actualFood && data.score > threshold) {
             console.log("false positive: " + data.word);
             falsePositives++;
-        } else if (isError && actualFood) {
+        } else if (actualFood && data.score <= threshold) {
             console.log("false negative: " + data.word);
             falseNegatives++;
         } else {

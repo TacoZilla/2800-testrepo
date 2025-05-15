@@ -133,6 +133,7 @@ document.querySelector("#addItem").addEventListener("click", function (e) {
 });
 
 document.querySelector("#donate-btn").addEventListener("click", function (e) {
+    console.log("donate button clicked");
     let items = JSON.stringify(itemsToDonate);
 
     ajaxPOST(
@@ -225,5 +226,15 @@ document.querySelector("#take-confirm").addEventListener("click", async function
         cancelTake();
     } else {
         console.log("An error has occurred!");
+    }
+});
+
+document.querySelector("#itemName").addEventListener("focusout", async (event) => {
+    const input = event.target.value;
+    if (input) {
+        console.log("getting score.")
+        let response = await fetch(`/api/classify?input=${encodeURIComponent(input)}`);
+        let score = await response.text();
+        console.log("score: " + score);
     }
 });
