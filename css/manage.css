@@ -33,7 +33,6 @@
 #body-container {
     padding: 5%;
     padding-top: 5%;
-    margin: auto;
     font-size: 16pt;
     background-color: #fff;
 }
@@ -94,7 +93,7 @@ select:disabled {
 
 /* Body styling */
 .section {
-    margin-bottom: 0;
+    margin-bottom: 4%;
 }
 
 label {

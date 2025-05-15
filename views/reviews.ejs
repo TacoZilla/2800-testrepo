@@ -1,16 +1,10 @@
 <%- include('partials/header') %>
-<div id="tab-nav">
-    <div class="tab" id="tab-contents"><span class="material-icons">route</span></div>
-    <div class="tab" id="tab-contents"><span class="material-icons">shelves</span></div>
-    <div class="tab" id="tab-contents"><span class="material-icons">settings</span></div>
-    <div class="tab selected" id="tab-contents"><span class="material-icons">reviews</span></div>
-</div>
-
+<%- include('partials/contents-tab', {selected: 'reviews'}) %>
 <main>
 
     <!-- add review modal -->
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong"
-        onclick="openModal()">
+        id="add-review-button">
         Add a review
     </button>
 
@@ -18,8 +12,8 @@
         <div class="modal-content">
             <div id="reviewHeader">
                 <h3>Add Review</h3>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                    onclick="closeModal()"></button>
+                <button type="button" class="btn-close close-modal-button" data-bs-dismiss="modal" aria-label="Close"
+                    ></button>
             </div>
 
             <div class="form-group">
@@ -46,15 +40,18 @@
             </div>
 
             <div class="modal-actions">
-                <button onclick="closeModal()">Cancel</button>
-                <button id="submit">Add</button>
+                <button class="close-modal-button">Cancel</button>
+                <button id="submit-review-button">Add</button>
             </div>
         </div>
     </div>
 
-    <div id="reviews-container">
-        
-    </div>
-    <div class="spacer"></div>
-</main>
+        <div id="reviews-container">
+        </div>
+
+        <div class="reply-form-container">
+        </div>
+
+        <div class="spacer"></div>
+    </main>
 <%- include('partials/footer') %>
