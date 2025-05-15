@@ -1,3 +1,4 @@
+const storageId = window.location.pathname.split("/")[2];
 
 function expandReview(element) {
     const body = element.previousElementSibling;
@@ -41,38 +42,12 @@ function closeModal() {
     document.getElementById("reviewModal").style.display = "none";
 }
 
-// Helper functions
-function getStorageIdFromURL() {
-    const pathParts = window.location.pathname.split('/');
-    return pathParts[pathParts.length - 1];
-}
-
-function initializeReviewSubmission() {
-    document.getElementById("submit").addEventListener("click", async (e) => {
-        e.preventDefault();
-        await submitReview();
-    });
-}
-
 // Main initialization
 document.addEventListener("DOMContentLoaded", () => {
-    initializeReviewSubmission();
     getReviews();
     registerEventListeners();
 });
 
-// Helper functions
-function getStorageIdFromURL() {
-    const pathParts = window.location.pathname.split('/');
-    return pathParts[pathParts.length - 1];
-}
-
-function initializeReviewSubmission() {
-    document.getElementById("submit").addEventListener("click", async (e) => {
-        e.preventDefault();
-        await submitReview();
-    });
-}
 
 // Review functions
 async function submitReview() {
@@ -94,15 +69,22 @@ async function submitReview() {
         });
 
         if (res.ok) {
-            alert("Review submitted!");
             resetReviewForm();
+            closeModal();
             await getReviews();
         } else {
             alert("Failed to submit review. Please try again");
-        }}
-        catch (err) {
-            console.log(err);
-        }}
+        }
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+function resetReviewForm(){
+    document.getElementById("reviewTitle").value = "";
+    document.getElementById("reviewText").value = "";
+    document.getElementById("reviewRating").value = "";
+}
 
 async function getReviews() {
     try {
@@ -136,6 +118,10 @@ function registerEventListeners() {
         executeOnMatch(".review-image", expandImage);
         executeOnMatch(".reply-button", toggleReplyForm);
         executeOnMatch(".submit-reply", submitReply);
+        executeOnMatch("#add-review-button", openModal);
+        executeOnMatch(".close-modal-button", closeModal);
+        executeOnMatch("#submit-review-button", submitReview);
+
     });
 
     document.addEventListener("DOMContentLoaded", updateReadMoreButton);
@@ -143,14 +129,16 @@ function registerEventListeners() {
 }
 
 function toggleReplyForm(button) {
+    console.log(button)
     const form = button.nextElementSibling;
+    // console.log(form);
     form.style.display = form.style.display == "none" ? "block" : "none";
 }
 
 async function submitReply(button) {
     const reviewDiv = button.closest(".review");
     const reviewId = reviewDiv.dataset.reviewId;
-    const textarea = reviewDiv.querySelector(".reply-text");
+    const textarea = reviewDiv.querySelector("#reply-textarea");
     const replyText = textarea.value.trim();
 
     if (!replyText) {
@@ -161,7 +149,7 @@ async function submitReply(button) {
         const res = await fetch(`/replies`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ reviewId: parseInt(reviewId, 10), reply: replyText, storageId: getStorageIdFromURL() }),
+            body: JSON.stringify({ reviewId: parseInt(reviewId, 10), reply: replyText, storageId: storageId }),
         });
 
         if (res.ok) {
@@ -170,7 +158,7 @@ async function submitReply(button) {
             // reviewDiv.querySelector(".replies").insertAdjacentHTML("beforeend", newReplyHTML);
             // textarea.value = "";
             reviewDiv.querySelector(".reply-form-container").style.display = "none";
-            location.reload();
+            getReviews();
         } else {
             alert("Failed to submit reply.");
         }

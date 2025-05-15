@@ -48,11 +48,6 @@ function loadMapView() {
     }
 }
 
-function openMap() {
-    const googleMapsUrl = `https://www.google.com/maps?q=${storelat},${storelon}`;
-    window.open(googleMapsUrl, "_blank");
-}
-
 async function getDistanceToFridge(fridgeId) {
     let userlocation = await getUserLocation();
     let storagelocation = await getFridgePosition(fridgeId);

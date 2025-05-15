@@ -54,7 +54,7 @@ app.use((req, res, next) => {
 
 // Route for landing page pre-login
 app.get("/", function (req, res) {
-    if (session.authenticated) {
+    if (req.session.authenticated) {
         res.redirect("/browse");
     } else {
         res.render("index", {
@@ -157,8 +157,8 @@ app.get("/directions", function (req, res) {
 });
 
 // Route for manage page
-app.get("/manage/storage", async (req, res) => {
-    const storageId = req.query.storageId;
+app.get("/manage/:id", async (req, res) => {
+    const storageId = req.params.id;
 
     if (!storageId) {
         return res.status(400).json({ error: "Storage ID is required" });
@@ -183,8 +183,9 @@ app.get("/manage/storage", async (req, res) => {
         }
         res.render("manage", {
             storage,
-            stylesheets: ["manage.css"],
+            stylesheets: ["contents.css", "manage.css"],
             scripts: ["imageUploadUtil.js", "manage.js"],
+            id: storageId
         });
     } catch (error) {
         console.error("Error fetching storage:", error);
@@ -192,19 +193,6 @@ app.get("/manage/storage", async (req, res) => {
     } finally {
         await client.end();
     }
-});
-
-///route for reviews
-app.get("/reviews", function (req, res) {
-    res.render("reviews", {
-        stylesheets: ["reviews.css", "contents.css", "addreview.css"],
-        scripts: ["reviews.js"],
-        other: [
-            `<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">`,
-            `<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>`,
-        ],
-    });
 });
 
 // Route for profile page
@@ -235,6 +223,7 @@ app.get("/reviews/:storageId", function (req, res) {
             integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">`,
             `<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>`,
         ],
+        id: storageId,
     });
 });
 
@@ -274,9 +263,7 @@ app.post("/reviews/:storageId", async (req, res) => {
 app.post("/replies", async (req, res) => {
     const userId = req.session.userId;
     console.log("Received body:", req.body);
-    const { reviewId, reply, storageId } = req.body;
-
-    const renderedHTML = await ejs.renderFile("views/reviews.ejs", { storageId });
+    const { reviewId, reply } = req.body;
 
     const client = new pg.Client(config);
     client.connect();
@@ -290,13 +277,12 @@ app.post("/replies", async (req, res) => {
       `,
             [userId, reviewId, reply]
         );
-        res.send(renderedHTML);
     } catch (err) {
         console.error(err);
         res.status(500).send("Error saving reply");
-    } finally {
-        await client.end();
     }
+    res.send("Reply added to database.");
+    client.end();
 });
 
 // Logout user and destroys current session

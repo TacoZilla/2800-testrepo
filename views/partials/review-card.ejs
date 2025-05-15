@@ -3,10 +3,9 @@
     <!-- review content -->
     <div class="review-header">
         <div class="review-header-left">
-            <img class="review-header-avatar" src="/img/avatar.jpeg" alt="profile picture" />
             <div>
                 <div class="review-header-username">
-                    <%= row.userId %>
+                    <%= `${row.firstName} ${row.lastName}` %>
                 </div>
                 <div class="review-header-date">
                     <%= new Date(row.createdAt).toDateString() %>
@@ -30,51 +29,42 @@
     <div class="review-body">
         <% if (row.imageurl) { %>
             <img src="<%= row.imageurl %>" class="review-image" />
-            <% } else { %>
-                <img src="/img/fridge1.png" class="review-image" />
-                <% } %>
+            <% } %>
                     <div class="review-text">
                         <%= row.body %>
                     </div>
     </div>
 
-    <!-- reply button -->
-    <button class="reply-button">Reply</button>
-
-
-    <div class="reply-form-container" style="display: none;">
-        <textarea class="reply-text" placeholder="Write your reply..."></textarea>
-        <button class="submit-reply">Submit Reply</button>
-    </div>
 
     <div class="replies">
-    <% replies.filter(r => r.reviewId === row.reviewId).forEach(reply => { %>
-        <div class="reply">
-            <div class="review-header">
-                <div class="review-header-left">
-                    <img class="review-header-avatar" src="/img/avatar.jpeg" alt="profile picture" />
-                    <div>
-                        <div class="review-header-username">
-                            <%= reply.userId %>
-                        </div>
-                        <div class="review-header-date">
-                            <%= new Date(reply.createdAt).toDateString() %>
+        <% replies.filter(r=> r.reviewId === row.reviewId).forEach(reply => { %>
+            <div class="reply">
+                <div class="review-header">
+                    <div class="review-header-left">
+                        <div>
+                            <div class="review-header-username">
+                                <%= `${row.firstName} ${row.lastName}` %>
+                            </div>
+                            <div class="review-header-date">
+                                <%= new Date(reply.createdAt).toDateString() %>
+                            </div>
                         </div>
                     </div>
+                    <div class="review-header-right">
+                        <span class="review-action">report</span>
+                    </div>
                 </div>
-                <div class="review-header-right">
-                    <span class="review-action">report</span>
+                <div class="review-body">
+                    <div class="reply-text">
+                        <%= reply.body %>
+                    </div>
                 </div>
             </div>
-            <div class="review-body">
-                <div class="reply-text">
-                    <%= reply.body %>
+            <% }) %>
+                <button class="reply-button">Reply</button>
+                <div class="reply-form-container" style="display: none;">
+                    <textarea id="reply-textarea" placeholder="Write your reply..."></textarea>
+                    <button class="submit-reply">Submit Reply</button>
                 </div>
-            </div>
-        </div>
-    <% }) %>
-</div>
-
-
-
+    </div>
 </div>
