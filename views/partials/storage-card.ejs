@@ -1,6 +1,6 @@
 <a href="contents/<%= row.storageId %>" class="storage-card">
     <%if(row.image) {%>
-    <img src="<%= "/img/" + row.image%>" class="card-background" />
+    <img src="<%=row.image%>" class="card-background" />
     <% }%>
     <div class="card-background-gradient"></div>
     <div class="card-content">
