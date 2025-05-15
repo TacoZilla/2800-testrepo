@@ -84,7 +84,7 @@ module.exports = function (app) {
 
             await client.connect();
             const ownedResult = await client.query(`SELECT * FROM public.storage WHERE "ownerId" = $1`, [ownerId]);
-            
+
             const renderedCards = await Promise.all(
                 ownedResult.rows.map((row) => {
 
@@ -117,8 +117,10 @@ module.exports = function (app) {
                     return ejs.renderFile("views/partials/review-card.ejs", { row });
                 })
             );
+
             // Send the array of rendered HTML
             res.json(renderedCards);
+            
         } catch (err) {
             console.error(" Review template rendering error:", err);
             res.status(500).json({ error: "Failed to render review templates" });

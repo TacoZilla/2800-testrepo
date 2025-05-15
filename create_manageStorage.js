@@ -27,7 +27,6 @@ const config = ({
     }
 });
 
-const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 async function geocodeAddress(fullAddress) {
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;
