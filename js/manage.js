@@ -87,17 +87,16 @@ document.addEventListener('DOMContentLoaded', function () {
 function registerEventListeners() {
 
     document.addEventListener("click", (event) => {
-
-        const executeOnMatch = (selector, callback) => {
-            if (event.target.matches(selector)) {
-                callback(event.target);
+        const executeOnMatch = (selector, callback, arg) => {
+            if (event.target.closest(selector)) {
+                callback(arg);
             }
         };
 
-        executeOnMatch("#description-btn", toggleEdit('description'));
+        executeOnMatch("#description-btn", toggleEdit, 'description');
         executeOnMatch("#address-btn", toggleAddressEdit);
-        executeOnMatch("#type-btn", toggleEdit('storageTypeSelect'));
-        executeOnMatch("#clean-btn", toggleEdit('lastCleaned'));
+        executeOnMatch("#type-btn", toggleEdit, 'storageTypeSelect');
+        executeOnMatch("#clean-btn", toggleEdit, 'lastCleaned');
         executeOnMatch(".cancel-btn", closeModal);
 
     });
@@ -106,6 +105,7 @@ function registerEventListeners() {
 }
 
 function toggleEdit(fieldId) {
+    console.log(fieldId);
     const field = document.getElementById(fieldId);
     field.disabled = !field.disabled;
 
