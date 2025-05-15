@@ -1,6 +1,8 @@
 
 document.addEventListener('DOMContentLoaded', function () {
 
+    registerEventListeners();
+
     initImageUploadPreview(
         'uploadTrigger',
         'coverPhotoInput',
@@ -42,6 +44,24 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     });
 });
+
+function registerEventListeners() {
+
+    document.addEventListener("click", (event) => {
+        const executeOnMatch = (selector, callback, arg) => {
+            if (event.target.closest(selector)) {
+                callback(arg);
+            }
+        };
+
+        executeOnMatch("#fridgeBtn", selectType,'fridge');
+        executeOnMatch("#pantryBtn", selectType,'pantry');
+        
+
+    });
+
+
+}
 
 function selectType(type) {
     const fridgeBtn = document.getElementById('fridgeBtn');

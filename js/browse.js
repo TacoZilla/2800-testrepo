@@ -1,5 +1,6 @@
 import { getUserLocation, getDistance } from "./userLocation.js";
 
+const radiusFilter = localStorage.getItem('radiusFilter');
 
 initialize();
 
@@ -54,8 +55,7 @@ function setupFilterButtons() {
 
 async function getCards() {
     let location = await getUserLocation();
-
-    const response = await fetch(`/api/browse?lat=${location.lat}&lon=${location.lon}`);
+    const response = await fetch(`/api/browse?lat=${location.lat}&lon=${location.lon}&radiusFilter=${radiusFilter}`);
     if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
     }
