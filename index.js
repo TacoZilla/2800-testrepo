@@ -143,6 +143,7 @@ app.get("/contents/:id", function (req, res) {
                     other: other,
                     id: storageID,
                 });
+                client.end();
             }
         );
     });
@@ -331,6 +332,7 @@ app.post("/reviews/:storageId", async (req, res) => {
             (err, results) => {
                 if (err) {
                     console.log(err);
+                    client.end();
                     return;
                 }
                 res.redirect(`/reviews/${storageId}`);
