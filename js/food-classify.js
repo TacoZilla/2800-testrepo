@@ -1,36 +1,76 @@
+/**
+ * @file food-classify.js
+ * @description
+ * This script provides utilities for classifying whether a given input string refers to food or drink.
+ * It leverages multiple NLP models (DistilBERT, BART, Deepseek variants) via HuggingFace,
+ * using a set of prompts and configurable thresholds to aggregate model responses and determine food classification.
+ * The script supports extensible model and prompt configurations, and exposes a main `classify` function for use.
+ */
 import dotenv from "dotenv";
 import { InferenceClient } from "@huggingface/inference";
 
-//Is the word "apple" a type of food or drink? Your replies must be only a single word: ["yes", "no"].
 dotenv.config();
 const api_key = process.env.HF_API_KEY;
-
 const client = new InferenceClient(api_key);
 
-export const threshold = 0.95;
+// Threshold for determining if the input is classified as food
+export const threshold = 0.9;
 
-const MODELS = {
+/**
+ * Function to calculate the score for Deepseek models.
+ * @param {Object} response - The response object from the Deepseek model.
+ * @returns {number} - Returns 1 for "yes", 0 for "no", If invalid (no yes/no),
+ *  it returns the threshold for minimal impact on the decision.
+ */
+let getScoreDeepseek = (response) => {
+    const result = response.result.toLowerCase().trim();
+    if (result.includes("yes")) {
+        return 1;
+    }
+    else if (result.includes("no")) {
+        return 0;
+    }
+    else{
+        console.log("bad response: " + response)
+        return threshold;
+    }
+}
+
+// Object containing model configurations for various classification models
+const models = {
     distilbert: {
         name: "Distilbert Uncased",
         url: "https://router.huggingface.co/hf-inference/models/typeform/distilbert-base-uncased-mnli",
-        getPayload: (config, input) => {
+        /**
+         * Generates the payload for the Distilbert model.
+         * @param {Object} prompt - The prompt configuration.
+         * @param {string} input - The input string to classify.
+         * @returns {Object} - The payload for the model.
+         */
+        getPayload: (prompt, input) => {
             return {
-                inputs: config.queryInput.replace("[INPUT]", input),
-                parameters: config.parameters,
+                inputs: prompt.queryInput.replace("[INPUT]", input),
+                parameters: prompt.parameters,
             };
         },
+        /**
+         * Extracts the score from the model's response.
+         * @param {Object} response - The response object from the model.
+         * @returns {number} - The extracted score.
+         */
         getScore: (response) => {
             if (response && response.result && Array.isArray(response.result.scores)) {
                 return response.result.scores[0];
             }
             return 0;
         },
+        query: queryDistilbert,
     },
     distilbertTuned: {
         name: "Distilbert Food",
         url: "https://router.huggingface.co/hf-inference/models/mrdbourke/learn_hf_food_not_food_text_classifier-distilbert-base-uncased",
-        getPayload: (config, input) => {
-            return { inputs: config.queryInput.replace("[INPUT]", input) };
+        getPayload: (prompt, input) => {
+            return { inputs: prompt.queryInput.replace("[INPUT]", input) };
         },
         getScore: (response) => {
             if (response && response.result && Array.isArray(response.result.scores)) {
@@ -38,35 +78,74 @@ const MODELS = {
             }
             return 0;
         },
+        query: queryDistilbert,
+
     },
     bart: {
         name: "Bart",
         url: "https://router.huggingface.co/hf-inference/models/facebook/bart-large-mnli",
+        getPayload: (prompt, input) => {
+            return {
+                inputs: prompt.queryInput.replace("[INPUT]", input),
+                parameters: prompt.parameters,
+            };
+        },
+        getScore: (response) => {
+            if (response && response.result && Array.isArray(response.result.scores)) {
+                const labels = response.result.labels;
+                const scores = response.result.scores;
+                const ethical = scores[labels.indexOf("ethical")];
+                // console.log("ethical: " + ethical)
+                if(ethical < 0.35){
+                    return ethical;
+                }
+                return threshold;
+            }
+            return 0;
+        },
+        query: queryDistilbert,
     },
     deepseekV2: {
         name: "Deepseek V2",
         provider: "novita",
         model: "deepseek-ai/DeepSeek-Prover-V2-671B",
+        query: queryDeepseek,
+        getScore: getScoreDeepseek,
     },
     deepseekR1: {
         name: "Deepseek R1",
         provider: "novita",
         model: "deepseek-ai/DeepSeek-R1",
+        query: queryDeepseek,
+        getScore: getScoreDeepseek,
     },
     deepseekV3: {
         name: "Deepseek V3",
         provider: "together",
         model: "deepseek-ai/DeepSeek-V3",
+        query: queryDeepseek,
+        getScore: getScoreDeepseek,
     },
     deepseek7B: {
         name: "Deepseek R1 Distill Qwen 7B",
         provider: "nscale",
         model: "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+        query: queryDeepseek,
+        getScore: getScoreDeepseek,
+    },
+    deepseek1B: {
+        name: "Deepseek R1 Distill Qwen 1.5B",
+        provider: "nscale",
+        model: "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
+        query: queryDeepseek,
+        getScore: getScoreDeepseek,
     },
 };
-export const DISTILBERT_CONFIGS = [
-        {
-        model: MODELS.distilbert,
+
+// Array of prompts used for classification
+export const prompts = [
+    {
+        model: models.distilbert,
         queryInput: "I enjoyed a [INPUT] for breakfast today.",
         parameters: {
             candidate_labels: ["edible", "non-edible"],
@@ -75,7 +154,7 @@ export const DISTILBERT_CONFIGS = [
         },
     },
     {
-        model: MODELS.distilbert,
+        model: models.distilbert,
         queryInput: "I'd like a [INPUT] for lunch today.",
         parameters: {
             candidate_labels: ["edible", "non-edible"],
@@ -84,7 +163,7 @@ export const DISTILBERT_CONFIGS = [
         },
     },
     {
-        model: MODELS.distilbert,
+        model: models.distilbert,
         queryInput: "I'm going to eat some [INPUT] for lunch today.",
         parameters: {
             candidate_labels: ["edible", "non-edible"],
@@ -93,7 +172,7 @@ export const DISTILBERT_CONFIGS = [
         },
     },
     {
-        model: MODELS.distilbert,
+        model: models.distilbert,
         queryInput: "I had a [INPUT] for dinner today!",
         parameters: {
             candidate_labels: ["edible", "non-edible"],
@@ -102,7 +181,7 @@ export const DISTILBERT_CONFIGS = [
         },
     },
     {
-        model: MODELS.distilbert,
+        model: models.distilbert,
         queryInput: "I ate some [INPUT] for dinner today",
         parameters: {
             candidate_labels: ["edible", "non-edible"],
@@ -110,83 +189,80 @@ export const DISTILBERT_CONFIGS = [
             multi_label: false,
         },
     },
-    // {
-    //     model: MODELS.distilbertTuned,
-    //     queryInput: "I'd like a [INPUT] for lunch today.",
-    // },
-    // {
-    //     model: MODELS.distilbertTuned,
-    //     queryInput: "I had a [INPUT] for dinner today!",
-    // },
-];
-
-export const DEEPSEEK_CONFIGS = [
     {
-        model: MODELS.deepseek7B,
+        model: models.bart,
+        queryInput: "Is it ethical to eat a [INPUT]",
+        parameters: {
+            candidate_labels: ["ethical", "unethical"],
+            hypothesis_template: "It is {}.",
+            multi_label: false,
+        },
+    },
+    {
+        model: models.deepseek7B,
         message: `Is the word "[INPUT]" a type of food or drink? 
                 Your replies must be only a single word: ["yes", "no"].`,
     },
 ];
 
+/**
+ * Classifies the input using multiple prompts and models.
+ * @param {string} input - The input string to classify.
+ * @returns {Object} - The classification result containing the input, score, and isFood flag.
+ */
 export async function classify(input) {
-    const promises = DISTILBERT_CONFIGS.map(config => queryDistilbert(input, config));
+    const promises = prompts.map(prompt => prompt.model.query(input, prompt));
     const responses = await Promise.all(promises);
     let score = 0;
     for (let response of responses) {
-        const responseScore = response.config.model.getScore(response);
+        const responseScore = response.prompt.model.getScore(response);
             score+= responseScore;
     }
-    score /= DISTILBERT_CONFIGS.length;
+    score /= prompts.length;
     const isFood = score >= threshold;
-    return { score, isFood};
+    return { input, score, isFood};
 }
 
-async function queryDistilbert(input, config) {
-    const response = await fetch(config.model.url, {
+/**
+ * Queries the Distilbert model for classification.
+ * Also works for Bart Large mnli
+ * @param {string} input - The input string to classify.
+ * @param {Object} prompt - The prompt configuration.
+ * @returns {Object} - The response from the model.
+ */
+async function queryDistilbert(input, prompt) {
+    const response = await fetch(prompt.model.url, {
         headers: {
             Authorization: `Bearer ${api_key}`,
             "Content-Type": "application/json",
         },
         method: "POST",
-        body: JSON.stringify(config.model.getPayload(config, input)),
+        body: JSON.stringify(prompt.model.getPayload(prompt, input)),
     });
     const result = await response.json();
-    return { result, config };
+    return { result, prompt };
 }
 
-export async function classifyDeepseek(input) {
-    const start = Date.now();
-    let score = 0;
-    for (let config of DEEPSEEK_CONFIGS) {
-        const response = await queryDeepseek(input, config);
-        console.log("raw response: " + (response.toLowerCase().trim()));
-        if (response.includes("yes")) {
-            console.log("it is food")
-            score++;
-        }
-        else if (response.includes("no")) {
-            console.log(`${input} is not food`)
-        }
-        else{
-            console.log("bad response: " + response)
-        }
-    }
-    score /= configs.length;
-    const end = Date.now();
-    console.log(`Query took ${end - start} ms`);
-    return score;
-}
-
-async function queryDeepseek(input, config) {
+/**
+ * Queries the Deepseek model for classification.
+ * @param {string} input - The input string to classify.
+ * @param {Object} prompt - The prompt configuration.
+ * @returns {Object} - The response from the model.
+ */
+async function queryDeepseek(input, prompt) {
+    // const start = Date.now();
     const response = await client.chatCompletion({
-        provider: config.model.provider,
-        model: config.model.model,
+        provider: prompt.model.provider,
+        model: prompt.model.model,
         messages: [
             {
                 role: "user",
-                content: config.message.replace("[INPUT]", input),
+                content: prompt.message.replace("[INPUT]", input),
             },
         ],
     });
-    return response.choices[0].message.content;
+    const content = response.choices[0].message.content;
+    // const end = Date.now();
+    // console.log(`${prompt.model.name} took ${end - start} ms to classify ${input} as ${content.trim()}`);
+    return { result: content, prompt };
 }
