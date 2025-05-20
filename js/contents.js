@@ -138,7 +138,41 @@ document.querySelector("#addItem").addEventListener("click", function (e) {
     document.querySelector("#donate-btn").disabled = false;
 });
 
-document.querySelector("#donate-btn").addEventListener("click", function (e) {
+let donatePending = false;
+
+async function onTurnstileSuccess(token) {
+
+    const res = await fetch('/challenge-point', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }) 
+
+    });
+    const result = await res.json();
+    return result;
+}
+
+document.querySelector("#donate-btn").addEventListener("click", async function (e) { // add cloudflare
+    e.preventDefault();
+    turnstile.reset('#donate-widget');
+    donatePending = true;
+    turnstile.execute('#donate-widget', {action: 'donate'});
+});
+
+ window.onTurnstileVerified = async function (token) {
+
+    if (!donatePending) return;
+    donatePending = false;
+
+    const result = await onTurnstileSuccess(token);
+
+    if (!result.success) {
+        alert("not verified");
+        return;
+    }
+
+    console.log("verified!")
+
     console.log("donate button clicked");
     let items = JSON.stringify(itemsToDonate);
 
@@ -162,7 +196,8 @@ document.querySelector("#donate-btn").addEventListener("click", function (e) {
         },
         items
     );
-});
+}
+
 
 var qtyList = [];
 
