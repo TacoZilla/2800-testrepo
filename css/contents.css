@@ -233,7 +233,7 @@ tr {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background-color: #fff;
+  background-color: #ff0000;
   box-shadow: 32px 0 #fff, -32px 0 #fff;
   position: relative;
   animation: flash 0.5s ease-out infinite alternate;
