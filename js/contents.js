@@ -159,7 +159,7 @@ document.querySelector("#donate-btn").addEventListener("click", async function (
     //assigns currentAction as donate
     currentAction = "donate"
 
-    const loader = document.querySelector(".loader")
+    const loader = document.querySelector(".persoloader")
 
     loader.classList.remove("donate-hidden");
 
@@ -178,7 +178,7 @@ document.querySelector("#donate-btn").addEventListener("click", async function (
 
     pending = false;
 
-    const loader = document.querySelector(".loader")
+    const loader = document.querySelector(".persoloader")
 
     const result = await onTurnstileSuccess(token);
 
