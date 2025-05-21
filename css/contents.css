@@ -229,13 +229,16 @@ tr {
     color: var(--pink-dark-bold);
 }
 
+
 .persoloader {
+  display: inline-block;
   width: 16px;
   height: 16px;
+  margin-left: 8px; 
   border-radius: 50%;
   background-color: #ff0000;
   box-shadow: 32px 0 #fff, -32px 0 #fff;
-  position: absolute;
+  position: relative;
   animation: flash 0.5s ease-out infinite alternate;
 }
 
@@ -254,7 +257,7 @@ tr {
   }
 }
 
-/* .donate-hidden {
-    display: none;
-} */
+.donate-hidden {
+  display: none;
+}
       
