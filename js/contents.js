@@ -159,7 +159,9 @@ document.querySelector("#donate-btn").addEventListener("click", async function (
     //assigns currentAction as donate
     currentAction = "donate"
 
-    document.getElementById("loader").classList.remove("donate-hidden");
+    const loader = document.querySelector(".loader")
+
+    loader.classList.remove("donate-hidden");
 
     turnstile.reset('#turnstile-widget');
     pending = true;
@@ -176,7 +178,7 @@ document.querySelector("#donate-btn").addEventListener("click", async function (
 
     pending = false;
 
-    document.getElementById("loader").classList.add("donate-hidden");
+    const loader = document.querySelector(".loader")
 
     const result = await onTurnstileSuccess(token);
 
@@ -184,6 +186,8 @@ document.querySelector("#donate-btn").addEventListener("click", async function (
         alert("not verified");
         return;
     }
+
+    loader.classList.remove("donate-hidden");
 
     //determines which function to call based on which button was pushed
     if (currentAction === "donate") {
