@@ -1,6 +1,7 @@
+ <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <%- include('partials/header') %>
     <%- include('partials/contents-tab', {selected: 'contents' }) %>
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+   
         <main id="main-contents">
             <div id="title">
                 <div id="title-name">
@@ -93,7 +94,8 @@
                     </div>
                     <div class="modal-actions">
                         <button id="modal-cancel">Cancel</button>
-                        <button id="donate-btn" disabled>Donate <span id="loader" class="donate-hidden"></span> </button>
+                        <button id="donate-btn" disabled>Donate </button>
+                        <span id="loader" class="donate-hidden"></span>
                          <div id="turnstile-widget" class="cf-turnstile" data-sitekey="0x4AAAAAABdagb_F0YACWFyg"
                             data-callback="onTurnstileVerified" data-mode="invisible">
                         </div>
