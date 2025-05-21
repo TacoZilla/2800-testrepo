@@ -237,7 +237,7 @@ tr {
   margin-left: 35px; 
   border-radius: 50%;
   background-color: #ff0000;
-  box-shadow: 32px 0 #fff, -32px 0 #fff;
+  box-shadow: 32px 0 #d3fbff, -32px 0 #d3fbff;
   position: relative;
   animation: flash 0.5s ease-out infinite alternate;
 }
@@ -245,7 +245,7 @@ tr {
 @keyframes flash {
   0% {
     background-color: rgba(80, 223, 255, 0.133);
-    box-shadow: 32px 0 #FFF2, -32px 0 #FFF;
+    box-shadow: 32px 0 #FFF2, -32px 0 #d3fbff;
   }
   50% {
     background-color: #4edeff;
@@ -253,7 +253,7 @@ tr {
   }
   100% {
     background-color: rgba(80, 223, 255, 0.133);
-    box-shadow: 32px 0 #FFF, -32px 0 #FFF2;
+    box-shadow: 32px 0 #d3fbff, -32px 0 #FFF2;
   }
 }
 
