@@ -188,7 +188,7 @@ document.querySelector("#donate-btn").addEventListener("click", async function (
         return;
     }
 
-    ploader.classList.remove("donate-hidden");
+    ploader.classList.add("donate-hidden");
     nloader.classList.add("take-hidden");
     donateBtn.textContent = originalText;
 
@@ -230,18 +230,18 @@ document.querySelector("#donate-btn").addEventListener("click", async function (
 
 
 var qtyList = [];
-const donateBtn = document.getElementById("donate-btn");
-const originalText = donateBtn.textContent.trim();
+let takeBtn = document.getElementById("take");
+let originalText = takeBtn.textContent.trim();
 document.querySelector("#take").addEventListener("click", function takeMode() {
 
-     currentAction = "take"
+    currentAction = "take"
     turnstile.reset('#turnstile-widget');
 
     const nloader = document.querySelector(".nuthaloader");
     
 
     
-    donateBtn.textContent = "";
+    takeBtn.textContent = "";
     nloader.classList.remove("take-hidden")
 
     pending = true;
