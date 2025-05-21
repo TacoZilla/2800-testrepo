@@ -189,7 +189,7 @@ document.querySelector("#donate-btn").addEventListener("click", async function (
     }
 
     ploader.classList.remove("donate-hidden");
-    nloader.classList.add("take-hidden")
+    nloader.classList.add("take-hidden");
 
     //determines which function to call based on which button was pushed
     if (currentAction === "donate") {
