@@ -190,6 +190,7 @@ document.querySelector("#donate-btn").addEventListener("click", async function (
 
     ploader.classList.remove("donate-hidden");
     nloader.classList.add("take-hidden");
+    donateBtn.textContent = originalText;
 
     //determines which function to call based on which button was pushed
     if (currentAction === "donate") {
@@ -229,14 +230,18 @@ document.querySelector("#donate-btn").addEventListener("click", async function (
 
 
 var qtyList = [];
-
+const donateBtn = document.getElementById("donate-btn");
+const originalText = donateBtn.textContent.trim();
 document.querySelector("#take").addEventListener("click", function takeMode() {
 
      currentAction = "take"
     turnstile.reset('#turnstile-widget');
 
     const nloader = document.querySelector(".nuthaloader");
+    
 
+    
+    donateBtn.textContent = "";
     nloader.classList.remove("take-hidden")
 
     pending = true;
