@@ -190,7 +190,7 @@ document.querySelector("#donate-btn").addEventListener("click", async function (
 
     ploader.classList.add("donate-hidden");
     nloader.classList.add("take-hidden");
-    donateBtn.textContent = originalText;
+    takeBtn.textContent = originalText;
 
     //determines which function to call based on which button was pushed
     if (currentAction === "donate") {
@@ -230,7 +230,7 @@ document.querySelector("#donate-btn").addEventListener("click", async function (
 
 
 var qtyList = [];
-let takeBtn = document.getElementById("take");
+let takeBtn = document.getElementById("take-text");
 let originalText = takeBtn.textContent.trim();
 document.querySelector("#take").addEventListener("click", function takeMode() {
 
