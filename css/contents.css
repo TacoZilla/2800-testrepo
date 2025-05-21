@@ -235,7 +235,7 @@ tr {
   border-radius: 50%;
   background-color: #ff0000;
   box-shadow: 32px 0 #fff, -32px 0 #fff;
-  position: relative;
+  position: absolute;
   animation: flash 0.5s ease-out infinite alternate;
 }
 
