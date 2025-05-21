@@ -229,7 +229,7 @@ tr {
     color: var(--pink-dark-bold);
 }
 
-.loader {
+.persoloader {
   width: 16px;
   height: 16px;
   border-radius: 50%;
