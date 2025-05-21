@@ -156,9 +156,9 @@ async function onTurnstileSuccess(token) {
 document.querySelector("#donate-btn").addEventListener("click", async function (e) { // add cloudflare
     e.preventDefault();
     currentAction = "donate"
-    turnstile.reset('#donate-widget');
+    turnstile.reset('#turnstile-widget');
     pending = true;
-    turnstile.execute('#donate-widget', {action: currentAction});
+    turnstile.execute('#turnstile-widget', {action: currentAction});
 });
 
  window.onTurnstileVerified = async function (token) {
@@ -216,9 +216,9 @@ var qtyList = [];
 document.querySelector("#take").addEventListener("click", function takeMode() {
 
      currentAction = "take"
-    turnstile.reset('#take-widget');
+    turnstile.reset('#turnstile-widget');
     pending = true;
-    turnstile.execute('#take-widget', {action: currentAction});
+    turnstile.execute('#turnstile-widget', {action: currentAction});
 
     });
 
