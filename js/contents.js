@@ -159,9 +159,9 @@ document.querySelector("#donate-btn").addEventListener("click", async function (
     //assigns currentAction as donate
     currentAction = "donate"
 
-    const loader = document.querySelector(".persoloader")
+    const ploader = document.querySelector(".persoloader")
 
-    loader.classList.remove("donate-hidden");
+    ploader.classList.remove("donate-hidden");
 
     turnstile.reset('#turnstile-widget');
     pending = true;
@@ -178,7 +178,8 @@ document.querySelector("#donate-btn").addEventListener("click", async function (
 
     pending = false;
 
-    const loader = document.querySelector(".persoloader")
+    const ploader = document.querySelector(".persoloader")
+    const nloader = document.querySelector(".nuthaloader")
 
     const result = await onTurnstileSuccess(token);
 
@@ -187,7 +188,8 @@ document.querySelector("#donate-btn").addEventListener("click", async function (
         return;
     }
 
-    loader.classList.remove("donate-hidden");
+    ploader.classList.remove("donate-hidden");
+    nloader.classList.add("take-hidden")
 
     //determines which function to call based on which button was pushed
     if (currentAction === "donate") {
@@ -232,6 +234,11 @@ document.querySelector("#take").addEventListener("click", function takeMode() {
 
      currentAction = "take"
     turnstile.reset('#turnstile-widget');
+
+    const nloader = document.querySelector(".nuthaloader");
+
+    nloader.classList.remove("take-hidden")
+
     pending = true;
     turnstile.execute('#turnstile-widget', {action: currentAction});
 
