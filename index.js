@@ -344,7 +344,8 @@ app.post("/reviews/:storageId", async (req, res) => {
 
 app.post("/challenge-point", async (req, res) => {
        let token = req.body.token;
-       let key = process.env.TURNSTILE_SECRET_KEY
+       let action = req.body.action;
+       let key = process.env.TURNSTILE_SECRET_KEY;
        
        const ver = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
         method: 'POST',
@@ -355,7 +356,7 @@ app.post("/challenge-point", async (req, res) => {
        })
          const result = await ver.json();
 
-         if (result.success) {
+         if (result.success && result.action === action) {
             res.send({success: true});
          } else {
             res.send({success: false, reason: "not verified"})

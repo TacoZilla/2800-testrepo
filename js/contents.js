@@ -138,14 +138,14 @@ document.querySelector("#addItem").addEventListener("click", function (e) {
     document.querySelector("#donate-btn").disabled = false;
 });
 
-let donatePending = false;
+let currentAction = null; //copy from here
 
 async function onTurnstileSuccess(token) {
 
     const res = await fetch('/challenge-point', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token }) 
+        body: JSON.stringify({ token, action: currentAction}) 
 
     });
     const result = await res.json();
@@ -154,15 +154,14 @@ async function onTurnstileSuccess(token) {
 
 document.querySelector("#donate-btn").addEventListener("click", async function (e) { // add cloudflare
     e.preventDefault();
+    currentAction = "donate"
     turnstile.reset('#donate-widget');
     donatePending = true;
-    turnstile.execute('#donate-widget', {action: 'donate'});
+    turnstile.execute('#donate-widget', {action: currentAction});
 });
 
  window.onTurnstileVerified = async function (token) {
 
-    if (!donatePending) return;
-    donatePending = false;
 
     const result = await onTurnstileSuccess(token);
 
@@ -171,7 +170,15 @@ document.querySelector("#donate-btn").addEventListener("click", async function (
         return;
     }
 
-    console.log("verified!")
+    if (currentAction === "donate") {
+        donateHandler();
+    } else if (currentAction === "take") {
+        takeHandler();
+    }
+
+    currentAction = null;
+ };
+    function donateHandler() {
 
     console.log("donate button clicked");
     let items = JSON.stringify(itemsToDonate);
@@ -196,12 +203,21 @@ document.querySelector("#donate-btn").addEventListener("click", async function (
         },
         items
     );
-}
+} // to here
 
 
 var qtyList = [];
 
 document.querySelector("#take").addEventListener("click", function takeMode() {
+
+     currentAction = "take"
+    turnstile.reset('#take-widget');
+    donatePending = true;
+    turnstile.execute('#take-widget', {action: currentAction});
+
+    });
+
+    function takeHandler() {
     let elements = document.getElementsByClassName("item-quantity");
     let quantities = Array.from(elements);
     quantities.forEach((qty) => {
@@ -214,7 +230,7 @@ document.querySelector("#take").addEventListener("click", function takeMode() {
     document.getElementById("take").classList.add("hidden");
     document.getElementById("take-cancel").classList.remove("hidden");
     document.getElementById("take-confirm").classList.remove("hidden");
-});
+    }
 
 document.querySelector("#take-cancel").addEventListener("click", function () {
     cancelTake();
