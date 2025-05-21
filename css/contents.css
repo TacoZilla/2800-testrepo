@@ -244,16 +244,16 @@ tr {
 
 @keyframes flash {
   0% {
-    background-color: rgba(80, 223, 255, 0.133);
-    box-shadow: 32px 0 #FFF2, -32px 0 #d3fbff;
+    background-color: rgba(80, 223, 255, 0.575);
+    box-shadow: 32px 0 rgba(255, 255, 255, 0.582), -32px 0 #d3fbff;
   }
   50% {
     background-color: #4edeff;
-    box-shadow: 32px 0 #FFF2, -32px 0 #FFF2;
+    box-shadow: 32px 0 rgba(255, 255, 255, 0.438), -32px 0 #FFF2;
   }
   100% {
-    background-color: rgba(80, 223, 255, 0.133);
-    box-shadow: 32px 0 #d3fbff, -32px 0 #FFF2;
+    background-color: rgba(80, 223, 255, 0.551);
+    box-shadow: 32px 0 #d3fbff, -32px 0 rgba(255, 255, 255, 0.476);
   }
 }
 
