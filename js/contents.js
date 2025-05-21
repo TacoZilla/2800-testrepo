@@ -139,6 +139,7 @@ document.querySelector("#addItem").addEventListener("click", function (e) {
 });
 
 let currentAction = null; //copy from here
+let pending = false;
 
 async function onTurnstileSuccess(token) {
 
@@ -156,11 +157,15 @@ document.querySelector("#donate-btn").addEventListener("click", async function (
     e.preventDefault();
     currentAction = "donate"
     turnstile.reset('#donate-widget');
-    donatePending = true;
+    pending = true;
     turnstile.execute('#donate-widget', {action: currentAction});
 });
 
  window.onTurnstileVerified = async function (token) {
+
+    if (!pending) return;
+
+    pending = false;
 
 
     const result = await onTurnstileSuccess(token);
@@ -212,7 +217,7 @@ document.querySelector("#take").addEventListener("click", function takeMode() {
 
      currentAction = "take"
     turnstile.reset('#take-widget');
-    donatePending = true;
+    pending = true;
     turnstile.execute('#take-widget', {action: currentAction});
 
     });
