@@ -137,10 +137,11 @@ document.querySelector("#addItem").addEventListener("click", function (e) {
     setClassificationResult("none");
     document.querySelector("#donate-btn").disabled = false;
 });
-
+//currentAction is protection against inspect element goblins
 let currentAction = null; //copy from here
 let pending = false;
 
+//sends challenge and receives token
 async function onTurnstileSuccess(token) {
 
     const res = await fetch('/challenge-point', {
@@ -155,18 +156,27 @@ async function onTurnstileSuccess(token) {
 
 document.querySelector("#donate-btn").addEventListener("click", async function (e) { // add cloudflare
     e.preventDefault();
+    //assigns currentAction as donate
     currentAction = "donate"
+
+    document.getElementById("loader").classList.remove("donate-hidden");
+
     turnstile.reset('#turnstile-widget');
     pending = true;
+    //executes the widget to then get verified
     turnstile.execute('#turnstile-widget', {action: currentAction});
 });
 
+//verified result gets used to determine which action was selected
+//this is important because if something malicious actually manages to
+//get one token it can't use it across all functions 
  window.onTurnstileVerified = async function (token) {
 
     if (!pending) return;
 
     pending = false;
 
+    document.getElementById("loader").classList.add("donate-hidden");
 
     const result = await onTurnstileSuccess(token);
 
@@ -175,12 +185,13 @@ document.querySelector("#donate-btn").addEventListener("click", async function (
         return;
     }
 
+    //determines which function to call based on which button was pushed
     if (currentAction === "donate") {
         donateHandler();
     } else if (currentAction === "take") {
         takeHandler();
     }
-
+    //clears action so you can use other actions
     currentAction = null;
  };
     function donateHandler() {
