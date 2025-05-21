@@ -234,7 +234,7 @@ tr {
   display: inline-block;
   width: 16px;
   height: 16px;
-  margin-left: 25px; 
+  margin-left: 35px; 
   border-radius: 50%;
   background-color: #ff0000;
   box-shadow: 32px 0 #fff, -32px 0 #fff;
@@ -244,15 +244,15 @@ tr {
 
 @keyframes flash {
   0% {
-    background-color: #FFF2;
+    background-color: rgba(80, 223, 255, 0.133);
     box-shadow: 32px 0 #FFF2, -32px 0 #FFF;
   }
   50% {
-    background-color: #FFF;
+    background-color: #4edeff;
     box-shadow: 32px 0 #FFF2, -32px 0 #FFF2;
   }
   100% {
-    background-color: #FFF2;
+    background-color: rgba(80, 223, 255, 0.133);
     box-shadow: 32px 0 #FFF, -32px 0 #FFF2;
   }
 }
